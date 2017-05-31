@@ -29,3 +29,17 @@ Building On Windows Machine
 ===========================
 
 Open `Developer Command Prompt for Visual Studio` and run `build_win.cmd`
+
+Sample Code
+===========
+::
+
+    \
+        Multiline comment
+    \
+
+    intVariable = 6
+    floatVariable = 25.55
+    strVariable = "Hello World" #single line comment
+
+    p(strVariable)
