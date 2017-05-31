@@ -42,4 +42,4 @@ Sample Code
     floatVariable = 25.55
     strVariable = "Hello World" #single line comment
 
-    p(strVariable)
+    p(strVariable) #It will print... you guess...
