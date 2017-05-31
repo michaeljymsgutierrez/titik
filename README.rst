@@ -3,6 +3,11 @@ titik
 
 Titik Programming Language/Interpreter
 
+Intro
+=====
+
+This is for experimental and educational purpose only. ;)
+
 Linux/OSX Requirement
 =====================
 
