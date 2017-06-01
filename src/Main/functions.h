@@ -28,7 +28,7 @@ static const char *variableTypeString[] = {
 
 typedef struct _Variable{
     char name[TITIK_VARIABLE_INIT_LENGTH];
-    char scope_name[TITIK_VARIABLE_INIT_LENGTH];
+    char scope_name[TITIK_CHAR_PER_LINE];
     variable_type variable_type;
     char string_value[TITIK_VARIABLE_INIT_LENGTH];
     long int integer_value;
