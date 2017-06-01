@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 void setToken(int * initToken, int * sPos, TokenArray * tokenArray, char val[], int line, int col, TokenType tType, char titikFileName[]) {
     *initToken = F;
@@ -28,6 +29,10 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
     char stringOpener = '"';
     int usePeriod = T;
     int withPeriod = F;
+
+    TokenArray finalTokenArray;
+    finalTokenArray.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
+    finalTokenArray.tokenCount = 0;
 
     //categorize to keywords,constants,variable etc...
     for(int x=0; x < totalLineCount; x++) {
@@ -367,7 +372,37 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
                 return token_error(tokenArray->tokens[x].tokenLine, tokenArray->tokens[x].tokenColumn, "Expected closing of multi line comment", titikFileName);
             }
         }
+
+        if(x != 0 && (tokenArray->tokens[x].tokenType == float_token || tokenArray->tokens[x].tokenType == integer_token)) {
+
+            if(tokenArray->tokens[x - 1].tokenType == minus_token) {
+                //set to negative number
+                strcat(finalTokenArray.tokens[finalTokenArray.tokenCount - 1].tokenValue, tokenArray->tokens[x].tokenValue);
+                finalTokenArray.tokens[finalTokenArray.tokenCount - 1].tokenType = tokenArray->tokens[x].tokenType;
+            } else {
+                //add to final token
+                //make this a function (below code)
+                strcpy(finalTokenArray.tokens[finalTokenArray.tokenCount].tokenValue, tokenArray->tokens[x].tokenValue);
+                strcpy(finalTokenArray.tokens[finalTokenArray.tokenCount].fileName, tokenArray->tokens[x].fileName);
+                finalTokenArray.tokens[finalTokenArray.tokenCount].tokenType = tokenArray->tokens[x].tokenType;
+                finalTokenArray.tokens[finalTokenArray.tokenCount].tokenLine = tokenArray->tokens[x].tokenLine;
+                finalTokenArray.tokens[finalTokenArray.tokenCount].tokenColumn = tokenArray->tokens[x].tokenColumn;
+                finalTokenArray.tokenCount += 1;
+            }
+
+        } else {
+            //add to final token
+            //make this a function (below code)
+            strcpy(finalTokenArray.tokens[finalTokenArray.tokenCount].tokenValue, tokenArray->tokens[x].tokenValue);
+            strcpy(finalTokenArray.tokens[finalTokenArray.tokenCount].fileName, tokenArray->tokens[x].fileName);
+            finalTokenArray.tokens[finalTokenArray.tokenCount].tokenType = tokenArray->tokens[x].tokenType;
+            finalTokenArray.tokens[finalTokenArray.tokenCount].tokenLine = tokenArray->tokens[x].tokenLine;
+            finalTokenArray.tokens[finalTokenArray.tokenCount].tokenColumn = tokenArray->tokens[x].tokenColumn;
+            finalTokenArray.tokenCount += 1;
+        }
     }
+
+    *tokenArray = finalTokenArray;
 
     //just for debugging
     //dumpToken(*tokenArray);
