@@ -88,6 +88,7 @@ typedef enum {
 } TokenizerState;
 
 void setToken(int * initToken, int * sPos, TokenArray * tokenArray, char val[], int line, int col, TokenType tType, char titikFileName[]);
+void updateFinalToken(int x, TokenArray * finalTokenArray, TokenArray tokenArray);
 int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArray, char titikFileName[]);
 
 #endif

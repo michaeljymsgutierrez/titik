@@ -22,6 +22,15 @@ void setToken(int * initToken, int * sPos, TokenArray * tokenArray, char val[], 
     strcpy(tokenArray->tokens[tokenArray->tokenCount - 1].fileName, titikFileName);
 }
 
+void updateFinalToken(int x, TokenArray * finalTokenArray, TokenArray tokenArray) {
+    strcpy(finalTokenArray->tokens[finalTokenArray->tokenCount].tokenValue, tokenArray.tokens[x].tokenValue);
+    strcpy(finalTokenArray->tokens[finalTokenArray->tokenCount].fileName, tokenArray.tokens[x].fileName);
+    finalTokenArray->tokens[finalTokenArray->tokenCount].tokenType = tokenArray.tokens[x].tokenType;
+    finalTokenArray->tokens[finalTokenArray->tokenCount].tokenLine = tokenArray.tokens[x].tokenLine;
+    finalTokenArray->tokens[finalTokenArray->tokenCount].tokenColumn = tokenArray.tokens[x].tokenColumn;
+    finalTokenArray->tokenCount += 1;
+}
+
 int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArray, char titikFileName[]) {
     TokenizerState tokenizerState = get_word;
     int strPos = 0;
@@ -380,25 +389,11 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
                 strcat(finalTokenArray.tokens[finalTokenArray.tokenCount - 1].tokenValue, tokenArray->tokens[x].tokenValue);
                 finalTokenArray.tokens[finalTokenArray.tokenCount - 1].tokenType = tokenArray->tokens[x].tokenType;
             } else {
-                //add to final token
-                //make this a function (below code)
-                strcpy(finalTokenArray.tokens[finalTokenArray.tokenCount].tokenValue, tokenArray->tokens[x].tokenValue);
-                strcpy(finalTokenArray.tokens[finalTokenArray.tokenCount].fileName, tokenArray->tokens[x].fileName);
-                finalTokenArray.tokens[finalTokenArray.tokenCount].tokenType = tokenArray->tokens[x].tokenType;
-                finalTokenArray.tokens[finalTokenArray.tokenCount].tokenLine = tokenArray->tokens[x].tokenLine;
-                finalTokenArray.tokens[finalTokenArray.tokenCount].tokenColumn = tokenArray->tokens[x].tokenColumn;
-                finalTokenArray.tokenCount += 1;
+                updateFinalToken(x, &finalTokenArray, *tokenArray);
             }
 
         } else {
-            //add to final token
-            //make this a function (below code)
-            strcpy(finalTokenArray.tokens[finalTokenArray.tokenCount].tokenValue, tokenArray->tokens[x].tokenValue);
-            strcpy(finalTokenArray.tokens[finalTokenArray.tokenCount].fileName, tokenArray->tokens[x].fileName);
-            finalTokenArray.tokens[finalTokenArray.tokenCount].tokenType = tokenArray->tokens[x].tokenType;
-            finalTokenArray.tokens[finalTokenArray.tokenCount].tokenLine = tokenArray->tokens[x].tokenLine;
-            finalTokenArray.tokens[finalTokenArray.tokenCount].tokenColumn = tokenArray->tokens[x].tokenColumn;
-            finalTokenArray.tokenCount += 1;
+            updateFinalToken(x, &finalTokenArray, *tokenArray);
         }
     }
 
