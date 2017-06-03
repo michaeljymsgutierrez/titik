@@ -60,7 +60,8 @@ typedef struct {
 typedef enum {
     arg_string_type,
     arg_integer_type,
-    arg_float_type
+    arg_float_type,
+    arg_none_type
     //variable_type HERE <<--- ?
 } ArgumentType;
 
@@ -97,5 +98,6 @@ int isFunctionExists(FunctionArray functionArray, int * functionPosition, char t
 int isVariableExists(VariableArray variableArray, int * variablePosition, char tokenValue[], char scopeName[]);
 
 void defineConstantString(VariableArray * variableArray, char variableName[], char variableValue[]);
+void defineConstantNone(VariableArray * variableArray, char variableName[]);
 void initVariables(VariableArray * variableArray);
 #endif

@@ -152,7 +152,16 @@ void defineConstantString(VariableArray * variableArray, char variableName[], ch
     variableArray->variableCount += 1;
 }
 
+void defineConstantNone(VariableArray * variableArray, char variableName[]) {
+    variableArray->variables[variableArray->variableCount].variable_type = var_none_type;
+    strcpy(variableArray->variables[variableArray->variableCount].name, variableName);
+    strcpy(variableArray->variables[variableArray->variableCount].scope_name, TITIK_MAIN_SCOPE_NAME);
+    variableArray->variables[variableArray->variableCount].is_constant = T;
+    variableArray->variableCount += 1;
+}
+
 void initVariables(VariableArray * variableArray) {
     defineConstantString(variableArray, "__AUTHOR__", TITIK_AUTHOR);
     defineConstantString(variableArray, "__VERSION_STRING__", TITIK_STRING_VERSION);
+    defineConstantNone(variableArray, "None");
 }

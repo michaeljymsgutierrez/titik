@@ -150,6 +150,8 @@ int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArr
                         } else if(variableArray->variables[variablePosition].variable_type == var_float_type) {
                             argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_float_type;
                             argumentArray.arguments[argumentArray.argumentCount].float_value = variableArray->variables[variablePosition].float_value;                           
+                        } else if(variableArray->variables[variablePosition].variable_type == var_none_type) {
+                            argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_none_type;                        
                         }
 
                     }
@@ -223,6 +225,8 @@ int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArr
                         } else if(variableArray->variables[variablePosition2].variable_type == var_float_type) {
                             variableArray->variables[variablePosition].variable_type = var_float_type;
                             variableArray->variables[variablePosition].float_value = variableArray->variables[variablePosition2].float_value;                
+                        } else if(variableArray->variables[variablePosition2].variable_type == var_none_type) {
+                            variableArray->variables[variablePosition].variable_type = var_none_type;                
                         }
 
                     }
