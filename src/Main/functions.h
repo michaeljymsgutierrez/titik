@@ -53,7 +53,10 @@ typedef enum {
 } FunctionReturnType;
 
 typedef struct {
-    char returnValue[TITIK_CHAR_PER_LINE];
+    //char returnValue[TITIK_CHAR_PER_LINE];
+    char string_value[TITIK_CHAR_PER_LINE];
+    long int integer_value;
+    double float_value;    
     FunctionReturnType returnType;
 } FunctionReturn;
 
@@ -81,6 +84,7 @@ typedef struct {
     ArgumentArray argumentArray;
     char functionName[TITIK_CHAR_PER_LINE];
     void (*execute)(ArgumentArray argumentArray2, VariableArray * variableArray, int * intReturn);
+    FunctionReturn functionReturn;
 } Function;
 
 typedef struct {
