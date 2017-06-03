@@ -13,7 +13,7 @@
 
 extern FunctionArray globalFunctionArray;
 
-void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray, VariableArray * variableArray, int * intReturn), FunctionArray * functionArray) {
+void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray, VariableArray * variableArray, int * intReturn, FunctionReturn * funcReturn), FunctionArray * functionArray) {
     strcpy(functionArray->functions[functionArray->functionCount].functionName, functionName);
 
     functionArray->functions[functionArray->functionCount].argumentArray.argumentCount = 0;
@@ -31,7 +31,7 @@ void defineFunction(char functionName[], ArgumentArray argumentArray, void(*exec
     functionArray->functionCount += 1;
 }
 
-void p_execute(ArgumentArray argumentArray, VariableArray * variableArray, int * intReturn) {
+void p_execute(ArgumentArray argumentArray, VariableArray * variableArray, int * intReturn, FunctionReturn * funcReturn) {
     switch(argumentArray.arguments[0].argumentType) {
         case arg_string_type:
             printf("%s\n", argumentArray.arguments[0].string_value);
@@ -46,10 +46,11 @@ void p_execute(ArgumentArray argumentArray, VariableArray * variableArray, int *
             printf("None\n");
     }
 
+    funcReturn->returnType = ret_none_type;
     *intReturn = 0;
 }
 
-void i_execute(ArgumentArray argumentArray2, VariableArray * variableArray, int * intReturn) {
+void i_execute(ArgumentArray argumentArray2, VariableArray * variableArray, int * intReturn, FunctionReturn * funcReturn) {
     char **fileContent;
     int functionReturn;
     int totalLineCount;
@@ -78,6 +79,7 @@ void i_execute(ArgumentArray argumentArray2, VariableArray * variableArray, int 
         }
     }
 
+    funcReturn->returnType = ret_none_type;
     free(tokenArray.tokens);     
 }
 

@@ -37,6 +37,7 @@ TokenArray stripUnwantedToken(TokenArray tokenArray) {
 int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArray * variableArray) {
     ParserState parserState = get_start;
     TokenArray strippedToken;
+    FunctionReturn funcReturn;
     int isFunctionsExists = F;
     int functionPosition = 0;
     int isVariablesExists = F;
@@ -111,7 +112,9 @@ int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArr
                     }
 
                     //execute function
-                    functionArray->functions[functionPosition].execute(argumentArray, variableArray, &intFunctionReturn);
+                    functionArray->functions[functionPosition].execute(argumentArray, variableArray, &intFunctionReturn, &funcReturn);
+                    //set return value & type
+                    functionArray->functions[functionPosition].functionReturn = funcReturn;
 
                     if(intFunctionReturn > 0) {
                         return intFunctionReturn;
