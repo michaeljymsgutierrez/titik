@@ -7,12 +7,34 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern LoadedFileArray globalLoadedFileArray;
+
+int isFileExists(char fileName[]) {
+    int isExists = F;
+    int strCompRet = 0;
+
+    for(int x2=0;x2 < globalLoadedFileArray.loadedFilesCount; x2++) {
+        strCompRet = strcmp(fileName, globalLoadedFileArray.loadedFiles[x2].fileName);
+
+        if(!(strCompRet < 0) && !(strCompRet > 0)) {
+            isExists = T;
+            break;
+        }
+    }
+
+    return isExists;
+}
+
 char **readSourceFile(char fileName[], int * ret, int * lineCount) {
     FILE *sourceFile;
     char fileBuffer[TITIK_CHAR_PER_LINE];
     *lineCount = 0;
     char **retStr;
     int counter = 0;
+
+    //add to loadedfilearray
+    strcpy(globalLoadedFileArray.loadedFiles[globalLoadedFileArray.loadedFilesCount].fileName, fileName);
+    globalLoadedFileArray.loadedFilesCount += 1;
 
     sourceFile = fopen(fileName, "r");
 

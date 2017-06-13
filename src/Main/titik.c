@@ -14,6 +14,7 @@
 
 FunctionArray globalFunctionArray;
 VariableArray globalVariableArray;
+LoadedFileArray globalLoadedFileArray;
 
 int main(int argc, char **argv) {
     char **fileContent;
@@ -32,6 +33,10 @@ int main(int argc, char **argv) {
     //init variable array
     globalVariableArray.variables = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Variable));
     globalVariableArray.variableCount = 0;
+
+    //init loaded files array
+    globalLoadedFileArray.loadedFiles = malloc(TITIK_LOADED_FILES_INIT_LENGTH * sizeof(LoadedFile));
+    globalLoadedFileArray.loadedFilesCount = 0;
 
     //init global functions
     initFunctions(&globalFunctionArray);

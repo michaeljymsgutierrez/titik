@@ -55,6 +55,7 @@ void i_execute(ArgumentArray argumentArray2, VariableArray * variableArray, int 
     int functionReturn;
     int totalLineCount;
     char fName[TITIK_CHAR_PER_LINE];
+    int fileExists = 0;
     TokenArray tokenArray;
     tokenArray.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
     tokenArray.tokenCount = 0;
@@ -63,21 +64,28 @@ void i_execute(ArgumentArray argumentArray2, VariableArray * variableArray, int 
     strcpy(fName, argumentArray2.arguments[0].string_value);
     strcat(fName, ".ttk");
 
-    fileContent = readSourceFile(fName, &functionReturn, &totalLineCount);
+    fileExists = isFileExists(fName);
 
-    if(functionReturn > 0) {
-        *intReturn = functionReturn;
+    if(fileExists) {
+        *intReturn = fileExists;
+        printf("Error: File '%s' already loaded\n", fName);
     } else {
-        //generate token
-        functionReturn = generateToken(fileContent, totalLineCount, &tokenArray, fName);
+        fileContent = readSourceFile(fName, &functionReturn, &totalLineCount);
 
         if(functionReturn > 0) {
             *intReturn = functionReturn;
         } else {
-            //parse token
-            functionReturn = parseToken(tokenArray, &globalFunctionArray, variableArray);
+            //generate token
+            functionReturn = generateToken(fileContent, totalLineCount, &tokenArray, fName);
+
+            if(functionReturn > 0) {
+                *intReturn = functionReturn;
+            } else {
+                //parse token
+                functionReturn = parseToken(tokenArray, &globalFunctionArray, variableArray);
+            }
         }
-    }
+    } 
 
     funcReturn->returnType = ret_none_type;
     free(tokenArray.tokens);     
