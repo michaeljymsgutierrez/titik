@@ -112,7 +112,7 @@ int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArr
                     }
 
                     //execute function
-                    functionArray->functions[functionPosition].execute(argumentArray, variableArray, &intFunctionReturn, &funcReturn);
+                    functionArray->functions[functionPosition].execute(argumentArray, &intFunctionReturn, &funcReturn);
                     //set return value & type
                     functionArray->functions[functionPosition].functionReturn = funcReturn;
 
@@ -127,7 +127,7 @@ int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArr
                         isVariablesExists = F;
                         variablePosition = 0;
 
-                        isVariablesExists = isVariableExists(*variableArray, &variablePosition, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                        isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
                         if(!isVariablesExists) {
                             return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         }
@@ -186,7 +186,7 @@ int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArr
                 //check variable if existing and set the variable value here
                 if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
 
-                    isVariablesExists = isVariableExists(*variableArray, &variablePosition, currentIdentifier.tokenValue, TITIK_MAIN_SCOPE_NAME);
+                    isVariablesExists = isVariableExists(&variablePosition, currentIdentifier.tokenValue, TITIK_MAIN_SCOPE_NAME);
                     
                     if(!isVariablesExists) {
                         variablePosition = variableArray->variableCount;
@@ -201,7 +201,7 @@ int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArr
                         isVariablesExists = F;
                         variablePosition2 = 0;
 
-                        isVariablesExists = isVariableExists(*variableArray, &variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                        isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
                         if(!isVariablesExists) {
                             return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         }

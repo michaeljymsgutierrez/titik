@@ -83,7 +83,7 @@ typedef struct {
 typedef struct {
     ArgumentArray argumentArray;
     char functionName[TITIK_CHAR_PER_LINE];
-    void (*execute)(ArgumentArray argumentArray2, VariableArray * variableArray, int * intReturn, FunctionReturn * funcReturn);
+    void (*execute)(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn);
     FunctionReturn functionReturn;
 } Function;
 
@@ -92,16 +92,16 @@ typedef struct {
     int functionCount;
 } FunctionArray;
 
-void p_execute(ArgumentArray argumentArray2, VariableArray * variableArray, int * intReturn, FunctionReturn * funcReturn);
-void i_execute(ArgumentArray argumentArray2, VariableArray * variableArray, int * intReturn, FunctionReturn * funcReturn);
+void p_execute(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn);
+void i_execute(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn);
 //the first argument array is the structure of the function
 //the function pointer with argumentarray is the user inputted argument
-void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray2, VariableArray * variableArray, int * intReturn, FunctionReturn * funcReturn), FunctionArray * functionArray);
+void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn), FunctionArray * functionArray);
 void initFunctions(FunctionArray * functionArray);
 int isFunctionExists(FunctionArray functionArray, int * functionPosition, char tokenValue[]);
-int isVariableExists(VariableArray variableArray, int * variablePosition, char tokenValue[], char scopeName[]);
+int isVariableExists(int * variablePosition, char tokenValue[], char scopeName[]);
 
-void defineConstantString(VariableArray * variableArray, char variableName[], char variableValue[]);
-void defineConstantNone(VariableArray * variableArray, char variableName[]);
-void initVariables(VariableArray * variableArray);
+void defineConstantString(char variableName[], char variableValue[]);
+void defineConstantNone(char variableName[]);
+void initVariables();
 #endif

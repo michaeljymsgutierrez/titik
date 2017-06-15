@@ -12,8 +12,9 @@
 #include <stdio.h>
 
 extern FunctionArray globalFunctionArray;
+extern VariableArray globalVariableArray;
 
-void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray, VariableArray * variableArray, int * intReturn, FunctionReturn * funcReturn), FunctionArray * functionArray) {
+void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * funcReturn), FunctionArray * functionArray) {
     strcpy(functionArray->functions[functionArray->functionCount].functionName, functionName);
 
     functionArray->functions[functionArray->functionCount].argumentArray.argumentCount = 0;
@@ -31,7 +32,7 @@ void defineFunction(char functionName[], ArgumentArray argumentArray, void(*exec
     functionArray->functionCount += 1;
 }
 
-void p_execute(ArgumentArray argumentArray, VariableArray * variableArray, int * intReturn, FunctionReturn * funcReturn) {
+void p_execute(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * funcReturn) {
     switch(argumentArray.arguments[0].argumentType) {
         case arg_string_type:
             printf("%s\n", argumentArray.arguments[0].string_value);
@@ -50,7 +51,7 @@ void p_execute(ArgumentArray argumentArray, VariableArray * variableArray, int *
     *intReturn = 0;
 }
 
-void i_execute(ArgumentArray argumentArray2, VariableArray * variableArray, int * intReturn, FunctionReturn * funcReturn) {
+void i_execute(ArgumentArray argumentArray2,  int * intReturn, FunctionReturn * funcReturn) {
     char **fileContent;
     int functionReturn;
     int totalLineCount;
@@ -82,7 +83,7 @@ void i_execute(ArgumentArray argumentArray2, VariableArray * variableArray, int 
                 *intReturn = functionReturn;
             } else {
                 //parse token
-                functionReturn = parseToken(tokenArray, &globalFunctionArray, variableArray);
+                functionReturn = parseToken(tokenArray, &globalFunctionArray, &globalVariableArray);
             }
         }
     } 
@@ -134,14 +135,14 @@ int isFunctionExists(FunctionArray functionArray, int * functionPosition, char t
     return isExists;
 }
 
-int isVariableExists(VariableArray variableArray, int * variablePosition, char tokenValue[], char scopeName[]) {
+int isVariableExists(int * variablePosition, char tokenValue[], char scopeName[]) {
     int isExists = F;
     int strCompRet = 0;
     int strCompRet2 = 0;
 
-    for(int x2=0;x2 < variableArray.variableCount; x2++) {
-        strCompRet = strcmp(tokenValue, variableArray.variables[x2].name);
-        strCompRet2 = strcmp(scopeName, variableArray.variables[x2].scope_name);
+    for(int x2=0;x2 < globalVariableArray.variableCount; x2++) {
+        strCompRet = strcmp(tokenValue, globalVariableArray.variables[x2].name);
+        strCompRet2 = strcmp(scopeName, globalVariableArray.variables[x2].scope_name);
 
         if((!(strCompRet < 0) && !(strCompRet > 0)) && (!(strCompRet2 < 0) && !(strCompRet2 > 0))) {
             isExists = T;
@@ -153,25 +154,25 @@ int isVariableExists(VariableArray variableArray, int * variablePosition, char t
     return isExists;    
 }
 
-void defineConstantString(VariableArray * variableArray, char variableName[], char variableValue[]) {
-    variableArray->variables[variableArray->variableCount].variable_type = var_string_type;
-    strcpy(variableArray->variables[variableArray->variableCount].name, variableName);
-    strcpy(variableArray->variables[variableArray->variableCount].scope_name, TITIK_MAIN_SCOPE_NAME);
-    strcpy(variableArray->variables[variableArray->variableCount].string_value, variableValue);
-    variableArray->variables[variableArray->variableCount].is_constant = T;
-    variableArray->variableCount += 1;
+void defineConstantString(char variableName[], char variableValue[]) {
+    globalVariableArray.variables[globalVariableArray.variableCount].variable_type = var_string_type;
+    strcpy(globalVariableArray.variables[globalVariableArray.variableCount].name, variableName);
+    strcpy(globalVariableArray.variables[globalVariableArray.variableCount].scope_name, TITIK_MAIN_SCOPE_NAME);
+    strcpy(globalVariableArray.variables[globalVariableArray.variableCount].string_value, variableValue);
+    globalVariableArray.variables[globalVariableArray.variableCount].is_constant = T;
+    globalVariableArray.variableCount += 1;
 }
 
-void defineConstantNone(VariableArray * variableArray, char variableName[]) {
-    variableArray->variables[variableArray->variableCount].variable_type = var_none_type;
-    strcpy(variableArray->variables[variableArray->variableCount].name, variableName);
-    strcpy(variableArray->variables[variableArray->variableCount].scope_name, TITIK_MAIN_SCOPE_NAME);
-    variableArray->variables[variableArray->variableCount].is_constant = T;
-    variableArray->variableCount += 1;
+void defineConstantNone(char variableName[]) {
+    globalVariableArray.variables[globalVariableArray.variableCount].variable_type = var_none_type;
+    strcpy(globalVariableArray.variables[globalVariableArray.variableCount].name, variableName);
+    strcpy(globalVariableArray.variables[globalVariableArray.variableCount].scope_name, TITIK_MAIN_SCOPE_NAME);
+    globalVariableArray.variables[globalVariableArray.variableCount].is_constant = T;
+    globalVariableArray.variableCount += 1;
 }
 
-void initVariables(VariableArray * variableArray) {
-    defineConstantString(variableArray, "__AUTHOR__", TITIK_AUTHOR);
-    defineConstantString(variableArray, "__VERSION_STRING__", TITIK_STRING_VERSION);
-    defineConstantNone(variableArray, "None");
+void initVariables() {
+    defineConstantString("__AUTHOR__", TITIK_AUTHOR);
+    defineConstantString("__VERSION_STRING__", TITIK_STRING_VERSION);
+    defineConstantNone("None");
 }
