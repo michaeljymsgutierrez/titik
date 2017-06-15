@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+extern VariableArray globalVariableArray;
+
 TokenArray stripUnwantedToken(TokenArray tokenArray) {
     TokenArray newTokens;
     newTokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
@@ -34,7 +36,7 @@ TokenArray stripUnwantedToken(TokenArray tokenArray) {
     return newTokens;
 }
 
-int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArray * variableArray) {
+int parseToken(TokenArray tokenArray, FunctionArray * functionArray) {
     ParserState parserState = get_start;
     TokenArray strippedToken;
     FunctionReturn funcReturn;
@@ -144,16 +146,16 @@ int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArr
                         argumentArray.arguments[argumentArray.argumentCount].integer_value = atoi(strippedToken.tokens[x].tokenValue);
                     } else if(strippedToken.tokens[x].tokenType == identifier_token) {
 
-                        if(variableArray->variables[variablePosition].variable_type == var_string_type) {
+                        if(globalVariableArray.variables[variablePosition].variable_type == var_string_type) {
                             argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_string_type;
-                            strcpy(argumentArray.arguments[argumentArray.argumentCount].string_value, variableArray->variables[variablePosition].string_value);                           
-                        } else if(variableArray->variables[variablePosition].variable_type == var_integer_type) {
+                            strcpy(argumentArray.arguments[argumentArray.argumentCount].string_value, globalVariableArray.variables[variablePosition].string_value);                           
+                        } else if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
                             argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_integer_type;
-                            argumentArray.arguments[argumentArray.argumentCount].integer_value = variableArray->variables[variablePosition].integer_value;                           
-                        } else if(variableArray->variables[variablePosition].variable_type == var_float_type) {
+                            argumentArray.arguments[argumentArray.argumentCount].integer_value = globalVariableArray.variables[variablePosition].integer_value;                           
+                        } else if(globalVariableArray.variables[variablePosition].variable_type == var_float_type) {
                             argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_float_type;
-                            argumentArray.arguments[argumentArray.argumentCount].float_value = variableArray->variables[variablePosition].float_value;                           
-                        } else if(variableArray->variables[variablePosition].variable_type == var_none_type) {
+                            argumentArray.arguments[argumentArray.argumentCount].float_value = globalVariableArray.variables[variablePosition].float_value;                           
+                        } else if(globalVariableArray.variables[variablePosition].variable_type == var_none_type) {
                             argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_none_type;                        
                         }
 
@@ -189,10 +191,10 @@ int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArr
                     isVariablesExists = isVariableExists(&variablePosition, currentIdentifier.tokenValue, TITIK_MAIN_SCOPE_NAME);
                     
                     if(!isVariablesExists) {
-                        variablePosition = variableArray->variableCount;
-                        variableArray->variableCount += 1;
+                        variablePosition = globalVariableArray.variableCount;
+                        globalVariableArray.variableCount += 1;
                     } else {
-                        if(variableArray->variables[variablePosition].is_constant) {
+                        if(globalVariableArray.variables[variablePosition].is_constant) {
                             return unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Cannot override constant ", currentIdentifier.tokenValue, currentIdentifier.fileName);
                         }
                     }
@@ -209,41 +211,41 @@ int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArr
 
                     //set variable type and value
                     if(strippedToken.tokens[x].tokenType == string_token) {
-                        variableArray->variables[variablePosition].variable_type = var_string_type;
-                        strcpy(variableArray->variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
+                        globalVariableArray.variables[variablePosition].variable_type = var_string_type;
+                        strcpy(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
                     } else if(strippedToken.tokens[x].tokenType == float_token) {
-                        variableArray->variables[variablePosition].variable_type = var_float_type;
-                        variableArray->variables[variablePosition].float_value = atof(strippedToken.tokens[x].tokenValue);
+                        globalVariableArray.variables[variablePosition].variable_type = var_float_type;
+                        globalVariableArray.variables[variablePosition].float_value = atof(strippedToken.tokens[x].tokenValue);
                     } else if(strippedToken.tokens[x].tokenType == integer_token) {
-                        variableArray->variables[variablePosition].integer_value = atoi(strippedToken.tokens[x].tokenValue);
-                        variableArray->variables[variablePosition].variable_type = var_integer_type;
+                        globalVariableArray.variables[variablePosition].integer_value = atoi(strippedToken.tokens[x].tokenValue);
+                        globalVariableArray.variables[variablePosition].variable_type = var_integer_type;
                     } else if(strippedToken.tokens[x].tokenType == identifier_token) {
 
-                        if(variableArray->variables[variablePosition2].variable_type == var_string_type) {
-                            variableArray->variables[variablePosition].variable_type = var_string_type;
-                            strcpy(variableArray->variables[variablePosition].string_value, variableArray->variables[variablePosition2].string_value);
-                        } else if(variableArray->variables[variablePosition2].variable_type == var_integer_type) {
-                            variableArray->variables[variablePosition].integer_value = variableArray->variables[variablePosition2].integer_value;
-                            variableArray->variables[variablePosition].variable_type = var_integer_type;     
-                        } else if(variableArray->variables[variablePosition2].variable_type == var_float_type) {
-                            variableArray->variables[variablePosition].variable_type = var_float_type;
-                            variableArray->variables[variablePosition].float_value = variableArray->variables[variablePosition2].float_value;                
-                        } else if(variableArray->variables[variablePosition2].variable_type == var_none_type) {
-                            variableArray->variables[variablePosition].variable_type = var_none_type;                
+                        if(globalVariableArray.variables[variablePosition2].variable_type == var_string_type) {
+                            globalVariableArray.variables[variablePosition].variable_type = var_string_type;
+                            strcpy(globalVariableArray.variables[variablePosition].string_value, globalVariableArray.variables[variablePosition2].string_value);
+                        } else if(globalVariableArray.variables[variablePosition2].variable_type == var_integer_type) {
+                            globalVariableArray.variables[variablePosition].integer_value = globalVariableArray.variables[variablePosition2].integer_value;
+                            globalVariableArray.variables[variablePosition].variable_type = var_integer_type;     
+                        } else if(globalVariableArray.variables[variablePosition2].variable_type == var_float_type) {
+                            globalVariableArray.variables[variablePosition].variable_type = var_float_type;
+                            globalVariableArray.variables[variablePosition].float_value = globalVariableArray.variables[variablePosition2].float_value;                
+                        } else if(globalVariableArray.variables[variablePosition2].variable_type == var_none_type) {
+                            globalVariableArray.variables[variablePosition].variable_type = var_none_type;                
                         }
 
                     }
 
                     //set name & scope
-                    strcpy(variableArray->variables[variablePosition].name, currentIdentifier.tokenValue);
-                    strcpy(variableArray->variables[variablePosition].scope_name, TITIK_MAIN_SCOPE_NAME);
+                    strcpy(globalVariableArray.variables[variablePosition].name, currentIdentifier.tokenValue);
+                    strcpy(globalVariableArray.variables[variablePosition].scope_name, TITIK_MAIN_SCOPE_NAME);
                     
                     //set constant or not
                     //if the first letter is capital then it's a constant else it's not
-                    if(isupper(variableArray->variables[variablePosition].name[0])) {
-                        variableArray->variables[variablePosition].is_constant = T;
+                    if(isupper(globalVariableArray.variables[variablePosition].name[0])) {
+                        globalVariableArray.variables[variablePosition].is_constant = T;
                     } else {
-                        variableArray->variables[variablePosition].is_constant = F;
+                        globalVariableArray.variables[variablePosition].is_constant = F;
                     }
 
                     //TODO: Check and advance the token array if the next statement

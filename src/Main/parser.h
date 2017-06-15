@@ -17,6 +17,6 @@ typedef enum {
 } ParserState;
 
 TokenArray stripUnwantedToken(TokenArray tokenArray);
-int parseToken(TokenArray tokenArray, FunctionArray * functionArray, VariableArray * variableArray);
+int parseToken(TokenArray tokenArray, FunctionArray * functionArray);
 
 #endif
