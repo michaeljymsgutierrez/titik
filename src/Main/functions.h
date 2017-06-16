@@ -96,9 +96,9 @@ void p_execute(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * f
 void i_execute(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn);
 //the first argument array is the structure of the function
 //the function pointer with argumentarray is the user inputted argument
-void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn), FunctionArray * functionArray);
-void initFunctions(FunctionArray * functionArray);
-int isFunctionExists(FunctionArray functionArray, int * functionPosition, char tokenValue[]);
+void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn));
+void initFunctions();
+int isFunctionExists(int * functionPosition, char tokenValue[]);
 int isVariableExists(int * variablePosition, char tokenValue[], char scopeName[]);
 
 void defineConstantString(char variableName[], char variableValue[]);

@@ -14,22 +14,22 @@
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 
-void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * funcReturn), FunctionArray * functionArray) {
-    strcpy(functionArray->functions[functionArray->functionCount].functionName, functionName);
+void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * funcReturn)) {
+    strcpy(globalFunctionArray.functions[globalFunctionArray.functionCount].functionName, functionName);
 
-    functionArray->functions[functionArray->functionCount].argumentArray.argumentCount = 0;
-    functionArray->functions[functionArray->functionCount].argumentArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.argumentCount = 0;
+    globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
     //add arguments structure here
     
     for(int x=0; x<argumentArray.argumentCount; x++) {
         
-        functionArray->functions[functionArray->functionCount].argumentArray.arguments[x] = argumentArray.arguments[x];
-        functionArray->functions[functionArray->functionCount].argumentArray.argumentCount += 1;
+        globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.arguments[x] = argumentArray.arguments[x];
+        globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.argumentCount += 1;
     }
 
-    functionArray->functions[functionArray->functionCount].execute = execute;
+    globalFunctionArray.functions[globalFunctionArray.functionCount].execute = execute;
     //last statement to be executed
-    functionArray->functionCount += 1;
+    globalFunctionArray.functionCount += 1;
 }
 
 void p_execute(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * funcReturn) {
@@ -92,7 +92,7 @@ void i_execute(ArgumentArray argumentArray2,  int * intReturn, FunctionReturn * 
     free(tokenArray.tokens);     
 }
 
-void initFunctions(FunctionArray * functionArray) {
+void initFunctions() {
 
     //p function
     ArgumentArray pArgArray;
@@ -102,7 +102,7 @@ void initFunctions(FunctionArray * functionArray) {
     pArgArray.arguments[0].argumentType = arg_string_type;
     strcpy(pArgArray.arguments[0].string_value, "");
 
-    defineFunction("p", pArgArray, p_execute, functionArray);
+    defineFunction("p", pArgArray, p_execute);
     //end p function
 
     //i function
@@ -113,17 +113,17 @@ void initFunctions(FunctionArray * functionArray) {
     iArgArray.arguments[0].argumentType = arg_string_type;
     strcpy(iArgArray.arguments[0].string_value, "");
 
-    defineFunction("i", iArgArray, i_execute, functionArray);
+    defineFunction("i", iArgArray, i_execute);
     //end i function
 
 }
 
-int isFunctionExists(FunctionArray functionArray, int * functionPosition, char tokenValue[]) {
+int isFunctionExists(int * functionPosition, char tokenValue[]) {
     int isExists = F;
     int strCompRet = 0;
 
-    for(int x2=0;x2 < functionArray.functionCount; x2++) {
-        strCompRet = strcmp(tokenValue, functionArray.functions[x2].functionName);
+    for(int x2=0;x2 < globalFunctionArray.functionCount; x2++) {
+        strCompRet = strcmp(tokenValue, globalFunctionArray.functions[x2].functionName);
 
         if(!(strCompRet < 0) && !(strCompRet > 0)) {
             isExists = T;

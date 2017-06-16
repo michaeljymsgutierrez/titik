@@ -83,7 +83,7 @@ int parseToken(TokenArray tokenArray, FunctionArray * functionArray) {
                         isFunctionsExists = F;
                         functionPosition = 0;
 
-                        isFunctionsExists = isFunctionExists(*functionArray, &functionPosition, strippedToken.tokens[x].tokenValue);
+                        isFunctionsExists = isFunctionExists(&functionPosition, strippedToken.tokens[x].tokenValue);
 
                         if(isFunctionsExists) {
                             argumentArray.argumentCount = 0;
