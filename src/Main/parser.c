@@ -49,6 +49,7 @@ int parseToken(TokenArray tokenArray) {
     int intFunctionReturn = 0;
     Token currentIdentifier;
     TokenType currentOperation = none_token;
+    char tempChar[TITIK_VARIABLE_INIT_LENGTH];
     //strip all spaces and newline first before parsing the token
     strippedToken = stripUnwantedToken(tokenArray);
 
@@ -301,6 +302,7 @@ int parseToken(TokenArray tokenArray) {
                                     //check if existing variable
                                     isVariablesExists = F;
                                     variablePosition2 = 0;
+                                    strcpy(tempChar, ""); //clear temp char
 
                                     isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
                                     if(!isVariablesExists) {
@@ -309,11 +311,15 @@ int parseToken(TokenArray tokenArray) {
 
                                     switch(globalVariableArray.variables[variablePosition2].variable_type) {
                                         case var_float_type:
+                                            snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition2].float_value);
+                                            strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
                                         break;
                                         case var_string_type:
                                             strcat(globalVariableArray.variables[variablePosition].string_value, globalVariableArray.variables[variablePosition2].string_value);
                                         break;
                                         case var_integer_type:
+                                            snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition2].integer_value);
+                                            strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
                                         break;
                                         default:
                                             //variable is a none type
