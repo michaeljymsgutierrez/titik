@@ -295,7 +295,18 @@ int parseToken(TokenArray tokenArray) {
                         break;
                         case var_string_type:
                             //concatenate only
-                            strcat(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
+
+                            if(currentOperation == plus_token) {
+                                if(strippedToken.tokens[x].tokenType == identifier_token) {
+                                    //check if existing variable
+                                } else {
+                                    strcat(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
+                                }
+
+                            } else {
+                                return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
+                            }
+
                         break;
                         default:
                             //none type
