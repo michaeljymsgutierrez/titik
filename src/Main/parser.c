@@ -253,7 +253,7 @@ int parseToken(TokenArray tokenArray) {
                         globalVariableArray.variables[variablePosition].is_constant = F;
                     }
 
-                    //TODO: Check and advance the token array if the next statement
+                    //Check and advance the token array if the next statement
                     // is a concatenation or any other operation
                     //if it is then stay to get_assigment_value parserState
                     //else set to get_start
@@ -277,10 +277,30 @@ int parseToken(TokenArray tokenArray) {
                 //get operation
                 currentOperation = strippedToken.tokens[x].tokenType;
                 parserState = update_assigment_value;
+
+                if(!((x+1) < strippedToken.tokenCount)) {
+                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unfinished operation", strippedToken.tokens[x].fileName);
+                }
             break;
             case update_assigment_value:
                 //update variable depending on the operator
                 if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
+                    //update
+                    switch(globalVariableArray.variables[variablePosition].variable_type) {
+                        case var_float_type:
+                        break;
+                        case var_integer_type:
+                        break;
+                        case var_string_type:
+                            //concatenate only
+                            strcat(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
+                        break;
+                        default:
+                            //none type
+                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type variable", strippedToken.tokens[x].fileName);
+                    }
+
+                    parserState = get_start; //TODO: <--- remove that!! TEMPORARY ONLY (ONLY ACCEPTS 1 OPERAND) --- FOR TESTING ONLY
                 } else {
                     return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                 }
