@@ -299,6 +299,27 @@ int parseToken(TokenArray tokenArray) {
                             if(currentOperation == plus_token) {
                                 if(strippedToken.tokens[x].tokenType == identifier_token) {
                                     //check if existing variable
+                                    isVariablesExists = F;
+                                    variablePosition2 = 0;
+
+                                    isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                                    if(!isVariablesExists) {
+                                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                    }
+
+                                    switch(globalVariableArray.variables[variablePosition2].variable_type) {
+                                        case var_float_type:
+                                        break;
+                                        case var_string_type:
+                                            strcat(globalVariableArray.variables[variablePosition].string_value, globalVariableArray.variables[variablePosition2].string_value);
+                                        break;
+                                        case var_integer_type:
+                                        break;
+                                        default:
+                                            //variable is a none type
+                                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                    }
+
                                 } else {
                                     strcat(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
                                 }
@@ -310,7 +331,7 @@ int parseToken(TokenArray tokenArray) {
                         break;
                         default:
                             //none type
-                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type variable", strippedToken.tokens[x].fileName);
+                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
                     }
 
                     parserState = get_start; //TODO: <--- remove that!! TEMPORARY ONLY (ONLY ACCEPTS 1 OPERAND) --- FOR TESTING ONLY
