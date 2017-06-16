@@ -285,6 +285,8 @@ int parseToken(TokenArray tokenArray) {
             case update_assigment_value:
                 //update variable depending on the operator
                 if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
+
+                    //TODO: handle identifier_token
                     //update
                     switch(globalVariableArray.variables[variablePosition].variable_type) {
                         case var_float_type:
