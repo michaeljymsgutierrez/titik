@@ -253,11 +253,24 @@ int parseToken(TokenArray tokenArray) {
                     // is a concatenation or any other operation
                     //if it is then stay to get_assigment_value parserState
                     //else set to get_start
-                    //for now, only allow single assignment of a value
-                    parserState = get_start; //this is temporary only
+
+                    if((x+1) < strippedToken.tokenCount) {
+                        if(strippedToken.tokens[x+1].tokenType == plus_token || strippedToken.tokens[x+1].tokenType == minus_token || strippedToken.tokens[x+1].tokenType == divide_token || strippedToken.tokens[x+1].tokenType == multiply_token) {
+                            //will perform operation
+                            parserState = update_assigment_value;
+                        } else {
+                            parserState = get_start;
+                        }
+                    } else {
+                        parserState = get_start;
+                    }
+                    
                 } else {
                     return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                 }
+            break;
+            case update_assigment_value:
+                //update variable depending on the operator
             break;
             default:
                 continue;

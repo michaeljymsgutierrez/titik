@@ -13,7 +13,8 @@ typedef enum {
     get_function_open_parenthesis,
     get_function_parameters,
     get_assignment_or_function,
-    get_assignment_value
+    get_assignment_value,
+    update_assigment_value
 } ParserState;
 
 TokenArray stripUnwantedToken(TokenArray tokenArray);
