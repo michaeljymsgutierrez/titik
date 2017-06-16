@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
             return functionReturn;
 
         //parse token
-        functionReturn = parseToken(tokenArray, &globalFunctionArray);
+        functionReturn = parseToken(tokenArray);
 
         if(functionReturn > 0)
             return functionReturn;

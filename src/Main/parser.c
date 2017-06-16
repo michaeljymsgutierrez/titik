@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 
 TokenArray stripUnwantedToken(TokenArray tokenArray) {
@@ -36,7 +37,7 @@ TokenArray stripUnwantedToken(TokenArray tokenArray) {
     return newTokens;
 }
 
-int parseToken(TokenArray tokenArray, FunctionArray * functionArray) {
+int parseToken(TokenArray tokenArray) {
     ParserState parserState = get_start;
     TokenArray strippedToken;
     FunctionReturn funcReturn;
@@ -109,14 +110,14 @@ int parseToken(TokenArray tokenArray, FunctionArray * functionArray) {
                     parserState = get_start;
                     
                     //check first if # of arguments matched
-                    if(argumentArray.argumentCount != functionArray->functions[functionPosition].argumentArray.argumentCount) {
+                    if(argumentArray.argumentCount != globalFunctionArray.functions[functionPosition].argumentArray.argumentCount) {
                         return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Argument count didn't matched", strippedToken.tokens[x].fileName);
                     }
 
                     //execute function
-                    functionArray->functions[functionPosition].execute(argumentArray, &intFunctionReturn, &funcReturn);
+                    globalFunctionArray.functions[functionPosition].execute(argumentArray, &intFunctionReturn, &funcReturn);
                     //set return value & type
-                    functionArray->functions[functionPosition].functionReturn = funcReturn;
+                    globalFunctionArray.functions[functionPosition].functionReturn = funcReturn;
 
                     if(intFunctionReturn > 0) {
                         return intFunctionReturn;
