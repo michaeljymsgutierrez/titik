@@ -34,7 +34,8 @@ typedef enum {
     open_bracket_token,
     close_bracket_token,
     open_braces_token,
-    close_braces_token
+    close_braces_token,
+    none_token
 } TokenType;
 
 static const char *TokenTypeString[] = {
@@ -63,7 +64,8 @@ static const char *TokenTypeString[] = {
     "open_bracket_token",
     "close_bracket_token",
     "open_braces_token",
-    "close_braces_token"
+    "close_braces_token",
+    "none_token"
 };
 
 typedef struct {

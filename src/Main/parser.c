@@ -48,6 +48,7 @@ int parseToken(TokenArray tokenArray) {
     int variablePosition2 = 0;
     int intFunctionReturn = 0;
     Token currentIdentifier;
+    TokenType currentOperation = none_token;
     //strip all spaces and newline first before parsing the token
     strippedToken = stripUnwantedToken(tokenArray);
 
@@ -186,6 +187,9 @@ int parseToken(TokenArray tokenArray) {
                 }
             break;
             case get_assignment_value:
+                //reset current operation
+                currentOperation = none_token;
+
                 //check variable if existing and set the variable value here
                 if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
 
@@ -271,9 +275,12 @@ int parseToken(TokenArray tokenArray) {
             break;
             case get_assigment_operation:
                 //get operation
+                currentOperation = strippedToken.tokens[x].tokenType;
+                parserState = update_assigment_value;
             break;
             case update_assigment_value:
                 //update variable depending on the operator
+                
             break;
             default:
                 continue;
