@@ -280,7 +280,10 @@ int parseToken(TokenArray tokenArray) {
             break;
             case update_assigment_value:
                 //update variable depending on the operator
-                
+                if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
+                } else {
+                    return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                }
             break;
             default:
                 continue;
