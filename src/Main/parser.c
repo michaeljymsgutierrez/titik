@@ -257,7 +257,7 @@ int parseToken(TokenArray tokenArray) {
                     if((x+1) < strippedToken.tokenCount) {
                         if(strippedToken.tokens[x+1].tokenType == plus_token || strippedToken.tokens[x+1].tokenType == minus_token || strippedToken.tokens[x+1].tokenType == divide_token || strippedToken.tokens[x+1].tokenType == multiply_token) {
                             //will perform operation
-                            parserState = update_assigment_value;
+                            parserState = get_assigment_operation;
                         } else {
                             parserState = get_start;
                         }
@@ -268,6 +268,9 @@ int parseToken(TokenArray tokenArray) {
                 } else {
                     return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                 }
+            break;
+            case get_assigment_operation:
+                //get operation
             break;
             case update_assigment_value:
                 //update variable depending on the operator

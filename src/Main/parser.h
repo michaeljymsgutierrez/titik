@@ -14,6 +14,7 @@ typedef enum {
     get_function_parameters,
     get_assignment_or_function,
     get_assignment_value,
+    get_assigment_operation,
     update_assigment_value
 } ParserState;
 
