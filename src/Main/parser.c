@@ -296,12 +296,16 @@ int parseToken(TokenArray tokenArray) {
                             //handle float and integer type
                             switch(currentOperation) {
                                 case plus_token:
+                                    //if strippedToken is a string then convert variable to string then concat
                                 break;
                                 case minus_token:
+                                    //string is invalid
                                 break;
                                 case divide_token:
+                                    //string is invalid
                                 break;
                                 case multiply_token:
+                                    //string is invalid
                                 break;
                                 default:
                                     return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
