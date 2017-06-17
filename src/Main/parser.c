@@ -485,7 +485,17 @@ int parseToken(TokenArray tokenArray) {
                             return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
                     }
 
-                    parserState = get_start; //TODO: <--- remove that!! TEMPORARY ONLY (ONLY ACCEPTS 1 OPERAND) --- FOR TESTING ONLY
+                    if((x+1) < strippedToken.tokenCount) {
+                        if(strippedToken.tokens[x+1].tokenType == plus_token || strippedToken.tokens[x+1].tokenType == minus_token || strippedToken.tokens[x+1].tokenType == divide_token || strippedToken.tokens[x+1].tokenType == multiply_token) {
+                            //will perform operation
+                            parserState = get_assigment_operation;
+                        } else {
+                            parserState = get_start;
+                        }
+                    } else {
+                        parserState = get_start;
+                    }
+
                 } else {
                     return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                 }
