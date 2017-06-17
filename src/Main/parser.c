@@ -300,6 +300,38 @@ int parseToken(TokenArray tokenArray) {
                                         //integer
                                         switch(strippedToken.tokens[x].tokenType) {
                                             case identifier_token:
+
+                                                isVariablesExists = F;
+                                                variablePosition2 = 0;
+                                                strcpy(tempChar, ""); //clear temp char
+
+                                                isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                                                if(!isVariablesExists) {
+                                                    return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                                }
+
+                                                switch(globalVariableArray.variables[variablePosition2].variable_type) {
+                                                    case var_string_type:
+                                                        strcpy(tempChar, "");
+                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition].integer_value);
+                                                        globalVariableArray.variables[variablePosition].variable_type = var_string_type;
+                                                        strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
+
+                                                        strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
+                                                        strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
+
+                                                    break;
+                                                    case var_float_type:
+                                                        globalVariableArray.variables[variablePosition].integer_value += (long int)globalVariableArray.variables[variablePosition2].float_value;
+                                                    break;
+                                                    case var_integer_type:
+                                                        globalVariableArray.variables[variablePosition].integer_value += globalVariableArray.variables[variablePosition2].integer_value;
+                                                    break;
+                                                    default:
+                                                        //variable is a none type
+                                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                                }
+
                                             break;
                                             case integer_token:
                                             case float_token:
