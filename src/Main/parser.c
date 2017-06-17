@@ -296,7 +296,29 @@ int parseToken(TokenArray tokenArray) {
                             //handle float and integer type
                             switch(currentOperation) {
                                 case plus_token:
-                                    //if strippedToken is a string then convert variable to string then concat
+                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                        //integer
+                                        switch(strippedToken.tokens[x].tokenType) {
+                                            case identifier_token:
+                                            break;
+                                            case integer_token:
+                                            case float_token:
+                                                globalVariableArray.variables[variablePosition].integer_value += atoi(strippedToken.tokens[x].tokenValue);
+                                            break;
+                                            case string_token:
+                                                //if strippedToken is a string then convert variable to string then concat
+                                                strcpy(tempChar, "");
+                                                snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition].integer_value);
+                                                globalVariableArray.variables[variablePosition].variable_type = var_string_type;
+                                                strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
+                                                strcat(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
+                                            break;
+                                            default:
+                                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                        }
+                                    } else {
+                                        //float
+                                    }
                                 break;
                                 case minus_token:
                                     //string is invalid
