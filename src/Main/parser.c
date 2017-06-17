@@ -229,7 +229,8 @@ int parseToken(TokenArray tokenArray) {
 
                         if(globalVariableArray.variables[variablePosition2].variable_type == var_string_type) {
                             globalVariableArray.variables[variablePosition].variable_type = var_string_type;
-                            strcpy(globalVariableArray.variables[variablePosition].string_value, globalVariableArray.variables[variablePosition2].string_value);
+                            strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
+                            strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
                         } else if(globalVariableArray.variables[variablePosition2].variable_type == var_integer_type) {
                             globalVariableArray.variables[variablePosition].integer_value = globalVariableArray.variables[variablePosition2].integer_value;
                             globalVariableArray.variables[variablePosition].variable_type = var_integer_type;     
@@ -315,7 +316,8 @@ int parseToken(TokenArray tokenArray) {
                                             strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
                                         break;
                                         case var_string_type:
-                                            strcat(globalVariableArray.variables[variablePosition].string_value, globalVariableArray.variables[variablePosition2].string_value);
+                                            strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
+                                            strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
                                         break;
                                         case var_integer_type:
                                             snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition2].integer_value);
