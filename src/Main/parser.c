@@ -294,94 +294,149 @@ int parseToken(TokenArray tokenArray) {
                         case var_float_type:
                         case var_integer_type:
                             //handle float and integer type
-                            switch(currentOperation) {
-                                case plus_token:
-                                    switch(strippedToken.tokens[x].tokenType) {
-                                        case identifier_token:
+                            switch(strippedToken.tokens[x].tokenType) {
+                                case identifier_token:
 
-                                            isVariablesExists = F;
-                                            variablePosition2 = 0;
-                                            strcpy(tempChar, ""); //clear temp char
+                                    isVariablesExists = F;
+                                    variablePosition2 = 0;
+                                    strcpy(tempChar, ""); //clear temp char
 
-                                            isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
-                                            if(!isVariablesExists) {
-                                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
-                                            }
+                                    isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                                    if(!isVariablesExists) {
+                                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                    }
 
-                                            switch(globalVariableArray.variables[variablePosition2].variable_type) {
-                                                case var_string_type:
-                                                    strcpy(tempChar, "");
-                                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition].integer_value);
-                                                    } else {
-                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition].float_value);
-                                                    }
-                                                    
-                                                    globalVariableArray.variables[variablePosition].variable_type = var_string_type;
-                                                    strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
+                                    switch(globalVariableArray.variables[variablePosition2].variable_type) {
+                                        case var_string_type:
+                                            if(currentOperation == plus_token) {
+                                                strcpy(tempChar, "");
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition].integer_value);
+                                                } else {
+                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition].float_value);
+                                                }
+                                                
+                                                globalVariableArray.variables[variablePosition].variable_type = var_string_type;
+                                                strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
 
-                                                    strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
-                                                    strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
-
-                                                break;
-                                                case var_float_type:
-                                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[variablePosition].integer_value += (long int)globalVariableArray.variables[variablePosition2].float_value;
-                                                    } else {
-                                                        globalVariableArray.variables[variablePosition].float_value += globalVariableArray.variables[variablePosition2].float_value;
-                                                    }
-                                                break;
-                                                case var_integer_type:
-                                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[variablePosition].integer_value += globalVariableArray.variables[variablePosition2].integer_value;
-                                                    } else {
-                                                        globalVariableArray.variables[variablePosition].float_value += (double)globalVariableArray.variables[variablePosition2].integer_value;
-                                                    }
-                                                break;
-                                                default:
-                                                    //variable is a none type
-                                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                                strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
+                                                strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
+                                            } else {
+                                                return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
                                             }
 
                                         break;
-                                        case integer_token:
-                                        case float_token:
-                                            if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                globalVariableArray.variables[variablePosition].integer_value += atoi(strippedToken.tokens[x].tokenValue);
+                                        case var_float_type:
+                                            if(currentOperation == plus_token) {
+                                                //addition
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    globalVariableArray.variables[variablePosition].integer_value += (long int)globalVariableArray.variables[variablePosition2].float_value;
+                                                } else {
+                                                    globalVariableArray.variables[variablePosition].float_value += globalVariableArray.variables[variablePosition2].float_value;
+                                                }
+                                            } else if(currentOperation == minus_token) {
+                                                //subtraction
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    globalVariableArray.variables[variablePosition].integer_value -= (long int)globalVariableArray.variables[variablePosition2].float_value;
+                                                } else {
+                                                    globalVariableArray.variables[variablePosition].float_value -= globalVariableArray.variables[variablePosition2].float_value;
+                                                }
+                                            } else if(currentOperation == multiply_token) {
+                                                //multiplication
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    globalVariableArray.variables[variablePosition].integer_value *= (long int)globalVariableArray.variables[variablePosition2].float_value;
+                                                } else {
+                                                    globalVariableArray.variables[variablePosition].float_value *= globalVariableArray.variables[variablePosition2].float_value;
+                                                }
                                             } else {
-                                                globalVariableArray.variables[variablePosition].float_value += atof(strippedToken.tokens[x].tokenValue);
+                                                //assume it's division
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    globalVariableArray.variables[variablePosition].integer_value /= (long int)globalVariableArray.variables[variablePosition2].float_value;
+                                                } else {
+                                                    globalVariableArray.variables[variablePosition].float_value /= globalVariableArray.variables[variablePosition2].float_value;
+                                                }
                                             }
                                         break;
-                                        case string_token:
-                                            //if strippedToken is a string then convert variable to string then concat
-                                            strcpy(tempChar, "");
-                                            if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition].integer_value);
+                                        case var_integer_type:
+                                            if(currentOperation == plus_token) {
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    globalVariableArray.variables[variablePosition].integer_value += globalVariableArray.variables[variablePosition2].integer_value;
+                                                } else {
+                                                    globalVariableArray.variables[variablePosition].float_value += (double)globalVariableArray.variables[variablePosition2].integer_value;
+                                                }
+                                            } else if(currentOperation == minus_token) {
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    globalVariableArray.variables[variablePosition].integer_value -= globalVariableArray.variables[variablePosition2].integer_value;
+                                                } else {
+                                                    globalVariableArray.variables[variablePosition].float_value -= (double)globalVariableArray.variables[variablePosition2].integer_value;
+                                                }
+                                            } else if(currentOperation == multiply_token) {
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    globalVariableArray.variables[variablePosition].integer_value *= globalVariableArray.variables[variablePosition2].integer_value;
+                                                } else {
+                                                    globalVariableArray.variables[variablePosition].float_value *= (double)globalVariableArray.variables[variablePosition2].integer_value;
+                                                }
                                             } else {
-                                                snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition].float_value);
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    globalVariableArray.variables[variablePosition].integer_value /= globalVariableArray.variables[variablePosition2].integer_value;
+                                                } else {
+                                                    globalVariableArray.variables[variablePosition].float_value /= (double)globalVariableArray.variables[variablePosition2].integer_value;
+                                                }
                                             }
-                                            globalVariableArray.variables[variablePosition].variable_type = var_string_type;
-                                            strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
-                                            strcat(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
                                         break;
                                         default:
-                                            return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                            //variable is a none type
+                                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                    }
+
+                                break;
+                                case integer_token:
+                                case float_token:
+                                    if(currentOperation == plus_token) {
+                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                            globalVariableArray.variables[variablePosition].integer_value += atoi(strippedToken.tokens[x].tokenValue);
+                                        } else {
+                                            globalVariableArray.variables[variablePosition].float_value += atof(strippedToken.tokens[x].tokenValue);
+                                        }
+                                    } else if(currentOperation == minus_token) {
+                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                            globalVariableArray.variables[variablePosition].integer_value -= atoi(strippedToken.tokens[x].tokenValue);
+                                        } else {
+                                            globalVariableArray.variables[variablePosition].float_value -= atof(strippedToken.tokens[x].tokenValue);
+                                        }
+                                    } else if(currentOperation == multiply_token) {
+                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                            globalVariableArray.variables[variablePosition].integer_value *= atoi(strippedToken.tokens[x].tokenValue);
+                                        } else {
+                                            globalVariableArray.variables[variablePosition].float_value *= atof(strippedToken.tokens[x].tokenValue);
+                                        }
+                                    } else {
+                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                            globalVariableArray.variables[variablePosition].integer_value /= atoi(strippedToken.tokens[x].tokenValue);
+                                        } else {
+                                            globalVariableArray.variables[variablePosition].float_value /= atof(strippedToken.tokens[x].tokenValue);
+                                        }
                                     }
                                 break;
-                                case minus_token:
-                                    //string is invalid
-
-                                break;
-                                case divide_token:
-                                    //string is invalid
-                                break;
-                                case multiply_token:
-                                    //string is invalid
+                                case string_token:
+                                    if(currentOperation == plus_token) {
+                                        //if strippedToken is a string then convert variable to string then concat
+                                        strcpy(tempChar, "");
+                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                            snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition].integer_value);
+                                        } else {
+                                            snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition].float_value);
+                                        }
+                                        globalVariableArray.variables[variablePosition].variable_type = var_string_type;
+                                        strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
+                                        strcat(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
+                                    } else {
+                                        return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
+                                    }
                                 break;
                                 default:
-                                    return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
+                                    return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                             }
-
                         break;
                         case var_string_type:
                             //concatenate only
