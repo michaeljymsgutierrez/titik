@@ -292,8 +292,21 @@ int parseToken(TokenArray tokenArray) {
                     //update
                     switch(globalVariableArray.variables[variablePosition].variable_type) {
                         case var_float_type:
-                        break;
                         case var_integer_type:
+                            //handle float and integer type
+                            switch(currentOperation) {
+                                case plus_token:
+                                break;
+                                case minus_token:
+                                break;
+                                case divide_token:
+                                break;
+                                case multiply_token:
+                                break;
+                                default:
+                                    return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
+                            }
+
                         break;
                         case var_string_type:
                             //concatenate only
