@@ -35,6 +35,11 @@ typedef enum {
     close_bracket_token,
     open_braces_token,
     close_braces_token,
+    ampersand_token,
+    greater_than_token,
+    less_than_token,
+    or_token,
+    exclamation_token,
     none_token
 } TokenType;
 
@@ -65,6 +70,11 @@ static const char *TokenTypeString[] = {
     "close_bracket_token",
     "open_braces_token",
     "close_braces_token",
+    "ampersand_token",
+    "greater_than_token",
+    "less_than_token",
+    "or_token",
+    "exclamation_token",
     "none_token"
 };
 
