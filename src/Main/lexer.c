@@ -141,6 +141,18 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
                     } else if(fileContent[x][x2] == ';') {
                         //semi colon
                         setToken(&isTokenInit, &strPos, tokenArray, ";", x, x2, semi_colon_token, titikFileName);
+                    } else if(fileContent[x][x2] == '&') {
+                        //ampersand
+                        setToken(&isTokenInit, &strPos, tokenArray, "&", x, x2, ampersand_token, titikFileName);
+                    } else if(fileContent[x][x2] == '>') {
+                        //greater_than
+                        setToken(&isTokenInit, &strPos, tokenArray, ">", x, x2, greater_than_token, titikFileName);
+                    } else if(fileContent[x][x2] == '<') {
+                        //less_than
+                        setToken(&isTokenInit, &strPos, tokenArray, "<", x, x2, less_than_token, titikFileName);
+                    } else if(fileContent[x][x2] == '|') {
+                        //or
+                        setToken(&isTokenInit, &strPos, tokenArray, "|", x, x2, or_token, titikFileName);
                     } else if(fileContent[x][x2] == '\'' || fileContent[x][x2] == '"') {
                         //string
                         stringOpener = fileContent[x][x2];
@@ -283,7 +295,18 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
                         } else if(fileContent[x][x2] == ';') {
                             //semi colon
                             setToken(&isTokenInit, &strPos, tokenArray, ";", x, x2, semi_colon_token, titikFileName);
-
+                        } else if(fileContent[x][x2] == '&') {
+                            //ampersand
+                            setToken(&isTokenInit, &strPos, tokenArray, "&", x, x2, ampersand_token, titikFileName);
+                        } else if(fileContent[x][x2] == '>') {
+                            //greater_than
+                            setToken(&isTokenInit, &strPos, tokenArray, ">", x, x2, greater_than_token, titikFileName);
+                        } else if(fileContent[x][x2] == '<') {
+                            //less_than
+                            setToken(&isTokenInit, &strPos, tokenArray, "<", x, x2, less_than_token, titikFileName);
+                        } else if(fileContent[x][x2] == '|') {
+                            //or
+                            setToken(&isTokenInit, &strPos, tokenArray, "|", x, x2, or_token, titikFileName);
                         } else if(fileContent[x][x2] == '\'' || fileContent[x][x2] == '"') {
                             //string
                             stringOpener = fileContent[x][x2];
