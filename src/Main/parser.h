@@ -19,9 +19,10 @@ typedef enum {
     get_if_opening,
     get_if_expression1,
     get_if_operator,
-    get_if_expression2
+    get_if_expression2_or_end
 } ParserState;
 
+void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int x, TokenType tokenType);
 TokenArray stripUnwantedToken(TokenArray tokenArray);
 int parseToken(TokenArray tokenArray);
 

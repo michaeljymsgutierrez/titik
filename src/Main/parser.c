@@ -15,6 +15,14 @@
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 
+void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int x, TokenType tokenType) {
+    currentIdentifier->tokenType = tokenType;
+    strcpy(currentIdentifier->tokenValue, strippedToken.tokens[x].tokenValue);
+    currentIdentifier->tokenLine = strippedToken.tokens[x].tokenLine;
+    currentIdentifier->tokenColumn = strippedToken.tokens[x].tokenColumn;
+    strcpy(currentIdentifier->fileName, strippedToken.tokens[x].fileName);
+}
+
 TokenArray stripUnwantedToken(TokenArray tokenArray) {
     TokenArray newTokens;
     newTokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
@@ -76,11 +84,7 @@ int parseToken(TokenArray tokenArray) {
                             isVariablesExists = F;
                             variablePosition = 0;
                             //set current identifier
-                            currentIdentifier.tokenType = identifier_token;
-                            strcpy(currentIdentifier.tokenValue, strippedToken.tokens[x].tokenValue);
-                            currentIdentifier.tokenLine = strippedToken.tokens[x].tokenLine;
-                            currentIdentifier.tokenColumn = strippedToken.tokens[x].tokenColumn;
-                            strcpy(currentIdentifier.fileName, strippedToken.tokens[x].fileName);
+                            setTemporaryToken(&currentIdentifier, strippedToken, x, identifier_token);
                         break;
                         case keyword_token:
                             //check first if in functions array
@@ -116,6 +120,7 @@ int parseToken(TokenArray tokenArray) {
                 break;
                 case get_if_expression1:
                     if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
+                        
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                     }
