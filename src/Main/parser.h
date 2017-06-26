@@ -15,7 +15,9 @@ typedef enum {
     get_assignment_or_function,
     get_assignment_value,
     get_assigment_operation,
-    update_assigment_value
+    update_assigment_value,
+    get_if_opening,
+    get_if_expression1
 } ParserState;
 
 TokenArray stripUnwantedToken(TokenArray tokenArray);
