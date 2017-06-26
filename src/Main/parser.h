@@ -17,7 +17,9 @@ typedef enum {
     get_assigment_operation,
     update_assigment_value,
     get_if_opening,
-    get_if_expression1
+    get_if_expression1,
+    get_if_operator,
+    get_if_expression2
 } ParserState;
 
 TokenArray stripUnwantedToken(TokenArray tokenArray);
