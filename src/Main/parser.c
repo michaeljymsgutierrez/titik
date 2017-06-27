@@ -130,9 +130,19 @@ int parseToken(TokenArray tokenArray) {
                     //get conditional operator or close parenthesis to end the expression
                     if(strippedToken.tokens[x].tokenType == greater_than_token || strippedToken.tokens[x].tokenType == less_than_token || strippedToken.tokens[x].tokenType == equals_token || strippedToken.tokens[x].tokenType == close_parenthesis_token) {
                         //if close parenthesis then evaluate the expression right away
+                        if(strippedToken.tokens[x].tokenType == greater_than_token || strippedToken.tokens[x].tokenType == less_than_token || strippedToken.tokens[x].tokenType == equals_token) {
+                            currentOperation = strippedToken.tokens[x].tokenType;
+                            parserState = get_if_expression2;
+                        } else {
+                            //close parenthesis
+                            //evaluate the expression
+                            //if true then get all tokens
+                        }
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                     }
+                break;
+                case get_if_expression2:
                 break;
                 case get_function_open_parenthesis:
                     if(strippedToken.tokens[x].tokenType == open_parenthesis_token) {
