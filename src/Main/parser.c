@@ -120,10 +120,14 @@ int parseToken(TokenArray tokenArray) {
                 break;
                 case get_if_expression1:
                     if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
-                        
+                        setTemporaryToken(&currentIdentifier, strippedToken, x, strippedToken.tokens[x].tokenType);
+                        parserState = get_if_operator_or_end;
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                     }
+                break;
+                case get_if_operator_or_end:
+                    //get conditional operator or close parenthesis to end the expression
                 break;
                 case get_function_open_parenthesis:
                     if(strippedToken.tokens[x].tokenType == open_parenthesis_token) {
