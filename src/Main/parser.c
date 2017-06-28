@@ -66,6 +66,7 @@ int parseToken(TokenArray tokenArray) {
     int intFunctionReturn = 0;
     int isParsing = T;
     Token currentIdentifier;
+    Token currentIdentifier2;
     TokenType currentOperation = none_token;
     char tempChar[TITIK_VARIABLE_INIT_LENGTH];
     int ifWithTrue = F;
@@ -147,6 +148,20 @@ int parseToken(TokenArray tokenArray) {
                     }
                 break;
                 case get_if_expression2:
+                    if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
+                        setTemporaryToken(&currentIdentifier2, strippedToken, x, strippedToken.tokens[x].tokenType);
+                        parserState = get_if_end;
+                    } else {
+                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                    }
+                break;
+                case get_if_end:
+                    if(strippedToken.tokens[x].tokenType == close_parenthesis_token) {
+                        //TODO: convert current identifier 1&2 to variable to make the comparison easier
+                        //TODO: create that function in function.c/h
+                    } else {
+                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                    }
                 break;
                 case get_if_operator_or_end:
                     //get conditional operator or close parenthesis to end the expression

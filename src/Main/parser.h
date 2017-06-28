@@ -20,6 +20,7 @@ typedef enum {
     get_if_expression1,
     get_if_expression2,
     get_if_operator_or_end,
+    get_if_end,
     get_if_statements,
     rebuild_tokens
 } ParserState;
