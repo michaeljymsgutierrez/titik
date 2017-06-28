@@ -120,6 +120,7 @@ int parseToken(TokenArray tokenArray) {
                                     ifWithTrue = F;
                                     ifEndCount = 0;
                                     newTempTokens.tokenCount = 0;
+                                    currentOperation = none_token;
                                 } else {
                                     return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 }                            
@@ -144,6 +145,8 @@ int parseToken(TokenArray tokenArray) {
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                     }
+                break;
+                case get_if_expression2:
                 break;
                 case get_if_operator_or_end:
                     //get conditional operator or close parenthesis to end the expression
@@ -238,8 +241,6 @@ int parseToken(TokenArray tokenArray) {
                             updateTemporaryTokens(&newTempTokens, strippedToken, x);
                         }
                     }
-                break;
-                case get_if_expression2:
                 break;
                 case get_function_open_parenthesis:
                     if(strippedToken.tokens[x].tokenType == open_parenthesis_token) {
