@@ -15,6 +15,15 @@
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 
+void updateTemporaryTokens(TokenArray * newTempTokens, TokenArray strippedToken, int x) {
+    newTempTokens->tokens[newTempTokens->tokenCount].tokenLine = strippedToken.tokens[x].tokenLine;
+    newTempTokens->tokens[newTempTokens->tokenCount].tokenColumn = strippedToken.tokens[x].tokenColumn;
+    newTempTokens->tokens[newTempTokens->tokenCount].tokenType = strippedToken.tokens[x].tokenType;
+    strcpy(newTempTokens->tokens[newTempTokens->tokenCount].tokenValue, strippedToken.tokens[x].tokenValue);
+    strcpy(newTempTokens->tokens[newTempTokens->tokenCount].fileName, strippedToken.tokens[x].fileName);
+    newTempTokens->tokenCount += 1;    
+}
+
 void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int x, TokenType tokenType) {
     currentIdentifier->tokenType = tokenType;
     strcpy(currentIdentifier->tokenValue, strippedToken.tokens[x].tokenValue);
@@ -192,12 +201,7 @@ int parseToken(TokenArray tokenArray) {
                     }
                 break;
                 case rebuild_tokens:
-                    newTempTokens.tokens[newTempTokens.tokenCount].tokenLine = strippedToken.tokens[x].tokenLine;
-                    newTempTokens.tokens[newTempTokens.tokenCount].tokenColumn = strippedToken.tokens[x].tokenColumn;
-                    newTempTokens.tokens[newTempTokens.tokenCount].tokenType = strippedToken.tokens[x].tokenType;
-                    strcpy(newTempTokens.tokens[newTempTokens.tokenCount].tokenValue, strippedToken.tokens[x].tokenValue);
-                    strcpy(newTempTokens.tokens[newTempTokens.tokenCount].fileName, strippedToken.tokens[x].fileName);
-                    newTempTokens.tokenCount += 1;
+                    updateTemporaryTokens(&newTempTokens, strippedToken, x);
 
                     if((x+1) == strippedToken.tokenCount) {
                         parserState = get_start;
@@ -231,12 +235,7 @@ int parseToken(TokenArray tokenArray) {
                         }
 
                         if(ifWithTrue) {
-                            newTempTokens.tokens[newTempTokens.tokenCount].tokenLine = strippedToken.tokens[x].tokenLine;
-                            newTempTokens.tokens[newTempTokens.tokenCount].tokenColumn = strippedToken.tokens[x].tokenColumn;
-                            newTempTokens.tokens[newTempTokens.tokenCount].tokenType = strippedToken.tokens[x].tokenType;
-                            strcpy(newTempTokens.tokens[newTempTokens.tokenCount].tokenValue, strippedToken.tokens[x].tokenValue);
-                            strcpy(newTempTokens.tokens[newTempTokens.tokenCount].fileName, strippedToken.tokens[x].fileName);
-                            newTempTokens.tokenCount += 1;
+                            updateTemporaryTokens(&newTempTokens, strippedToken, x);
                         }
                     }
                 break;

@@ -24,6 +24,7 @@ typedef enum {
     rebuild_tokens
 } ParserState;
 
+void updateTemporaryTokens(TokenArray * newTempTokens, TokenArray strippedToken, int x);
 void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int x, TokenType tokenType);
 TokenArray stripUnwantedToken(TokenArray tokenArray);
 int parseToken(TokenArray tokenArray);
