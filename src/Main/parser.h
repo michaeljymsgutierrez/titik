@@ -19,7 +19,9 @@ typedef enum {
     get_if_opening,
     get_if_expression1,
     get_if_expression2,
-    get_if_operator_or_end
+    get_if_operator_or_end,
+    get_if_statements,
+    rebuild_tokens
 } ParserState;
 
 void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int x, TokenType tokenType);

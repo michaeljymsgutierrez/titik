@@ -55,10 +55,17 @@ int parseToken(TokenArray tokenArray) {
     int variablePosition = 0;
     int variablePosition2 = 0;
     int intFunctionReturn = 0;
-    int isParsing = 1;
+    int isParsing = T;
     Token currentIdentifier;
     TokenType currentOperation = none_token;
     char tempChar[TITIK_VARIABLE_INIT_LENGTH];
+    int ifWithTrue = F;
+    int ifEndCount = 0;
+
+    TokenArray newTempTokens;
+    newTempTokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
+    newTempTokens.tokenCount = 0;
+
     //strip all spaces and newline first before parsing the token
     strippedToken = stripUnwantedToken(tokenArray);
 
@@ -71,7 +78,7 @@ int parseToken(TokenArray tokenArray) {
     //end for debugging purpose only
 
     while(isParsing) {
-        isParsing = 0;
+        isParsing = F;
         for(int x=0; x < strippedToken.tokenCount; x++) {
 
             switch(parserState) {
@@ -101,6 +108,9 @@ int parseToken(TokenArray tokenArray) {
                             } else {
                                 if(!strcmp(strippedToken.tokens[x].tokenValue, "if")) {
                                     parserState = get_if_opening;
+                                    ifWithTrue = F;
+                                    ifEndCount = 0;
+                                    newTempTokens.tokenCount = 0;
                                 } else {
                                     return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 }                            
@@ -137,9 +147,94 @@ int parseToken(TokenArray tokenArray) {
                             //close parenthesis
                             //evaluate the expression
                             //if true then get all tokens
+                            switch(currentIdentifier.tokenType) {
+                                case identifier_token:
+                                    isVariablesExists = F;
+                                    variablePosition2 = 0;
+
+                                    isVariablesExists = isVariableExists(&variablePosition2, currentIdentifier.tokenValue, TITIK_MAIN_SCOPE_NAME);
+                                    if(!isVariablesExists) {
+                                        return unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Undefined variable ", currentIdentifier.tokenValue, currentIdentifier.fileName);
+                                    }
+
+                                    switch(globalVariableArray.variables[variablePosition2].variable_type) {
+                                        case var_string_type:
+                                            ifWithTrue = strcmp(globalVariableArray.variables[variablePosition2].string_value, "")?T:F;
+                                        break;
+                                        case var_float_type:
+                                            ifWithTrue = globalVariableArray.variables[variablePosition2].float_value?T:F;
+                                        break;
+                                        case var_integer_type:
+                                            ifWithTrue = globalVariableArray.variables[variablePosition2].integer_value?T:F;
+                                        break;
+                                        default:
+                                            ifWithTrue = F;
+                                    }
+
+                                break;
+                                case string_token:
+                                    ifWithTrue = strcmp(currentIdentifier.tokenValue, "")?T:F;
+                                break;
+                                case integer_token:
+                                    ifWithTrue = atoi(currentIdentifier.tokenValue)?T:F;
+                                break;
+                                case float_token:
+                                    ifWithTrue = atof(currentIdentifier.tokenValue)?T:F;
+                                break;
+                                default:
+                                    return unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Unexpected token ", currentIdentifier.tokenValue, currentIdentifier.fileName);
+                            }
+
+                            parserState = get_if_statements;
                         }
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                    }
+                break;
+                case rebuild_tokens:
+                    newTempTokens.tokens[newTempTokens.tokenCount].tokenLine = strippedToken.tokens[x].tokenLine;
+                    newTempTokens.tokens[newTempTokens.tokenCount].tokenColumn = strippedToken.tokens[x].tokenColumn;
+                    newTempTokens.tokens[newTempTokens.tokenCount].tokenType = strippedToken.tokens[x].tokenType;
+                    strcpy(newTempTokens.tokens[newTempTokens.tokenCount].tokenValue, strippedToken.tokens[x].tokenValue);
+                    strcpy(newTempTokens.tokens[newTempTokens.tokenCount].fileName, strippedToken.tokens[x].fileName);
+                    newTempTokens.tokenCount += 1;
+
+                    if((x+1) == strippedToken.tokenCount) {
+                        parserState = get_start;
+                        strippedToken = newTempTokens;
+                    }
+
+                break;
+                case get_if_statements:
+                    if(strippedToken.tokens[x].tokenType == period_token && ifEndCount == 0) {
+                        //add the remaining unparsed token to the new token
+                        isParsing = T;
+                        if((x+1) < strippedToken.tokenCount) {
+                            //rebuild and reparse the token
+                            parserState = rebuild_tokens;
+                        } else {
+                            parserState = get_start;
+                            strippedToken = newTempTokens;
+                        }
+                    } else {
+
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "if")) {
+                            //track that it's not yet the end of the current if statement
+                            ifEndCount += 1;
+                        }
+
+                        if(strippedToken.tokens[x].tokenType == period_token) {
+                            ifEndCount -= 1;
+                        }
+
+                        if(ifWithTrue) {
+                            newTempTokens.tokens[newTempTokens.tokenCount].tokenLine = strippedToken.tokens[x].tokenLine;
+                            newTempTokens.tokens[newTempTokens.tokenCount].tokenColumn = strippedToken.tokens[x].tokenColumn;
+                            newTempTokens.tokens[newTempTokens.tokenCount].tokenType = strippedToken.tokens[x].tokenType;
+                            strcpy(newTempTokens.tokens[newTempTokens.tokenCount].tokenValue, strippedToken.tokens[x].tokenValue);
+                            strcpy(newTempTokens.tokens[newTempTokens.tokenCount].fileName, strippedToken.tokens[x].fileName);
+                            newTempTokens.tokenCount += 1;
+                        }
                     }
                 break;
                 case get_if_expression2:
