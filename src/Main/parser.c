@@ -218,6 +218,9 @@ int parseToken(TokenArray tokenArray) {
                         }
                     } else {
 
+                        //TODO: prohibit declaration of function inside if statement??
+                        //TODO: because it should be in a top level statement...
+
                         if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "if")) {
                             //track that it's not yet the end of the current if statement
                             ifEndCount += 1;
@@ -427,7 +430,6 @@ int parseToken(TokenArray tokenArray) {
                     //update variable depending on the operator
                     if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
 
-                        //TODO: handle identifier_token
                         //update
                         switch(globalVariableArray.variables[variablePosition].variable_type) {
                             case var_float_type:
