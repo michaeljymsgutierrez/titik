@@ -741,6 +741,10 @@ int parseToken(TokenArray tokenArray) {
                     continue;
             }
 
+            if((x+1) == strippedToken.tokenCount && parserState != get_start) {
+                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unfinished statement", strippedToken.tokens[x].fileName);
+            }
+
         }
     }
 
