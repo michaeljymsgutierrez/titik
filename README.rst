@@ -36,10 +36,13 @@ Sample Code
 
     \
         Multiline comment
+        (Hello World Code)
     \
 
     intVariable = 6
     floatVariable = 25.55
     strVariable = "Hello World" #single line comment
 
-    p(strVariable) #It will print... you guess...
+    if(strVariable = 'Hello World')
+        p(strVariable) #It will print... you guess...
+    .
