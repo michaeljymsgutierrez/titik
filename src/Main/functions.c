@@ -14,6 +14,39 @@
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 
+int convertTokenToVariable(Variable * tempVariable, Token token) {
+    int ret = 0;
+    int isVariablesExists = F;
+    int variablePosition = 0;
+
+    switch(token.tokenType) {
+        case identifier_token:
+            isVariablesExists = isVariableExists(&variablePosition, token.tokenValue, TITIK_MAIN_SCOPE_NAME);
+            if(!isVariablesExists) {
+                return unexpected_error(token.tokenLine, token.tokenColumn, "Undefined variable ", token.tokenValue, token.fileName);
+            }
+
+            *tempVariable = globalVariableArray.variables[variablePosition];
+        break;
+        case string_token:
+            tempVariable->variable_type = var_string_type;
+            strcpy(tempVariable->string_value, token.tokenValue);
+        break;
+        case integer_token:
+            tempVariable->variable_type = var_integer_type;
+            tempVariable->integer_value = atoi(token.tokenValue);
+        break;
+        case float_token:
+            tempVariable->variable_type = var_float_type;
+            tempVariable->float_value = atof(token.tokenValue);
+        break;
+        default:
+            return unexpected_error(token.tokenLine, token.tokenColumn, "Unexpected token ", token.tokenValue, token.fileName);
+    }
+
+    return ret;
+}
+
 void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * funcReturn)) {
     strcpy(globalFunctionArray.functions[globalFunctionArray.functionCount].functionName, functionName);
 

@@ -10,6 +10,7 @@
 #define TITIK_ARGUMENT_INIT_LENGTH 50000
 #define TITIK_MAIN_SCOPE_NAME "main"
 #include "util.h"
+#include "lexer.h"
 
 typedef enum {
     var_none_type,
@@ -92,6 +93,7 @@ typedef struct {
     int functionCount;
 } FunctionArray;
 
+int convertTokenToVariable(Variable * tempVariable, Token token);
 void p_execute(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn);
 void i_execute(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn);
 //the first argument array is the structure of the function

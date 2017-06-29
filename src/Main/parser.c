@@ -67,6 +67,8 @@ int parseToken(TokenArray tokenArray) {
     int isParsing = T;
     Token currentIdentifier;
     Token currentIdentifier2;
+    Variable tempVariable; //this will hold data in if comparison
+    Variable tempVariable2; //this will hold data in if comparision
     TokenType currentOperation = none_token;
     char tempChar[TITIK_VARIABLE_INIT_LENGTH];
     int ifWithTrue = F;
@@ -157,8 +159,87 @@ int parseToken(TokenArray tokenArray) {
                 break;
                 case get_if_end:
                     if(strippedToken.tokens[x].tokenType == close_parenthesis_token) {
-                        //TODO: convert current identifier 1&2 to variable to make the comparison easier
-                        //TODO: create that function in function.c/h
+                        intFunctionReturn = convertTokenToVariable(&tempVariable, currentIdentifier);
+
+                        if(intFunctionReturn > 0) {
+                            return intFunctionReturn;
+                        }
+
+                        intFunctionReturn = convertTokenToVariable(&tempVariable2, currentIdentifier2);
+
+                        if(intFunctionReturn > 0) {
+                            return intFunctionReturn;
+                        }
+
+                        switch(tempVariable.variable_type) {
+                            case var_string_type:
+                                if(currentOperation == equals_token) {
+                                    if(tempVariable2.variable_type == var_string_type) {
+                                        ifWithTrue = !strcmp(tempVariable.string_value, tempVariable2.string_value)?T:F;
+                                    }
+                                }
+                            break;
+                            case var_integer_type:
+                                if(currentOperation == greater_than_token) {
+                                    if(tempVariable2.variable_type == var_integer_type) {
+                                        ifWithTrue = (tempVariable.integer_value > tempVariable2.integer_value)?T:F;
+                                    }
+                                    if(tempVariable2.variable_type == var_float_type) {
+                                        ifWithTrue = (tempVariable.integer_value > tempVariable2.float_value)?T:F;
+                                    }
+                                } else if(currentOperation == less_than_token) {
+                                    if(tempVariable2.variable_type == var_integer_type) {
+                                        ifWithTrue = (tempVariable.integer_value < tempVariable2.integer_value)?T:F;
+                                    }
+                                    if(tempVariable2.variable_type == var_float_type) {
+                                        ifWithTrue = (tempVariable.integer_value < tempVariable2.float_value)?T:F;
+                                    }
+                                } else {
+                                    //equals
+                                    if(tempVariable2.variable_type == var_integer_type) {
+                                        ifWithTrue = (tempVariable.integer_value == tempVariable2.integer_value)?T:F;
+                                    }
+                                    if(tempVariable2.variable_type == var_float_type) {
+                                        ifWithTrue = (tempVariable.integer_value == tempVariable2.float_value)?T:F;
+                                    }
+                                }
+                            break;
+                            case var_float_type:
+                                if(currentOperation == greater_than_token) {
+                                    if(tempVariable2.variable_type == var_integer_type) {
+                                        ifWithTrue = (tempVariable.float_value > tempVariable2.integer_value)?T:F;
+                                    }
+                                    if(tempVariable2.variable_type == var_float_type) {
+                                        ifWithTrue = (tempVariable.float_value > tempVariable2.float_value)?T:F;
+                                    }
+                                } else if(currentOperation == less_than_token) {
+                                    if(tempVariable2.variable_type == var_integer_type) {
+                                        ifWithTrue = (tempVariable.float_value < tempVariable2.integer_value)?T:F;
+                                    }
+                                    if(tempVariable2.variable_type == var_float_type) {
+                                        ifWithTrue = (tempVariable.float_value < tempVariable2.float_value)?T:F;
+                                    }
+                                } else {
+                                    //equals
+                                    if(tempVariable2.variable_type == var_integer_type) {
+                                        ifWithTrue = (tempVariable.float_value == tempVariable2.integer_value)?T:F;
+                                    }
+                                    if(tempVariable2.variable_type == var_float_type) {
+                                        ifWithTrue = (tempVariable.float_value == tempVariable2.float_value)?T:F;
+                                    }
+                                }
+                            break;
+                            default:
+                                //none type
+                                if(currentOperation == equals_token) {
+                                    if(tempVariable2.variable_type == var_none_type) {
+                                        ifWithTrue = T;
+                                    }
+                                }
+                        }
+
+                        parserState = get_if_statements;
+
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                     }
