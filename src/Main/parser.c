@@ -308,6 +308,32 @@ int parseToken(TokenArray tokenArray) {
                     }
 
                 break;
+                case get_if_statements_else:
+                    if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "fi") && ifEndCount == 0) {
+                        //add the remaining unparsed token to the new token
+                        isParsing = T;
+                        if((x+1) < strippedToken.tokenCount) {
+                            //rebuild and reparse the token
+                            parserState = rebuild_tokens;
+                        } else {
+                            parserState = get_start;
+                            strippedToken = newTempTokens;
+                        }
+                    } else {
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "if")) {
+                            //track that it's not yet the end of the current if statement
+                            ifEndCount += 1;
+                        }
+
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "fi")) {
+                            ifEndCount -= 1;
+                        }
+
+                        if(!ifWithTrue) {
+                            updateTemporaryTokens(&newTempTokens, strippedToken, x);
+                        }
+                    }
+                break;
                 case get_if_statements:
                     if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "fi") && ifEndCount == 0) {
                         //add the remaining unparsed token to the new token
@@ -319,6 +345,8 @@ int parseToken(TokenArray tokenArray) {
                             parserState = get_start;
                             strippedToken = newTempTokens;
                         }
+                    } else if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "e") && ifEndCount == 0) {
+                        parserState = get_if_statements_else;
                     } else {
 
                         //TODO: prohibit declaration of function inside if statement??
