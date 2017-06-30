@@ -309,7 +309,7 @@ int parseToken(TokenArray tokenArray) {
 
                 break;
                 case get_if_statements:
-                    if(strippedToken.tokens[x].tokenType == period_token && ifEndCount == 0) {
+                    if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "fi") && ifEndCount == 0) {
                         //add the remaining unparsed token to the new token
                         isParsing = T;
                         if((x+1) < strippedToken.tokenCount) {
@@ -329,7 +329,7 @@ int parseToken(TokenArray tokenArray) {
                             ifEndCount += 1;
                         }
 
-                        if(strippedToken.tokens[x].tokenType == period_token) {
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "fi")) {
                             ifEndCount -= 1;
                         }
 
