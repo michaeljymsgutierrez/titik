@@ -41,8 +41,10 @@ Sample Code
 
     intVariable = 6
     floatVariable = 25.55
-    strVariable = "Hello World" #single line comment
+    strVariable = "Hello " + 'World' #single line comment
 
     if(strVariable = 'Hello World')
         p(strVariable) #It will print... you guess...
+    e
+        p('Not Hello World')
     fi
