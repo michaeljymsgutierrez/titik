@@ -72,7 +72,10 @@ int parseToken(TokenArray tokenArray) {
     TokenType currentOperation = none_token;
     char tempChar[TITIK_VARIABLE_INIT_LENGTH];
     int ifWithTrue = F;
+    int elseIfWithTrue = F;
     int ifEndCount = 0;
+    int elseIfMode = F;
+    int elseIfGotStatements = F;
 
     TokenArray newTempTokens;
     newTempTokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
@@ -121,9 +124,12 @@ int parseToken(TokenArray tokenArray) {
                                 if(!strcmp(strippedToken.tokens[x].tokenValue, "if")) {
                                     parserState = get_if_opening;
                                     ifWithTrue = F;
+                                    elseIfWithTrue = F;
                                     ifEndCount = 0;
                                     newTempTokens.tokenCount = 0;
                                     currentOperation = none_token;
+                                    elseIfMode = F;
+                                    elseIfGotStatements = F;
                                 } else {
                                     return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 }                            
@@ -171,74 +177,17 @@ int parseToken(TokenArray tokenArray) {
                             return intFunctionReturn;
                         }
 
-                        switch(tempVariable.variable_type) {
-                            case var_string_type:
-                                if(currentOperation == equals_token) {
-                                    if(tempVariable2.variable_type == var_string_type) {
-                                        ifWithTrue = !strcmp(tempVariable.string_value, tempVariable2.string_value)?T:F;
-                                    }
-                                }
-                            break;
-                            case var_integer_type:
-                                if(currentOperation == greater_than_token) {
-                                    if(tempVariable2.variable_type == var_integer_type) {
-                                        ifWithTrue = (tempVariable.integer_value > tempVariable2.integer_value)?T:F;
-                                    }
-                                    if(tempVariable2.variable_type == var_float_type) {
-                                        ifWithTrue = (tempVariable.integer_value > tempVariable2.float_value)?T:F;
-                                    }
-                                } else if(currentOperation == less_than_token) {
-                                    if(tempVariable2.variable_type == var_integer_type) {
-                                        ifWithTrue = (tempVariable.integer_value < tempVariable2.integer_value)?T:F;
-                                    }
-                                    if(tempVariable2.variable_type == var_float_type) {
-                                        ifWithTrue = (tempVariable.integer_value < tempVariable2.float_value)?T:F;
-                                    }
-                                } else {
-                                    //equals
-                                    if(tempVariable2.variable_type == var_integer_type) {
-                                        ifWithTrue = (tempVariable.integer_value == tempVariable2.integer_value)?T:F;
-                                    }
-                                    if(tempVariable2.variable_type == var_float_type) {
-                                        ifWithTrue = (tempVariable.integer_value == tempVariable2.float_value)?T:F;
-                                    }
-                                }
-                            break;
-                            case var_float_type:
-                                if(currentOperation == greater_than_token) {
-                                    if(tempVariable2.variable_type == var_integer_type) {
-                                        ifWithTrue = (tempVariable.float_value > tempVariable2.integer_value)?T:F;
-                                    }
-                                    if(tempVariable2.variable_type == var_float_type) {
-                                        ifWithTrue = (tempVariable.float_value > tempVariable2.float_value)?T:F;
-                                    }
-                                } else if(currentOperation == less_than_token) {
-                                    if(tempVariable2.variable_type == var_integer_type) {
-                                        ifWithTrue = (tempVariable.float_value < tempVariable2.integer_value)?T:F;
-                                    }
-                                    if(tempVariable2.variable_type == var_float_type) {
-                                        ifWithTrue = (tempVariable.float_value < tempVariable2.float_value)?T:F;
-                                    }
-                                } else {
-                                    //equals
-                                    if(tempVariable2.variable_type == var_integer_type) {
-                                        ifWithTrue = (tempVariable.float_value == tempVariable2.integer_value)?T:F;
-                                    }
-                                    if(tempVariable2.variable_type == var_float_type) {
-                                        ifWithTrue = (tempVariable.float_value == tempVariable2.float_value)?T:F;
-                                    }
-                                }
-                            break;
-                            default:
-                                //none type
-                                if(currentOperation == equals_token) {
-                                    if(tempVariable2.variable_type == var_none_type) {
-                                        ifWithTrue = T;
-                                    }
-                                }
-                        }
+                        if(!elseIfMode) {
+                            compareVariable(tempVariable, tempVariable2, currentOperation, &ifWithTrue);
+                            parserState = get_if_statements;
+                        } else {
+                            
+                            if(!ifWithTrue && !elseIfWithTrue) {
+                                compareVariable(tempVariable, tempVariable2, currentOperation, &elseIfWithTrue);
+                            }
 
-                        parserState = get_if_statements;
+                            parserState = get_else_if_statements;
+                        }
 
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
@@ -255,45 +204,26 @@ int parseToken(TokenArray tokenArray) {
                             //close parenthesis
                             //evaluate the expression
                             //if true then get all tokens
-                            switch(currentIdentifier.tokenType) {
-                                case identifier_token:
-                                    isVariablesExists = F;
-                                    variablePosition2 = 0;
+                            if(!elseIfMode) {
+                                intFunctionReturn = evaluateToken(currentIdentifier, &ifWithTrue);
 
-                                    isVariablesExists = isVariableExists(&variablePosition2, currentIdentifier.tokenValue, TITIK_MAIN_SCOPE_NAME);
-                                    if(!isVariablesExists) {
-                                        return unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Undefined variable ", currentIdentifier.tokenValue, currentIdentifier.fileName);
+                                if(intFunctionReturn > 0) {
+                                    return intFunctionReturn;
+                                }
+
+                                parserState = get_if_statements;
+                            } else {
+
+                                if(!ifWithTrue && !elseIfWithTrue) {
+                                    intFunctionReturn = evaluateToken(currentIdentifier, &elseIfWithTrue);
+
+                                    if(intFunctionReturn > 0) {
+                                        return intFunctionReturn;
                                     }
+                                }
 
-                                    switch(globalVariableArray.variables[variablePosition2].variable_type) {
-                                        case var_string_type:
-                                            ifWithTrue = strcmp(globalVariableArray.variables[variablePosition2].string_value, "")?T:F;
-                                        break;
-                                        case var_float_type:
-                                            ifWithTrue = globalVariableArray.variables[variablePosition2].float_value?T:F;
-                                        break;
-                                        case var_integer_type:
-                                            ifWithTrue = globalVariableArray.variables[variablePosition2].integer_value?T:F;
-                                        break;
-                                        default:
-                                            ifWithTrue = F;
-                                    }
-
-                                break;
-                                case string_token:
-                                    ifWithTrue = strcmp(currentIdentifier.tokenValue, "")?T:F;
-                                break;
-                                case integer_token:
-                                    ifWithTrue = atoi(currentIdentifier.tokenValue)?T:F;
-                                break;
-                                case float_token:
-                                    ifWithTrue = atof(currentIdentifier.tokenValue)?T:F;
-                                break;
-                                default:
-                                    return unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Unexpected token ", currentIdentifier.tokenValue, currentIdentifier.fileName);
+                                parserState = get_else_if_statements;
                             }
-
-                            parserState = get_if_statements;
                         }
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
@@ -329,7 +259,46 @@ int parseToken(TokenArray tokenArray) {
                             ifEndCount -= 1;
                         }
 
-                        if(!ifWithTrue) {
+                        if(!ifWithTrue && !elseIfWithTrue) {
+                            updateTemporaryTokens(&newTempTokens, strippedToken, x);
+                        }
+                    }
+                break;
+                case get_else_if_statements:
+                    if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "fi") && ifEndCount == 0) {
+                        //add the remaining unparsed token to the new token
+                        isParsing = T;
+                        if((x+1) < strippedToken.tokenCount) {
+                            //rebuild and reparse the token
+                            parserState = rebuild_tokens;
+                        } else {
+                            parserState = get_start;
+                            strippedToken = newTempTokens;
+                        }
+                    } else if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "e") && ifEndCount == 0) {
+                        parserState = get_if_statements_else;
+                    } else if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "ef") && ifEndCount == 0) {
+                        currentOperation = none_token;
+                        parserState = get_if_opening;
+
+                        if(elseIfWithTrue && !elseIfGotStatements) {
+                            elseIfGotStatements = T;
+                        }
+                    } else {
+
+                        //TODO: prohibit declaration of function inside if statement??
+                        //TODO: because it should be in a top level statement...
+
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "if")) {
+                            //track that it's not yet the end of the current if statement
+                            ifEndCount += 1;
+                        }
+
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "fi")) {
+                            ifEndCount -= 1;
+                        }
+
+                        if(!ifWithTrue && elseIfWithTrue && !elseIfGotStatements) {
                             updateTemporaryTokens(&newTempTokens, strippedToken, x);
                         }
                     }
@@ -347,6 +316,10 @@ int parseToken(TokenArray tokenArray) {
                         }
                     } else if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "e") && ifEndCount == 0) {
                         parserState = get_if_statements_else;
+                    } else if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "ef") && ifEndCount == 0) {
+                        currentOperation = none_token;
+                        elseIfMode = T;
+                        parserState = get_if_opening;
                     } else {
 
                         //TODO: prohibit declaration of function inside if statement??

@@ -14,6 +14,119 @@
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 
+int evaluateToken(Token currentIdentifier, int * ifWithTrue) {
+    int ret = 0;
+    int isVariablesExists = F;
+    int variablePosition2 = 0;
+
+    switch(currentIdentifier.tokenType) {
+        case identifier_token:
+
+            isVariablesExists = isVariableExists(&variablePosition2, currentIdentifier.tokenValue, TITIK_MAIN_SCOPE_NAME);
+            if(!isVariablesExists) {
+                return unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Undefined variable ", currentIdentifier.tokenValue, currentIdentifier.fileName);
+            }
+
+            switch(globalVariableArray.variables[variablePosition2].variable_type) {
+                case var_string_type:
+                    *ifWithTrue = strcmp(globalVariableArray.variables[variablePosition2].string_value, "")?T:F;
+                break;
+                case var_float_type:
+                    *ifWithTrue = globalVariableArray.variables[variablePosition2].float_value?T:F;
+                break;
+                case var_integer_type:
+                    *ifWithTrue = globalVariableArray.variables[variablePosition2].integer_value?T:F;
+                break;
+                default:
+                    *ifWithTrue = F;
+            }
+
+        break;
+        case string_token:
+            *ifWithTrue = strcmp(currentIdentifier.tokenValue, "")?T:F;
+        break;
+        case integer_token:
+            *ifWithTrue = atoi(currentIdentifier.tokenValue)?T:F;
+        break;
+        case float_token:
+            *ifWithTrue = atof(currentIdentifier.tokenValue)?T:F;
+        break;
+        default:
+            return unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Unexpected token ", currentIdentifier.tokenValue, currentIdentifier.fileName);
+    }
+
+    return ret;
+}
+
+void compareVariable(Variable tempVariable, Variable tempVariable2, TokenType currentOperation, int * ifWithTrue){
+    switch(tempVariable.variable_type) {
+        case var_string_type:
+            if(currentOperation == equals_token) {
+                if(tempVariable2.variable_type == var_string_type) {
+                    *ifWithTrue = !strcmp(tempVariable.string_value, tempVariable2.string_value)?T:F;
+                }
+            }
+        break;
+        case var_integer_type:
+            if(currentOperation == greater_than_token) {
+                if(tempVariable2.variable_type == var_integer_type) {
+                    *ifWithTrue = (tempVariable.integer_value > tempVariable2.integer_value)?T:F;
+                }
+                if(tempVariable2.variable_type == var_float_type) {
+                    *ifWithTrue = (tempVariable.integer_value > tempVariable2.float_value)?T:F;
+                }
+            } else if(currentOperation == less_than_token) {
+                if(tempVariable2.variable_type == var_integer_type) {
+                    *ifWithTrue = (tempVariable.integer_value < tempVariable2.integer_value)?T:F;
+                }
+                if(tempVariable2.variable_type == var_float_type) {
+                    *ifWithTrue = (tempVariable.integer_value < tempVariable2.float_value)?T:F;
+                }
+            } else {
+                //equals
+                if(tempVariable2.variable_type == var_integer_type) {
+                    *ifWithTrue = (tempVariable.integer_value == tempVariable2.integer_value)?T:F;
+                }
+                if(tempVariable2.variable_type == var_float_type) {
+                    *ifWithTrue = (tempVariable.integer_value == tempVariable2.float_value)?T:F;
+                }
+            }
+        break;
+        case var_float_type:
+            if(currentOperation == greater_than_token) {
+                if(tempVariable2.variable_type == var_integer_type) {
+                    *ifWithTrue = (tempVariable.float_value > tempVariable2.integer_value)?T:F;
+                }
+                if(tempVariable2.variable_type == var_float_type) {
+                    *ifWithTrue = (tempVariable.float_value > tempVariable2.float_value)?T:F;
+                }
+            } else if(currentOperation == less_than_token) {
+                if(tempVariable2.variable_type == var_integer_type) {
+                    *ifWithTrue = (tempVariable.float_value < tempVariable2.integer_value)?T:F;
+                }
+                if(tempVariable2.variable_type == var_float_type) {
+                    *ifWithTrue = (tempVariable.float_value < tempVariable2.float_value)?T:F;
+                }
+            } else {
+                //equals
+                if(tempVariable2.variable_type == var_integer_type) {
+                    *ifWithTrue = (tempVariable.float_value == tempVariable2.integer_value)?T:F;
+                }
+                if(tempVariable2.variable_type == var_float_type) {
+                    *ifWithTrue = (tempVariable.float_value == tempVariable2.float_value)?T:F;
+                }
+            }
+        break;
+        default:
+            //none type
+            if(currentOperation == equals_token) {
+                if(tempVariable2.variable_type == var_none_type) {
+                    *ifWithTrue = T;
+                }
+            }
+    }
+}
+
 int convertTokenToVariable(Variable * tempVariable, Token token) {
     int ret = 0;
     int isVariablesExists = F;
