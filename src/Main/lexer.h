@@ -99,6 +99,8 @@ typedef enum {
     get_float
 } TokenizerState;
 
+void updateTemporaryTokens(TokenArray * newTempTokens, TokenArray strippedToken, int x);
+void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int x, TokenType tokenType);
 void setToken(int * initToken, int * sPos, TokenArray * tokenArray, char val[], int line, int col, TokenType tType, char titikFileName[]);
 void updateFinalToken(int x, TokenArray * finalTokenArray, TokenArray tokenArray);
 int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArray, char titikFileName[]);

@@ -11,6 +11,23 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+void updateTemporaryTokens(TokenArray * newTempTokens, TokenArray strippedToken, int x) {
+    newTempTokens->tokens[newTempTokens->tokenCount].tokenLine = strippedToken.tokens[x].tokenLine;
+    newTempTokens->tokens[newTempTokens->tokenCount].tokenColumn = strippedToken.tokens[x].tokenColumn;
+    newTempTokens->tokens[newTempTokens->tokenCount].tokenType = strippedToken.tokens[x].tokenType;
+    strcpy(newTempTokens->tokens[newTempTokens->tokenCount].tokenValue, strippedToken.tokens[x].tokenValue);
+    strcpy(newTempTokens->tokens[newTempTokens->tokenCount].fileName, strippedToken.tokens[x].fileName);
+    newTempTokens->tokenCount += 1;    
+}
+
+void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int x, TokenType tokenType) {
+    currentIdentifier->tokenType = tokenType;
+    strcpy(currentIdentifier->tokenValue, strippedToken.tokens[x].tokenValue);
+    currentIdentifier->tokenLine = strippedToken.tokens[x].tokenLine;
+    currentIdentifier->tokenColumn = strippedToken.tokens[x].tokenColumn;
+    strcpy(currentIdentifier->fileName, strippedToken.tokens[x].fileName);
+}
+
 void setToken(int * initToken, int * sPos, TokenArray * tokenArray, char val[], int line, int col, TokenType tType, char titikFileName[]) {
     *initToken = F;
     *sPos = 0;

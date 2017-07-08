@@ -15,21 +15,17 @@
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 
-void updateTemporaryTokens(TokenArray * newTempTokens, TokenArray strippedToken, int x) {
-    newTempTokens->tokens[newTempTokens->tokenCount].tokenLine = strippedToken.tokens[x].tokenLine;
-    newTempTokens->tokens[newTempTokens->tokenCount].tokenColumn = strippedToken.tokens[x].tokenColumn;
-    newTempTokens->tokens[newTempTokens->tokenCount].tokenType = strippedToken.tokens[x].tokenType;
-    strcpy(newTempTokens->tokens[newTempTokens->tokenCount].tokenValue, strippedToken.tokens[x].tokenValue);
-    strcpy(newTempTokens->tokens[newTempTokens->tokenCount].fileName, strippedToken.tokens[x].fileName);
-    newTempTokens->tokenCount += 1;    
-}
-
-void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int x, TokenType tokenType) {
-    currentIdentifier->tokenType = tokenType;
-    strcpy(currentIdentifier->tokenValue, strippedToken.tokens[x].tokenValue);
-    currentIdentifier->tokenLine = strippedToken.tokens[x].tokenLine;
-    currentIdentifier->tokenColumn = strippedToken.tokens[x].tokenColumn;
-    strcpy(currentIdentifier->fileName, strippedToken.tokens[x].fileName);
+void checkOperationAndSetParser(int x, ParserState * parserState, TokenArray strippedToken) {
+    if((x+1) < strippedToken.tokenCount) {
+        if(strippedToken.tokens[x+1].tokenType == plus_token || strippedToken.tokens[x+1].tokenType == minus_token || strippedToken.tokens[x+1].tokenType == divide_token || strippedToken.tokens[x+1].tokenType == multiply_token) {
+            //will perform operation
+            *parserState = get_assigment_operation;
+        } else {
+            *parserState = get_start;
+        }
+    } else {
+        *parserState = get_start;
+    }
 }
 
 TokenArray stripUnwantedToken(TokenArray tokenArray) {
@@ -499,16 +495,7 @@ int parseToken(TokenArray tokenArray) {
                         //if it is then stay to get_assigment_value parserState
                         //else set to get_start
 
-                        if((x+1) < strippedToken.tokenCount) {
-                            if(strippedToken.tokens[x+1].tokenType == plus_token || strippedToken.tokens[x+1].tokenType == minus_token || strippedToken.tokens[x+1].tokenType == divide_token || strippedToken.tokens[x+1].tokenType == multiply_token) {
-                                //will perform operation
-                                parserState = get_assigment_operation;
-                            } else {
-                                parserState = get_start;
-                            }
-                        } else {
-                            parserState = get_start;
-                        }
+                        checkOperationAndSetParser(x, &parserState, strippedToken);
                         
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
@@ -723,16 +710,7 @@ int parseToken(TokenArray tokenArray) {
                                 return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
                         }
 
-                        if((x+1) < strippedToken.tokenCount) {
-                            if(strippedToken.tokens[x+1].tokenType == plus_token || strippedToken.tokens[x+1].tokenType == minus_token || strippedToken.tokens[x+1].tokenType == divide_token || strippedToken.tokens[x+1].tokenType == multiply_token) {
-                                //will perform operation
-                                parserState = get_assigment_operation;
-                            } else {
-                                parserState = get_start;
-                            }
-                        } else {
-                            parserState = get_start;
-                        }
+                        checkOperationAndSetParser(x, &parserState, strippedToken);
 
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
