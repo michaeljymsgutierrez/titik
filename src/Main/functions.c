@@ -260,16 +260,16 @@ void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * fu
     strcpy(funcReturn->string_value, "");
     switch(argumentArray.arguments[0].argumentType) {
         case arg_string_type:
-            printf("%s\n", argumentArray.arguments[0].string_value);
+            printf("%s", argumentArray.arguments[0].string_value);
         break;
         case arg_integer_type:
-            printf("%ld\n", argumentArray.arguments[0].integer_value);
+            printf("%ld", argumentArray.arguments[0].integer_value);
         break;
         case arg_float_type:
-            printf("%f\n", argumentArray.arguments[0].float_value);
+            printf("%f", argumentArray.arguments[0].float_value);
         break;
         default:
-            printf("None\n");
+            printf("None");
     }
 
     fgets(userInput, 1000, stdin);
