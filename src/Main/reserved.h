@@ -5,7 +5,7 @@
 #ifndef RESERVED_H_
 #define RESERVED_H_
 
-#define RESERVED_WORD_COUNT 9
+#define RESERVED_WORD_COUNT 10
 
 static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "p", //print
@@ -16,7 +16,8 @@ static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "if", //if
     "fi", //end of if
     "ef", //else if
-    "e" //else
+    "e", //else
+    "r" //readline
 };
 
 int isReservedWord(char wrd[]);

@@ -258,8 +258,7 @@ void initFunctions() {
     //p function
     ArgumentArray pArgArray;
     pArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
-    pArgArray.argumentCount = 0;
-    pArgArray.argumentCount += 1;
+    pArgArray.argumentCount = 1; //set number of args
     pArgArray.arguments[0].argumentType = arg_string_type;
     strcpy(pArgArray.arguments[0].string_value, "");
 
@@ -269,8 +268,7 @@ void initFunctions() {
     //i function
     ArgumentArray iArgArray;
     iArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
-    iArgArray.argumentCount = 0;
-    iArgArray.argumentCount += 1;
+    iArgArray.argumentCount = 1; //set number of args
     iArgArray.arguments[0].argumentType = arg_string_type;
     strcpy(iArgArray.arguments[0].string_value, "");
 
