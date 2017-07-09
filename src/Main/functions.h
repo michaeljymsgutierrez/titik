@@ -93,6 +93,7 @@ typedef struct {
     int functionCount;
 } FunctionArray;
 
+void setVariableInfo(int variablePosition, Token currentIdentifier);
 int evaluateToken(Token currentIdentifier, int * ifWithTrue);
 void compareVariable(Variable tempVariable, Variable tempVariable2, TokenType currentOperation, int * ifWithTrue);
 int convertTokenToVariable(Variable * tempVariable, Token token);

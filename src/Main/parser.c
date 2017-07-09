@@ -478,23 +478,7 @@ int parseToken(TokenArray tokenArray) {
 
                         }
 
-                        //set name & scope
-                        strcpy(globalVariableArray.variables[variablePosition].name, currentIdentifier.tokenValue);
-                        strcpy(globalVariableArray.variables[variablePosition].scope_name, TITIK_MAIN_SCOPE_NAME);
-                        
-                        //set constant or not
-                        //if the first letter is capital then it's a constant else it's not
-                        if(isupper(globalVariableArray.variables[variablePosition].name[0])) {
-                            globalVariableArray.variables[variablePosition].is_constant = T;
-                        } else {
-                            globalVariableArray.variables[variablePosition].is_constant = F;
-                        }
-
-                        //Check and advance the token array if the next statement
-                        // is a concatenation or any other operation
-                        //if it is then stay to get_assigment_value parserState
-                        //else set to get_start
-
+                        setVariableInfo(variablePosition, currentIdentifier);
                         checkOperationAndSetParser(x, &parserState, strippedToken);
                         
                     } else {
