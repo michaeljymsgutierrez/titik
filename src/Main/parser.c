@@ -72,6 +72,8 @@ int parseToken(TokenArray tokenArray) {
     int ifEndCount = 0;
     int elseIfMode = F;
     int elseIfGotStatements = F;
+    int isFunctionAssignmentMode = F;
+    int lastVariablePosition = 0;
 
     TokenArray newTempTokens;
     newTempTokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
@@ -344,7 +346,6 @@ int parseToken(TokenArray tokenArray) {
                 break;
                 case get_function_parameters:
                     if(strippedToken.tokens[x].tokenType == close_parenthesis_token) {
-                        parserState = get_start;
                         
                         //check first if # of arguments matched
                         if(argumentArray.argumentCount != globalFunctionArray.functions[functionPosition].argumentArray.argumentCount) {
@@ -358,6 +359,32 @@ int parseToken(TokenArray tokenArray) {
 
                         if(intFunctionReturn > 0) {
                             return intFunctionReturn;
+                        }
+
+                        //executed the function in assigment operation
+                        if(isFunctionAssignmentMode) {
+                            isFunctionAssignmentMode = F;
+                            //assign function return to variable
+                            
+                            switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
+                                case ret_string_type:
+                                    globalVariableArray.variables[lastVariablePosition].variable_type = var_string_type;
+                                    strcpy(globalVariableArray.variables[lastVariablePosition].string_value, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
+                                break;
+                                case ret_integer_type:
+                                    globalVariableArray.variables[lastVariablePosition].variable_type = var_integer_type;
+                                    globalVariableArray.variables[lastVariablePosition].integer_value = globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                break;
+                                case ret_float_type:
+                                    globalVariableArray.variables[lastVariablePosition].variable_type = var_float_type;
+                                    globalVariableArray.variables[lastVariablePosition].float_value = globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                break;
+                                default:
+                                    globalVariableArray.variables[lastVariablePosition].variable_type = var_none_type;
+                            }
+                            checkOperationAndSetParser(x, &parserState, strippedToken);
+                        } else {
+                            parserState = get_start;
                         }
 
                     } else if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
@@ -427,7 +454,7 @@ int parseToken(TokenArray tokenArray) {
                     currentOperation = none_token;
 
                     //check variable if existing and set the variable value here
-                    if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
+                    if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token || strippedToken.tokens[x].tokenType == keyword_token) {
 
                         isVariablesExists = isVariableExists(&variablePosition, currentIdentifier.tokenValue, TITIK_MAIN_SCOPE_NAME);
                         
@@ -450,16 +477,38 @@ int parseToken(TokenArray tokenArray) {
                             }
                         }
 
+                        if(strippedToken.tokens[x].tokenType == keyword_token) {
+                            isFunctionsExists = F;
+                            functionPosition = 0;
+
+                            isFunctionsExists = isFunctionExists(&functionPosition, strippedToken.tokens[x].tokenValue);
+
+                            if(isFunctionsExists) {
+                                argumentArray.argumentCount = 0;
+                                parserState = get_function_open_parenthesis;
+                                isFunctionAssignmentMode = T;
+                                lastVariablePosition = variablePosition;
+                            } else {
+                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                            }                          
+                        }
+
+                        //set variable info
+                        setVariableInfo(variablePosition, currentIdentifier);
+
                         //set variable type and value
                         if(strippedToken.tokens[x].tokenType == string_token) {
                             globalVariableArray.variables[variablePosition].variable_type = var_string_type;
                             strcpy(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
+                            checkOperationAndSetParser(x, &parserState, strippedToken);
                         } else if(strippedToken.tokens[x].tokenType == float_token) {
                             globalVariableArray.variables[variablePosition].variable_type = var_float_type;
                             globalVariableArray.variables[variablePosition].float_value = atof(strippedToken.tokens[x].tokenValue);
+                            checkOperationAndSetParser(x, &parserState, strippedToken);
                         } else if(strippedToken.tokens[x].tokenType == integer_token) {
                             globalVariableArray.variables[variablePosition].integer_value = atoi(strippedToken.tokens[x].tokenValue);
                             globalVariableArray.variables[variablePosition].variable_type = var_integer_type;
+                            checkOperationAndSetParser(x, &parserState, strippedToken);
                         } else if(strippedToken.tokens[x].tokenType == identifier_token) {
 
                             if(globalVariableArray.variables[variablePosition2].variable_type == var_string_type) {
@@ -475,11 +524,8 @@ int parseToken(TokenArray tokenArray) {
                             } else if(globalVariableArray.variables[variablePosition2].variable_type == var_none_type) {
                                 globalVariableArray.variables[variablePosition].variable_type = var_none_type;                
                             }
-
+                            checkOperationAndSetParser(x, &parserState, strippedToken);
                         }
-
-                        setVariableInfo(variablePosition, currentIdentifier);
-                        checkOperationAndSetParser(x, &parserState, strippedToken);
                         
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
