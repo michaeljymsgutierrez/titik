@@ -257,6 +257,7 @@ void i_execute(ArgumentArray argumentArray2,  int * intReturn, FunctionReturn * 
 void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
 
     char userInput[1000];
+    char tempChar[1000];
     strcpy(funcReturn->string_value, "");
     switch(argumentArray.arguments[0].argumentType) {
         case arg_string_type:
@@ -273,7 +274,18 @@ void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * fu
     }
 
     fgets(userInput, 1000, stdin);
-    strcpy(funcReturn->string_value, userInput);
+
+    memset(tempChar, 0, strlen(tempChar));
+    //cleanup new line
+    for(int x=0; x < strlen(userInput); x++) {
+        if((x+1) == strlen(userInput)) {
+            tempChar[x] = 0;
+        } else {
+            tempChar[x] = userInput[x];
+        }
+    }
+
+    strcpy(funcReturn->string_value, tempChar);
     
     funcReturn->returnType = ret_string_type;
     *intReturn = 0;
