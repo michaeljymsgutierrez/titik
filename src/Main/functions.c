@@ -253,6 +253,32 @@ void i_execute(ArgumentArray argumentArray2,  int * intReturn, FunctionReturn * 
     free(tokenArray.tokens);     
 }
 
+
+void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+
+    char userInput[1000];
+    strcpy(funcReturn->string_value, "");
+    switch(argumentArray.arguments[0].argumentType) {
+        case arg_string_type:
+            printf("%s\n", argumentArray.arguments[0].string_value);
+        break;
+        case arg_integer_type:
+            printf("%ld\n", argumentArray.arguments[0].integer_value);
+        break;
+        case arg_float_type:
+            printf("%f\n", argumentArray.arguments[0].float_value);
+        break;
+        default:
+            printf("None\n");
+    }
+
+    fgets(userInput, 1000, stdin);
+    strcpy(funcReturn->string_value, userInput);
+    
+    funcReturn->returnType = ret_string_type;
+    *intReturn = 0;
+}
+
 void initFunctions() {
 
     //p function
@@ -261,7 +287,6 @@ void initFunctions() {
     pArgArray.argumentCount = 1; //set number of args
     pArgArray.arguments[0].argumentType = arg_string_type;
     strcpy(pArgArray.arguments[0].string_value, "");
-
     defineFunction("p", pArgArray, p_execute);
     //end p function
 
@@ -271,10 +296,17 @@ void initFunctions() {
     iArgArray.argumentCount = 1; //set number of args
     iArgArray.arguments[0].argumentType = arg_string_type;
     strcpy(iArgArray.arguments[0].string_value, "");
-
     defineFunction("i", iArgArray, i_execute);
     //end i function
 
+    //r function
+    ArgumentArray rArgArray;
+    rArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    rArgArray.argumentCount = 1; //set number of args
+    rArgArray.arguments[0].argumentType = arg_string_type;
+    strcpy(rArgArray.arguments[0].string_value, "");
+    defineFunction("r", rArgArray, r_execute);
+    //end r function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
