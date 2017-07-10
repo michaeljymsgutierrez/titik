@@ -73,6 +73,7 @@ int parseToken(TokenArray tokenArray) {
     int elseIfMode = F;
     int elseIfGotStatements = F;
     int isFunctionAssignmentMode = F;
+    int isFunctionAssignmentUpdate = F;
     int lastVariablePosition = 0;
 
     TokenArray newTempTokens;
@@ -366,21 +367,144 @@ int parseToken(TokenArray tokenArray) {
                             isFunctionAssignmentMode = F;
                             //assign function return to variable
                             
-                            switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
-                                case ret_string_type:
-                                    globalVariableArray.variables[lastVariablePosition].variable_type = var_string_type;
-                                    strcpy(globalVariableArray.variables[lastVariablePosition].string_value, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
-                                break;
-                                case ret_integer_type:
-                                    globalVariableArray.variables[lastVariablePosition].variable_type = var_integer_type;
-                                    globalVariableArray.variables[lastVariablePosition].integer_value = globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
-                                break;
-                                case ret_float_type:
-                                    globalVariableArray.variables[lastVariablePosition].variable_type = var_float_type;
-                                    globalVariableArray.variables[lastVariablePosition].float_value = globalFunctionArray.functions[functionPosition].functionReturn.float_value;
-                                break;
-                                default:
-                                    globalVariableArray.variables[lastVariablePosition].variable_type = var_none_type;
+                            if(!isFunctionAssignmentUpdate) {
+                                //set variable
+                                switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
+                                    case ret_string_type:
+                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_string_type;
+                                        strcpy(globalVariableArray.variables[lastVariablePosition].string_value, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
+                                    break;
+                                    case ret_integer_type:
+                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_integer_type;
+                                        globalVariableArray.variables[lastVariablePosition].integer_value = globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                    break;
+                                    case ret_float_type:
+                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_float_type;
+                                        globalVariableArray.variables[lastVariablePosition].float_value = globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                    break;
+                                    default:
+                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_none_type;
+                                }
+                            } else {
+                                //update variable
+                                isFunctionAssignmentUpdate = F;
+                                strcpy(tempChar, ""); //clear temp char
+
+                                switch(globalVariableArray.variables[lastVariablePosition].variable_type) {
+                                    case var_float_type:
+                                    case var_integer_type:
+                                        switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
+                                            case ret_string_type:
+                                                if(currentOperation == plus_token) {
+                                                    strcpy(tempChar, "");
+                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[lastVariablePosition].integer_value);
+                                                    } else {
+                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[lastVariablePosition].float_value);
+                                                    }
+                                                    
+                                                    globalVariableArray.variables[lastVariablePosition].variable_type = var_string_type;
+                                                    strcpy(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
+
+                                                    strcpy(tempChar, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
+                                                    strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
+                                                } else {
+                                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid operation", strippedToken.tokens[x].fileName);
+                                                }
+                                            break;
+                                            case ret_integer_type:
+                                                if(currentOperation == plus_token) {
+                                                    //addition
+                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                        globalVariableArray.variables[lastVariablePosition].integer_value += globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                    } else {
+                                                        globalVariableArray.variables[lastVariablePosition].float_value += (double)globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                    }
+                                                } else if(currentOperation == minus_token) {
+                                                    //subtraction
+                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                        globalVariableArray.variables[lastVariablePosition].integer_value -= globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                    } else {
+                                                        globalVariableArray.variables[lastVariablePosition].float_value -= (double)globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                    }
+                                                } else if(currentOperation == multiply_token) {
+                                                    //multiplication
+                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                        globalVariableArray.variables[lastVariablePosition].integer_value *= globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                    } else {
+                                                        globalVariableArray.variables[lastVariablePosition].float_value *= (double)globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                    }
+                                                } else {
+                                                    //assume it's division
+                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                        globalVariableArray.variables[lastVariablePosition].integer_value /= globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                    } else {
+                                                        globalVariableArray.variables[lastVariablePosition].float_value /= (double)globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                    }
+                                                }
+                                            break;
+                                            case ret_float_type:
+                                                if(currentOperation == plus_token) {
+                                                    //addition
+                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                        globalVariableArray.variables[lastVariablePosition].integer_value += (long int)globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                    } else {
+                                                        globalVariableArray.variables[lastVariablePosition].float_value += globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                    }
+                                                } else if(currentOperation == minus_token) {
+                                                    //subtraction
+                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                        globalVariableArray.variables[lastVariablePosition].integer_value -= (long int)globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                    } else {
+                                                        globalVariableArray.variables[lastVariablePosition].float_value -= globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                    }
+                                                } else if(currentOperation == multiply_token) {
+                                                    //multiplication
+                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                        globalVariableArray.variables[lastVariablePosition].integer_value *= (long int)globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                    } else {
+                                                        globalVariableArray.variables[lastVariablePosition].float_value *= globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                    }
+                                                } else {
+                                                    //assume it's division
+                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                        globalVariableArray.variables[lastVariablePosition].integer_value /= (long int)globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                    } else {
+                                                        globalVariableArray.variables[lastVariablePosition].float_value /= globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                    }
+                                                }
+                                            break;
+                                            default:
+                                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                        }
+                                    break;
+                                    case var_string_type:
+
+                                        if(currentOperation == plus_token) {
+                                            switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
+                                                case ret_string_type:
+                                                    strcat(globalVariableArray.variables[lastVariablePosition].string_value, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
+                                                break;
+                                                case ret_integer_type:
+                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalFunctionArray.functions[functionPosition].functionReturn.integer_value);
+                                                    strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
+                                                break;
+                                                case ret_float_type:
+                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalFunctionArray.functions[functionPosition].functionReturn.float_value);
+                                                    strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
+                                                break;
+                                                default:
+                                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                            }
+                                        } else {
+                                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid operation", strippedToken.tokens[x].fileName);
+                                        }
+
+                                    break;
+                                    default:
+                                        //none type
+                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                }
                             }
                             checkOperationAndSetParser(x, &parserState, strippedToken);
                         } else {
@@ -487,6 +611,7 @@ int parseToken(TokenArray tokenArray) {
                                 argumentArray.argumentCount = 0;
                                 parserState = get_function_open_parenthesis;
                                 isFunctionAssignmentMode = T;
+                                isFunctionAssignmentUpdate = F;
                                 lastVariablePosition = variablePosition;
                             } else {
                                 return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
@@ -542,205 +667,220 @@ int parseToken(TokenArray tokenArray) {
                 break;
                 case update_assigment_value:
                     //update variable depending on the operator
-                    if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
+                    if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token || strippedToken.tokens[x].tokenType == keyword_token) {
 
-                        //update
-                        switch(globalVariableArray.variables[variablePosition].variable_type) {
-                            case var_float_type:
-                            case var_integer_type:
-                                //handle float and integer type
-                                switch(strippedToken.tokens[x].tokenType) {
-                                    case identifier_token:
+                        if(strippedToken.tokens[x].tokenType == keyword_token) {
+                            isFunctionsExists = F;
+                            functionPosition = 0;
 
-                                        isVariablesExists = F;
-                                        variablePosition2 = 0;
-                                        strcpy(tempChar, ""); //clear temp char
+                            isFunctionsExists = isFunctionExists(&functionPosition, strippedToken.tokens[x].tokenValue);
 
-                                        isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
-                                        if(!isVariablesExists) {
-                                            return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
-                                        }
+                            if(isFunctionsExists) {
+                                argumentArray.argumentCount = 0;
+                                parserState = get_function_open_parenthesis;
+                                isFunctionAssignmentMode = T;
+                                isFunctionAssignmentUpdate = T;
+                                lastVariablePosition = variablePosition;
+                            } else {
+                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                            }  
+                        } else {
+                            switch(globalVariableArray.variables[variablePosition].variable_type) {
+                                case var_float_type:
+                                case var_integer_type:
+                                    //handle float and integer type
+                                    switch(strippedToken.tokens[x].tokenType) {
+                                        case identifier_token:
 
-                                        switch(globalVariableArray.variables[variablePosition2].variable_type) {
-                                            case var_string_type:
-                                                if(currentOperation == plus_token) {
-                                                    strcpy(tempChar, "");
-                                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition].integer_value);
+                                            isVariablesExists = F;
+                                            variablePosition2 = 0;
+                                            strcpy(tempChar, ""); //clear temp char
+
+                                            isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                                            if(!isVariablesExists) {
+                                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                            }
+
+                                            switch(globalVariableArray.variables[variablePosition2].variable_type) {
+                                                case var_string_type:
+                                                    if(currentOperation == plus_token) {
+                                                        strcpy(tempChar, "");
+                                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                            snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition].integer_value);
+                                                        } else {
+                                                            snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition].float_value);
+                                                        }
+                                                        
+                                                        globalVariableArray.variables[variablePosition].variable_type = var_string_type;
+                                                        strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
+
+                                                        strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
+                                                        strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
                                                     } else {
-                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition].float_value);
+                                                        return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
                                                     }
-                                                    
-                                                    globalVariableArray.variables[variablePosition].variable_type = var_string_type;
-                                                    strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
 
+                                                break;
+                                                case var_float_type:
+                                                    if(currentOperation == plus_token) {
+                                                        //addition
+                                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[variablePosition].integer_value += (long int)globalVariableArray.variables[variablePosition2].float_value;
+                                                        } else {
+                                                            globalVariableArray.variables[variablePosition].float_value += globalVariableArray.variables[variablePosition2].float_value;
+                                                        }
+                                                    } else if(currentOperation == minus_token) {
+                                                        //subtraction
+                                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[variablePosition].integer_value -= (long int)globalVariableArray.variables[variablePosition2].float_value;
+                                                        } else {
+                                                            globalVariableArray.variables[variablePosition].float_value -= globalVariableArray.variables[variablePosition2].float_value;
+                                                        }
+                                                    } else if(currentOperation == multiply_token) {
+                                                        //multiplication
+                                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[variablePosition].integer_value *= (long int)globalVariableArray.variables[variablePosition2].float_value;
+                                                        } else {
+                                                            globalVariableArray.variables[variablePosition].float_value *= globalVariableArray.variables[variablePosition2].float_value;
+                                                        }
+                                                    } else {
+                                                        //assume it's division
+                                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[variablePosition].integer_value /= (long int)globalVariableArray.variables[variablePosition2].float_value;
+                                                        } else {
+                                                            globalVariableArray.variables[variablePosition].float_value /= globalVariableArray.variables[variablePosition2].float_value;
+                                                        }
+                                                    }
+                                                break;
+                                                case var_integer_type:
+                                                    if(currentOperation == plus_token) {
+                                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[variablePosition].integer_value += globalVariableArray.variables[variablePosition2].integer_value;
+                                                        } else {
+                                                            globalVariableArray.variables[variablePosition].float_value += (double)globalVariableArray.variables[variablePosition2].integer_value;
+                                                        }
+                                                    } else if(currentOperation == minus_token) {
+                                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[variablePosition].integer_value -= globalVariableArray.variables[variablePosition2].integer_value;
+                                                        } else {
+                                                            globalVariableArray.variables[variablePosition].float_value -= (double)globalVariableArray.variables[variablePosition2].integer_value;
+                                                        }
+                                                    } else if(currentOperation == multiply_token) {
+                                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[variablePosition].integer_value *= globalVariableArray.variables[variablePosition2].integer_value;
+                                                        } else {
+                                                            globalVariableArray.variables[variablePosition].float_value *= (double)globalVariableArray.variables[variablePosition2].integer_value;
+                                                        }
+                                                    } else {
+                                                        if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[variablePosition].integer_value /= globalVariableArray.variables[variablePosition2].integer_value;
+                                                        } else {
+                                                            globalVariableArray.variables[variablePosition].float_value /= (double)globalVariableArray.variables[variablePosition2].integer_value;
+                                                        }
+                                                    }
+                                                break;
+                                                default:
+                                                    //variable is a none type
+                                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                            }
+
+                                        break;
+                                        case integer_token:
+                                        case float_token:
+                                            if(currentOperation == plus_token) {
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    globalVariableArray.variables[variablePosition].integer_value += atoi(strippedToken.tokens[x].tokenValue);
+                                                } else {
+                                                    globalVariableArray.variables[variablePosition].float_value += atof(strippedToken.tokens[x].tokenValue);
+                                                }
+                                            } else if(currentOperation == minus_token) {
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    globalVariableArray.variables[variablePosition].integer_value -= atoi(strippedToken.tokens[x].tokenValue);
+                                                } else {
+                                                    globalVariableArray.variables[variablePosition].float_value -= atof(strippedToken.tokens[x].tokenValue);
+                                                }
+                                            } else if(currentOperation == multiply_token) {
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    globalVariableArray.variables[variablePosition].integer_value *= atoi(strippedToken.tokens[x].tokenValue);
+                                                } else {
+                                                    globalVariableArray.variables[variablePosition].float_value *= atof(strippedToken.tokens[x].tokenValue);
+                                                }
+                                            } else {
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    globalVariableArray.variables[variablePosition].integer_value /= atoi(strippedToken.tokens[x].tokenValue);
+                                                } else {
+                                                    globalVariableArray.variables[variablePosition].float_value /= atof(strippedToken.tokens[x].tokenValue);
+                                                }
+                                            }
+                                        break;
+                                        case string_token:
+                                            if(currentOperation == plus_token) {
+                                                //if strippedToken is a string then convert variable to string then concat
+                                                strcpy(tempChar, "");
+                                                if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
+                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition].integer_value);
+                                                } else {
+                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition].float_value);
+                                                }
+                                                globalVariableArray.variables[variablePosition].variable_type = var_string_type;
+                                                strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
+                                                strcat(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
+                                            } else {
+                                                return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
+                                            }
+                                        break;
+                                        default:
+                                            return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                    }
+                                break;
+                                case var_string_type:
+                                    //concatenate only
+
+                                    if(currentOperation == plus_token) {
+                                        if(strippedToken.tokens[x].tokenType == identifier_token) {
+                                            //check if existing variable
+                                            isVariablesExists = F;
+                                            variablePosition2 = 0;
+                                            strcpy(tempChar, ""); //clear temp char
+
+                                            isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                                            if(!isVariablesExists) {
+                                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                            }
+
+                                            switch(globalVariableArray.variables[variablePosition2].variable_type) {
+                                                case var_float_type:
+                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition2].float_value);
+                                                    strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
+                                                break;
+                                                case var_string_type:
                                                     strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
                                                     strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
-                                                } else {
-                                                    return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
-                                                }
+                                                break;
+                                                case var_integer_type:
+                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition2].integer_value);
+                                                    strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
+                                                break;
+                                                default:
+                                                    //variable is a none type
+                                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                            }
 
-                                            break;
-                                            case var_float_type:
-                                                if(currentOperation == plus_token) {
-                                                    //addition
-                                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[variablePosition].integer_value += (long int)globalVariableArray.variables[variablePosition2].float_value;
-                                                    } else {
-                                                        globalVariableArray.variables[variablePosition].float_value += globalVariableArray.variables[variablePosition2].float_value;
-                                                    }
-                                                } else if(currentOperation == minus_token) {
-                                                    //subtraction
-                                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[variablePosition].integer_value -= (long int)globalVariableArray.variables[variablePosition2].float_value;
-                                                    } else {
-                                                        globalVariableArray.variables[variablePosition].float_value -= globalVariableArray.variables[variablePosition2].float_value;
-                                                    }
-                                                } else if(currentOperation == multiply_token) {
-                                                    //multiplication
-                                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[variablePosition].integer_value *= (long int)globalVariableArray.variables[variablePosition2].float_value;
-                                                    } else {
-                                                        globalVariableArray.variables[variablePosition].float_value *= globalVariableArray.variables[variablePosition2].float_value;
-                                                    }
-                                                } else {
-                                                    //assume it's division
-                                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[variablePosition].integer_value /= (long int)globalVariableArray.variables[variablePosition2].float_value;
-                                                    } else {
-                                                        globalVariableArray.variables[variablePosition].float_value /= globalVariableArray.variables[variablePosition2].float_value;
-                                                    }
-                                                }
-                                            break;
-                                            case var_integer_type:
-                                                if(currentOperation == plus_token) {
-                                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[variablePosition].integer_value += globalVariableArray.variables[variablePosition2].integer_value;
-                                                    } else {
-                                                        globalVariableArray.variables[variablePosition].float_value += (double)globalVariableArray.variables[variablePosition2].integer_value;
-                                                    }
-                                                } else if(currentOperation == minus_token) {
-                                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[variablePosition].integer_value -= globalVariableArray.variables[variablePosition2].integer_value;
-                                                    } else {
-                                                        globalVariableArray.variables[variablePosition].float_value -= (double)globalVariableArray.variables[variablePosition2].integer_value;
-                                                    }
-                                                } else if(currentOperation == multiply_token) {
-                                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[variablePosition].integer_value *= globalVariableArray.variables[variablePosition2].integer_value;
-                                                    } else {
-                                                        globalVariableArray.variables[variablePosition].float_value *= (double)globalVariableArray.variables[variablePosition2].integer_value;
-                                                    }
-                                                } else {
-                                                    if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[variablePosition].integer_value /= globalVariableArray.variables[variablePosition2].integer_value;
-                                                    } else {
-                                                        globalVariableArray.variables[variablePosition].float_value /= (double)globalVariableArray.variables[variablePosition2].integer_value;
-                                                    }
-                                                }
-                                            break;
-                                            default:
-                                                //variable is a none type
-                                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
-                                        }
-
-                                    break;
-                                    case integer_token:
-                                    case float_token:
-                                        if(currentOperation == plus_token) {
-                                            if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                globalVariableArray.variables[variablePosition].integer_value += atoi(strippedToken.tokens[x].tokenValue);
-                                            } else {
-                                                globalVariableArray.variables[variablePosition].float_value += atof(strippedToken.tokens[x].tokenValue);
-                                            }
-                                        } else if(currentOperation == minus_token) {
-                                            if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                globalVariableArray.variables[variablePosition].integer_value -= atoi(strippedToken.tokens[x].tokenValue);
-                                            } else {
-                                                globalVariableArray.variables[variablePosition].float_value -= atof(strippedToken.tokens[x].tokenValue);
-                                            }
-                                        } else if(currentOperation == multiply_token) {
-                                            if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                globalVariableArray.variables[variablePosition].integer_value *= atoi(strippedToken.tokens[x].tokenValue);
-                                            } else {
-                                                globalVariableArray.variables[variablePosition].float_value *= atof(strippedToken.tokens[x].tokenValue);
-                                            }
                                         } else {
-                                            if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                globalVariableArray.variables[variablePosition].integer_value /= atoi(strippedToken.tokens[x].tokenValue);
-                                            } else {
-                                                globalVariableArray.variables[variablePosition].float_value /= atof(strippedToken.tokens[x].tokenValue);
-                                            }
-                                        }
-                                    break;
-                                    case string_token:
-                                        if(currentOperation == plus_token) {
-                                            //if strippedToken is a string then convert variable to string then concat
-                                            strcpy(tempChar, "");
-                                            if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition].integer_value);
-                                            } else {
-                                                snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition].float_value);
-                                            }
-                                            globalVariableArray.variables[variablePosition].variable_type = var_string_type;
-                                            strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
                                             strcat(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
-                                        } else {
-                                            return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
-                                        }
-                                    break;
-                                    default:
-                                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
-                                }
-                            break;
-                            case var_string_type:
-                                //concatenate only
-
-                                if(currentOperation == plus_token) {
-                                    if(strippedToken.tokens[x].tokenType == identifier_token) {
-                                        //check if existing variable
-                                        isVariablesExists = F;
-                                        variablePosition2 = 0;
-                                        strcpy(tempChar, ""); //clear temp char
-
-                                        isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
-                                        if(!isVariablesExists) {
-                                            return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
-                                        }
-
-                                        switch(globalVariableArray.variables[variablePosition2].variable_type) {
-                                            case var_float_type:
-                                                snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition2].float_value);
-                                                strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
-                                            break;
-                                            case var_string_type:
-                                                strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
-                                                strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
-                                            break;
-                                            case var_integer_type:
-                                                snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition2].integer_value);
-                                                strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
-                                            break;
-                                            default:
-                                                //variable is a none type
-                                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
                                         }
 
                                     } else {
-                                        strcat(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
+                                        return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
                                     }
 
-                                } else {
-                                    return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
-                                }
-
-                            break;
-                            default:
-                                //none type
-                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                break;
+                                default:
+                                    //none type
+                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                            }
+                            checkOperationAndSetParser(x, &parserState, strippedToken);
                         }
-
-                        checkOperationAndSetParser(x, &parserState, strippedToken);
 
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
