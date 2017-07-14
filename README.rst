@@ -44,7 +44,11 @@ Sample Code
     strVariable = "Hello " + 'World' #single line comment
 
     if(strVariable = 'Hello World')
-        p(strVariable) #It will print... you guess...
+
+        fl (1 to 5)
+            p(strVariable) #It will print "Hello World" 5 times
+        lf
+        
     e
         p('Not Hello World')
     fi
