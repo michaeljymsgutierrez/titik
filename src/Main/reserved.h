@@ -5,7 +5,7 @@
 #ifndef RESERVED_H_
 #define RESERVED_H_
 
-#define RESERVED_WORD_COUNT 11
+#define RESERVED_WORD_COUNT 12
 
 static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "p", //print
@@ -18,6 +18,7 @@ static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "fi", //end of if
     "ef", //else if
     "e", //else
+    "in", //use in looping statement
     "r" //readline
 };
 

@@ -50,7 +50,7 @@ TokenArray stripUnwantedToken(TokenArray tokenArray) {
     return newTokens;
 }
 
-int parseToken(TokenArray tokenArray) {
+int parseToken(TokenArray tokenArray, int isLoop) {
     ParserState parserState = get_start;
     TokenArray strippedToken;
     FunctionReturn funcReturn;

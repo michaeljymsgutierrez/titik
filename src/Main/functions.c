@@ -244,7 +244,7 @@ void i_execute(ArgumentArray argumentArray2,  int * intReturn, FunctionReturn * 
                 *intReturn = functionReturn;
             } else {
                 //parse token
-                functionReturn = parseToken(tokenArray);
+                functionReturn = parseToken(tokenArray, F);
             }
         }
     } 
