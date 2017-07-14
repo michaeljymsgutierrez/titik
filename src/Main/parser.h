@@ -24,6 +24,12 @@ typedef enum {
     get_if_statements,
     get_if_statements_else,
     get_else_if_statements,
+    get_for_loop_opening,
+    get_for_loop_from,
+    get_for_loop_to_word,
+    get_for_loop_to,
+    get_for_loop_end,
+    get_for_loop_statements,
     rebuild_tokens
 } ParserState;
 

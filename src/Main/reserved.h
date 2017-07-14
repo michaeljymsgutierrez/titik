@@ -18,7 +18,7 @@ static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "fi", //end of if
     "ef", //else if
     "e", //else
-    "in", //use in looping statement
+    "to", //use in looping statement
     "r" //readline
 };
 

@@ -76,6 +76,10 @@ int parseToken(TokenArray tokenArray, int isLoop) {
     int isFunctionAssignmentUpdate = F;
     int lastVariablePosition = 0;
 
+    int fromLoop = 0;
+    int toLoop = 0;
+    int forLoopEndCount = 0;
+
     TokenArray newTempTokens;
     newTempTokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
     newTempTokens.tokenCount = 0;
@@ -129,6 +133,12 @@ int parseToken(TokenArray tokenArray, int isLoop) {
                                     currentOperation = none_token;
                                     elseIfMode = F;
                                     elseIfGotStatements = F;
+                                } else if(!strcmp(strippedToken.tokens[x].tokenValue, "fl")) {
+                                    parserState = get_for_loop_opening;
+                                    fromLoop = 0;
+                                    toLoop = 0;
+                                    forLoopEndCount = 0;
+                                    newTempTokens.tokenCount = 0; //if error occurs then need to have a new temporary container of the token array
                                 } else {
                                     return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 }                            
@@ -138,6 +148,91 @@ int parseToken(TokenArray tokenArray, int isLoop) {
                             return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                     }
 
+                break;
+                case get_for_loop_opening:
+                    if(strippedToken.tokens[x].tokenType == open_parenthesis_token) {
+                        parserState = get_for_loop_from;
+                    } else {
+                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                    }                    
+                break;
+                case get_for_loop_from:
+                    if(strippedToken.tokens[x].tokenType == integer_token) {
+                        //parse only integer type for now (this is temporary only)
+                        parserState = get_for_loop_to_word;
+                        fromLoop = atoi(strippedToken.tokens[x].tokenValue);
+                    } else {
+                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                    }  
+                break;
+                case get_for_loop_to_word:
+                    if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "to")) {
+                        parserState = get_for_loop_to;
+                    } else {
+                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                    }
+                break;
+                case get_for_loop_to:
+                    if(strippedToken.tokens[x].tokenType == integer_token) {
+                        //parse only integer type for now (this is temporary only)
+                        parserState = get_for_loop_end;
+                        toLoop = atoi(strippedToken.tokens[x].tokenValue);
+                    } else {
+                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                    } 
+                break;
+                case get_for_loop_end:
+                    if(strippedToken.tokens[x].tokenType == close_parenthesis_token) {
+                        parserState = get_for_loop_statements;
+                    } else {
+                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                    }  
+                break;
+                case get_for_loop_statements:
+                    if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "lf") && forLoopEndCount == 0) {
+                        //execute looping statement
+                        if(fromLoop < toLoop) {
+                            //forward looping
+                            for(int lc=fromLoop; lc <= toLoop; lc++) {
+                                intFunctionReturn = parseToken(newTempTokens, T);
+
+                                if(intFunctionReturn > 0) {
+                                    return intFunctionReturn;
+                                    break;
+                                }
+                            }
+                        } else if(fromLoop > toLoop) {
+                            //backward looping
+                            for(int lc=fromLoop; lc >= toLoop; lc--) {
+                                intFunctionReturn = parseToken(newTempTokens, T);
+
+                                if(intFunctionReturn > 0) {
+                                    return intFunctionReturn;
+                                    break;
+                                }
+                            }
+                        } else {
+                            //execute once
+                            intFunctionReturn = parseToken(newTempTokens, T);
+
+                            if(intFunctionReturn > 0) {
+                                return intFunctionReturn;
+                                break;
+                            }
+                        }
+
+                        parserState = get_start;
+                    } else {
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "fl")) {
+                            forLoopEndCount += 1;
+                        }
+
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "lf")) {
+                            forLoopEndCount -= 1;
+                        }
+
+                        updateTemporaryTokens(&newTempTokens, strippedToken, x);
+                    }
                 break;
                 case get_if_opening:
                     if(strippedToken.tokens[x].tokenType == open_parenthesis_token) {
