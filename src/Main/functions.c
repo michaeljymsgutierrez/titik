@@ -218,6 +218,7 @@ void i_execute(ArgumentArray argumentArray2,  int * intReturn, FunctionReturn * 
     int totalLineCount;
     char fName[TITIK_CHAR_PER_LINE];
     int fileExists = 0;
+    int needBreak = F;
     TokenArray tokenArray;
     tokenArray.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
     tokenArray.tokenCount = 0;
@@ -244,7 +245,7 @@ void i_execute(ArgumentArray argumentArray2,  int * intReturn, FunctionReturn * 
                 *intReturn = functionReturn;
             } else {
                 //parse token
-                functionReturn = parseToken(tokenArray, F);
+                functionReturn = parseToken(tokenArray, F, &needBreak);
             }
         }
     } 

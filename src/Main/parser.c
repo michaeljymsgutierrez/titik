@@ -50,7 +50,7 @@ TokenArray stripUnwantedToken(TokenArray tokenArray) {
     return newTokens;
 }
 
-int parseToken(TokenArray tokenArray, int isLoop) {
+int parseToken(TokenArray tokenArray, int isLoop, int * needBreak) {
     ParserState parserState = get_start;
     TokenArray strippedToken;
     FunctionReturn funcReturn;
@@ -79,6 +79,8 @@ int parseToken(TokenArray tokenArray, int isLoop) {
     int fromLoop = 0;
     int toLoop = 0;
     int forLoopEndCount = 0;
+
+    int willBreak = F;
 
     TokenArray newTempTokens;
     newTempTokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
@@ -138,7 +140,15 @@ int parseToken(TokenArray tokenArray, int isLoop) {
                                     fromLoop = 0;
                                     toLoop = 0;
                                     forLoopEndCount = 0;
+                                    willBreak = F;
                                     newTempTokens.tokenCount = 0; //if error occurs then need to have a new temporary container of the token array
+                                } else if(!strcmp(strippedToken.tokens[x].tokenValue, "b")) {
+                                    if(isLoop) {
+                                        *needBreak = T;
+                                        return 0;
+                                    } else {
+                                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);    
+                                    }
                                 } else {
                                     return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 }                            
@@ -194,7 +204,11 @@ int parseToken(TokenArray tokenArray, int isLoop) {
                         if(fromLoop < toLoop) {
                             //forward looping
                             for(int lc=fromLoop; lc <= toLoop; lc++) {
-                                intFunctionReturn = parseToken(newTempTokens, T);
+                                intFunctionReturn = parseToken(newTempTokens, T, &willBreak);
+
+                                if(willBreak) {
+                                    break;
+                                }
 
                                 if(intFunctionReturn > 0) {
                                     return intFunctionReturn;
@@ -204,7 +218,11 @@ int parseToken(TokenArray tokenArray, int isLoop) {
                         } else if(fromLoop > toLoop) {
                             //backward looping
                             for(int lc=fromLoop; lc >= toLoop; lc--) {
-                                intFunctionReturn = parseToken(newTempTokens, T);
+                                intFunctionReturn = parseToken(newTempTokens, T, &willBreak);
+
+                                if(willBreak) {
+                                    break;
+                                }
 
                                 if(intFunctionReturn > 0) {
                                     return intFunctionReturn;
@@ -213,7 +231,11 @@ int parseToken(TokenArray tokenArray, int isLoop) {
                             }
                         } else {
                             //execute once
-                            intFunctionReturn = parseToken(newTempTokens, T);
+                            intFunctionReturn = parseToken(newTempTokens, T, &willBreak);
+
+                            if(willBreak) {
+                                break;
+                            }
 
                             if(intFunctionReturn > 0) {
                                 return intFunctionReturn;

@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
     char **fileContent;
     int functionReturn;
     int totalLineCount;
+    int needBreak = F;
 
     TokenArray tokenArray;
     //init token array
@@ -66,7 +67,7 @@ int main(int argc, char **argv) {
             return functionReturn;
 
         //parse token
-        functionReturn = parseToken(tokenArray, F);
+        functionReturn = parseToken(tokenArray, F, &needBreak);
 
         if(functionReturn > 0)
             return functionReturn;
