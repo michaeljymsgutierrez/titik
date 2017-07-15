@@ -86,8 +86,12 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak) {
     newTempTokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
     newTempTokens.tokenCount = 0;
 
-    //strip all spaces and newline first before parsing the token
-    strippedToken = stripUnwantedToken(tokenArray);
+    if(isLoop) {
+        strippedToken = tokenArray;
+    } else {
+        //strip all spaces and newline first before parsing the token
+        strippedToken = stripUnwantedToken(tokenArray);
+    }
 
     ArgumentArray argumentArray;
     argumentArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
@@ -1014,5 +1018,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak) {
         }
     }
 
+    free(newTempTokens.tokens);
+    free(argumentArray.arguments);
     return 0;
 }
