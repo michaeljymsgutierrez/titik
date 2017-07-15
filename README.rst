@@ -41,10 +41,12 @@ Sample Code
 
     intVariable = 6
     floatVariable = 25.55
-    strVariable = "Hello " + 'World' #single line comment
+    strVariable = "Hello " + 'World' #concatenation
 
+    #if statement
     if(strVariable = 'Hello World')
 
+        #loop statement
         fl (1 to 5)
             p(strVariable) #It will print "Hello World" 5 times
         lf
