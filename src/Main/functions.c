@@ -79,7 +79,7 @@ int evaluateToken(Token currentIdentifier, int * ifWithTrue) {
     return ret;
 }
 
-void compareVariable(Variable tempVariable, Variable tempVariable2, TokenType currentOperation, int * ifWithTrue){
+void compareVariable(Variable tempVariable, Variable tempVariable2, TitikTokenType currentOperation, int * ifWithTrue){
     switch(tempVariable.variable_type) {
         case var_string_type:
             if(currentOperation == equals_token) {

@@ -10,7 +10,7 @@ void dumpToken(TokenArray tokenArray) {
     printf("=========================\n");
 
     for(int x=0; x < tokenArray.tokenCount; x++) {
-        printf("Token Type: %s\n", TokenTypeString[tokenArray.tokens[x].tokenType]);
+        printf("Token Type: %s\n", TitikTokenTypeString[tokenArray.tokens[x].tokenType]);
         printf("Line #: %d\n", tokenArray.tokens[x].tokenLine + 1);
         printf("Column #: %d\n", tokenArray.tokens[x].tokenColumn + 1);
         printf("Value: %s\n", tokenArray.tokens[x].tokenValue);

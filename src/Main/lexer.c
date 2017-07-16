@@ -20,7 +20,7 @@ void updateTemporaryTokens(TokenArray * newTempTokens, TokenArray strippedToken,
     newTempTokens->tokenCount += 1;    
 }
 
-void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int x, TokenType tokenType) {
+void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int x, TitikTokenType tokenType) {
     currentIdentifier->tokenType = tokenType;
     strcpy(currentIdentifier->tokenValue, strippedToken.tokens[x].tokenValue);
     currentIdentifier->tokenLine = strippedToken.tokens[x].tokenLine;
@@ -28,7 +28,7 @@ void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int 
     strcpy(currentIdentifier->fileName, strippedToken.tokens[x].fileName);
 }
 
-void setToken(int * initToken, int * sPos, TokenArray * tokenArray, char val[], int line, int col, TokenType tType, char titikFileName[]) {
+void setToken(int * initToken, int * sPos, TokenArray * tokenArray, char val[], int line, int col, TitikTokenType tType, char titikFileName[]) {
     *initToken = F;
     *sPos = 0;
     tokenArray->tokenCount += 1;

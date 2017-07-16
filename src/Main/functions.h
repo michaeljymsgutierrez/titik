@@ -95,7 +95,7 @@ typedef struct {
 
 void setVariableInfo(int variablePosition, Token currentIdentifier);
 int evaluateToken(Token currentIdentifier, int * ifWithTrue);
-void compareVariable(Variable tempVariable, Variable tempVariable2, TokenType currentOperation, int * ifWithTrue);
+void compareVariable(Variable tempVariable, Variable tempVariable2, TitikTokenType currentOperation, int * ifWithTrue);
 int convertTokenToVariable(Variable * tempVariable, Token token);
 void p_execute(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn);
 void i_execute(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn);

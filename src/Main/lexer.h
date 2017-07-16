@@ -43,9 +43,9 @@ typedef enum {
     tab_token,
     carriage_return_token,
     none_token
-} TokenType;
+} TitikTokenType;
 
-static const char *TokenTypeString[] = {
+static const char *TitikTokenTypeString[] = {
     "identifier_token",
     "period_token",
     "keyword_token",
@@ -85,7 +85,7 @@ static const char *TokenTypeString[] = {
 typedef struct {
     char tokenValue[TITIK_CHAR_PER_LINE];
     char fileName[TITIK_CHAR_PER_LINE];
-    TokenType tokenType;
+    TitikTokenType tokenType;
     int tokenLine; //reference for line #
     int tokenColumn; //reference for column #
 } Token;
@@ -104,8 +104,8 @@ typedef enum {
 } TokenizerState;
 
 void updateTemporaryTokens(TokenArray * newTempTokens, TokenArray strippedToken, int x);
-void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int x, TokenType tokenType);
-void setToken(int * initToken, int * sPos, TokenArray * tokenArray, char val[], int line, int col, TokenType tType, char titikFileName[]);
+void setTemporaryToken(Token * currentIdentifier, TokenArray strippedToken, int x, TitikTokenType tokenType);
+void setToken(int * initToken, int * sPos, TokenArray * tokenArray, char val[], int line, int col, TitikTokenType tType, char titikFileName[]);
 void updateFinalToken(int x, TokenArray * finalTokenArray, TokenArray tokenArray);
 int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArray, char titikFileName[]);
 

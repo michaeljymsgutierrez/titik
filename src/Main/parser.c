@@ -65,7 +65,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak) {
     Token currentIdentifier2;
     Variable tempVariable; //this will hold data in if comparison
     Variable tempVariable2; //this will hold data in if comparision
-    TokenType currentOperation = none_token;
+    TitikTokenType currentOperation = none_token;
     char tempChar[TITIK_VARIABLE_INIT_LENGTH];
     int ifWithTrue = F;
     int elseIfWithTrue = F;
