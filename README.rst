@@ -13,8 +13,8 @@ Linux/OSX Requirement
 
 GNU Compiler Collection (GCC)
 
-Building On Linux/OSX Machine
-=============================
+Building On Linux/OSX/FreeBSD Machine
+=====================================
 
 ::
 
