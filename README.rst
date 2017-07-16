@@ -50,6 +50,7 @@ Sample Code
         #loop statement
         fl (1 to 5)
             p(strVariable) #It will print "Hello World" 5 times
+            zzz(2000) #sleep for 2 seconds
         lf
         
     e
