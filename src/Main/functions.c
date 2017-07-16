@@ -307,6 +307,8 @@ void zzz_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
 
     #ifdef _WIN32
     Sleep(argumentArray.arguments[0].integer_value);
+    #elif __linux__
+    sleep(argumentArray.arguments[0].integer_value / 1000);
     #else
     usleep(argumentArray.arguments[0].integer_value * 1000);
     #endif
