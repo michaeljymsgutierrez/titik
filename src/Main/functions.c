@@ -12,6 +12,12 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <unistd.h>
+#endif
+
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 
@@ -292,6 +298,23 @@ void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * fu
     *intReturn = 0;
 }
 
+void zzz_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+
+    if(argumentArray.arguments[0].argumentType != arg_integer_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be an integer\n");
+    }
+
+    #ifdef _WIN32
+    Sleep(argumentArray.arguments[0].integer_value);
+    #else
+    usleep(argumentArray.arguments[0].integer_value * 1000);
+    #endif
+
+    funcReturn->returnType = ret_none_type;
+    *intReturn = 0;
+}
+
 void initFunctions() {
 
     //p function
@@ -320,6 +343,15 @@ void initFunctions() {
     strcpy(rArgArray.arguments[0].string_value, "");
     defineFunction("r", rArgArray, r_execute);
     //end r function
+
+    //zzz function
+    ArgumentArray zzzArgArray;
+    zzzArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    zzzArgArray.argumentCount = 1; //set number of args
+    zzzArgArray.arguments[0].argumentType = arg_integer_type;
+    zzzArgArray.arguments[0].integer_value = 0;
+    defineFunction("zzz", zzzArgArray, zzz_execute);
+    //end zzz function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {

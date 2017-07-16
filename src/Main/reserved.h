@@ -5,9 +5,10 @@
 #ifndef RESERVED_H_
 #define RESERVED_H_
 
-#define RESERVED_WORD_COUNT 13
+#define RESERVED_WORD_COUNT 14
 
 static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
+    "zzz", //sleep
     "p", //print
     "fd", //function
     "df", //end of function declaration
