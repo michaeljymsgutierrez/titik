@@ -171,10 +171,25 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak) {
                     }                    
                 break;
                 case get_for_loop_from:
-                    if(strippedToken.tokens[x].tokenType == integer_token) {
-                        //parse only integer type for now (this is temporary only)
+                    if(strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
                         parserState = get_for_loop_to_word;
-                        fromLoop = atoi(strippedToken.tokens[x].tokenValue);
+                        if(strippedToken.tokens[x].tokenType == identifier_token) {
+                            isVariablesExists = F;
+                            variablePosition = 0;
+
+                            isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                            if(!isVariablesExists) {
+                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                            }
+
+                            if(globalVariableArray.variables[variablePosition].variable_type != var_integer_type) {
+                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting integer variable", strippedToken.tokens[x].fileName);
+                            }
+
+                            fromLoop = globalVariableArray.variables[variablePosition].integer_value;
+                        } else {
+                            fromLoop = atoi(strippedToken.tokens[x].tokenValue);
+                        }
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                     }  
@@ -187,10 +202,25 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak) {
                     }
                 break;
                 case get_for_loop_to:
-                    if(strippedToken.tokens[x].tokenType == integer_token) {
-                        //parse only integer type for now (this is temporary only)
+                    if(strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
                         parserState = get_for_loop_end;
-                        toLoop = atoi(strippedToken.tokens[x].tokenValue);
+                        if(strippedToken.tokens[x].tokenType == identifier_token) {
+                            isVariablesExists = F;
+                            variablePosition = 0;
+
+                            isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                            if(!isVariablesExists) {
+                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                            }
+
+                            if(globalVariableArray.variables[variablePosition].variable_type != var_integer_type) {
+                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting integer variable", strippedToken.tokens[x].fileName);
+                            }
+
+                            toLoop = globalVariableArray.variables[variablePosition].integer_value;
+                        } else {
+                            toLoop = atoi(strippedToken.tokens[x].tokenValue);
+                        }
                     } else {
                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                     } 
