@@ -8,8 +8,8 @@ Intro
 
 This is for experimental and educational purpose only. ;)
 
-Linux/OSX Requirement
-=====================
+Linux/OSX/FreeBSD Requirement
+=============================
 
 GNU Compiler Collection (GCC)
 
