@@ -94,6 +94,12 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
                     } else if(fileContent[x][x2] == '\n') {
                         //new line
                         setToken(&isTokenInit, &strPos, tokenArray, "\\n", x, x2, newline_token, titikFileName);
+                    } else if(fileContent[x][x2] == '\t') {
+                        //tab
+                        setToken(&isTokenInit, &strPos, tokenArray, "\\t", x, x2, tab_token, titikFileName);
+                    } else if(fileContent[x][x2] == '\r') {
+                        //carriage return
+                        setToken(&isTokenInit, &strPos, tokenArray, "\\r", x, x2, carriage_return_token, titikFileName);
                     } else if(fileContent[x][x2] == ' ') {
                         //space
                         setToken(&isTokenInit, &strPos, tokenArray, "' '", x, x2, space_token, titikFileName);
@@ -261,6 +267,12 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
                         } else if(fileContent[x][x2] == '\n') {
                             //new line
                             setToken(&isTokenInit, &strPos, tokenArray, "\\n", x, x2, newline_token, titikFileName);
+                        } else if(fileContent[x][x2] == '\t') {
+                            //tab
+                            setToken(&isTokenInit, &strPos, tokenArray, "\\t", x, x2, tab_token, titikFileName);
+                        } else if(fileContent[x][x2] == '\r') {
+                            //carriage return
+                            setToken(&isTokenInit, &strPos, tokenArray, "\\r", x, x2, carriage_return_token, titikFileName);                            
                         } else if(fileContent[x][x2] == ' ') {
                             //space
                             setToken(&isTokenInit, &strPos, tokenArray, "' '", x, x2, space_token, titikFileName);

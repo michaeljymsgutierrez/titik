@@ -34,8 +34,8 @@ TokenArray stripUnwantedToken(TokenArray tokenArray) {
     newTokens.tokenCount = 0;
 
     for(int x=0; x < tokenArray.tokenCount; x++) {
-        //remove space, newline, comments
-        if(tokenArray.tokens[x].tokenType == newline_token || tokenArray.tokens[x].tokenType == space_token || tokenArray.tokens[x].tokenType == single_comment_token || tokenArray.tokens[x].tokenType == multi_comment_token || tokenArray.tokens[x].tokenType == close_multi_comment_token || tokenArray.tokens[x].tokenType == close_string_token) {
+        //remove space, newline, comments, carriage return & tab
+        if(tokenArray.tokens[x].tokenType == newline_token || tokenArray.tokens[x].tokenType == space_token || tokenArray.tokens[x].tokenType == single_comment_token || tokenArray.tokens[x].tokenType == multi_comment_token || tokenArray.tokens[x].tokenType == close_multi_comment_token || tokenArray.tokens[x].tokenType == close_string_token || tokenArray.tokens[x].tokenType == tab_token || tokenArray.tokens[x].tokenType == carriage_return_token) {
             continue;
         } else {
             newTokens.tokens[newTokens.tokenCount].tokenLine = tokenArray.tokens[x].tokenLine;

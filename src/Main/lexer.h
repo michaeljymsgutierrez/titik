@@ -40,6 +40,8 @@ typedef enum {
     less_than_token,
     or_token,
     exclamation_token,
+    tab_token,
+    carriage_return_token,
     none_token
 } TokenType;
 
@@ -75,6 +77,8 @@ static const char *TokenTypeString[] = {
     "less_than_token",
     "or_token",
     "exclamation_token",
+    "tab_token",
+    "carriage_return_token",
     "none_token"
 };
 
