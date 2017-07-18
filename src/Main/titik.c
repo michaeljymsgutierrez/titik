@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
             return functionReturn;
 
         //parse token
-        functionReturn = parseToken(tokenArray, F, &needBreak);
+        functionReturn = parseToken(tokenArray, F, &needBreak, TITIK_MAIN_SCOPE_NAME);
 
         if(functionReturn > 0)
             return functionReturn;

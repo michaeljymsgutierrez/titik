@@ -252,7 +252,7 @@ void i_execute(ArgumentArray argumentArray2,  int * intReturn, FunctionReturn * 
                 *intReturn = functionReturn;
             } else {
                 //parse token
-                functionReturn = parseToken(tokenArray, F, &needBreak);
+                functionReturn = parseToken(tokenArray, F, &needBreak, TITIK_MAIN_SCOPE_NAME);
             }
         }
     } 
