@@ -86,6 +86,7 @@ typedef struct {
     char functionName[TITIK_CHAR_PER_LINE];
     int isSystem; //tells if the function is user defined or not
     void (*execute)(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn);
+    TokenArray tokens;
     FunctionReturn functionReturn;
 } Function;
 
