@@ -181,7 +181,7 @@ int convertTokenToVariable(Variable * tempVariable, Token token) {
     return ret;
 }
 
-void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * funcReturn)) {
+void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * funcReturn), int isSystem) {
     strcpy(globalFunctionArray.functions[globalFunctionArray.functionCount].functionName, functionName);
 
     globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.argumentCount = 0;
@@ -195,6 +195,7 @@ void defineFunction(char functionName[], ArgumentArray argumentArray, void(*exec
     }
 
     globalFunctionArray.functions[globalFunctionArray.functionCount].execute = execute;
+    globalFunctionArray.functions[globalFunctionArray.functionCount].isSystem = isSystem;
     //last statement to be executed
     globalFunctionArray.functionCount += 1;
 }
@@ -325,7 +326,7 @@ void initFunctions() {
     pArgArray.argumentCount = 1; //set number of args
     pArgArray.arguments[0].argumentType = arg_string_type;
     strcpy(pArgArray.arguments[0].string_value, "");
-    defineFunction("p", pArgArray, p_execute);
+    defineFunction("p", pArgArray, p_execute, T);
     //end p function
 
     //i function
@@ -334,7 +335,7 @@ void initFunctions() {
     iArgArray.argumentCount = 1; //set number of args
     iArgArray.arguments[0].argumentType = arg_string_type;
     strcpy(iArgArray.arguments[0].string_value, "");
-    defineFunction("i", iArgArray, i_execute);
+    defineFunction("i", iArgArray, i_execute, T);
     //end i function
 
     //r function
@@ -343,7 +344,7 @@ void initFunctions() {
     rArgArray.argumentCount = 1; //set number of args
     rArgArray.arguments[0].argumentType = arg_string_type;
     strcpy(rArgArray.arguments[0].string_value, "");
-    defineFunction("r", rArgArray, r_execute);
+    defineFunction("r", rArgArray, r_execute, T);
     //end r function
 
     //zzz function
@@ -352,7 +353,7 @@ void initFunctions() {
     zzzArgArray.argumentCount = 1; //set number of args
     zzzArgArray.arguments[0].argumentType = arg_integer_type;
     zzzArgArray.arguments[0].integer_value = 0;
-    defineFunction("zzz", zzzArgArray, zzz_execute);
+    defineFunction("zzz", zzzArgArray, zzz_execute, T);
     //end zzz function
 }
 

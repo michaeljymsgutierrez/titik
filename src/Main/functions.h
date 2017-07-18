@@ -84,6 +84,7 @@ typedef struct {
 typedef struct {
     ArgumentArray argumentArray;
     char functionName[TITIK_CHAR_PER_LINE];
+    int isSystem; //tells if the function is user defined or not
     void (*execute)(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn);
     FunctionReturn functionReturn;
 } Function;
@@ -103,7 +104,7 @@ void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * fu
 void zzz_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 //the first argument array is the structure of the function
 //the function pointer with argumentarray is the user inputted argument
-void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn));
+void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn), int isSystem);
 void initFunctions();
 int isFunctionExists(int * functionPosition, char tokenValue[]);
 int isVariableExists(int * variablePosition, char tokenValue[], char scopeName[]);

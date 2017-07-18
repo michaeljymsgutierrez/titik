@@ -499,167 +499,173 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak) {
                 case get_function_parameters:
                     if(strippedToken.tokens[x].tokenType == close_parenthesis_token) {
                         
-                        //check first if # of arguments matched
-                        if(argumentArray.argumentCount != globalFunctionArray.functions[functionPosition].argumentArray.argumentCount) {
-                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Argument count didn't matched", strippedToken.tokens[x].fileName);
-                        }
+                        if(globalFunctionArray.functions[functionPosition].isSystem) {
+                            //execute system defined function
+                            //check first if # of arguments matched
+                            if(argumentArray.argumentCount != globalFunctionArray.functions[functionPosition].argumentArray.argumentCount) {
+                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Argument count didn't matched", strippedToken.tokens[x].fileName);
+                            }
 
-                        //execute function
-                        globalFunctionArray.functions[functionPosition].execute(argumentArray, &intFunctionReturn, &funcReturn);
-                        //set return value & type
-                        globalFunctionArray.functions[functionPosition].functionReturn = funcReturn;
+                            //execute function
+                            globalFunctionArray.functions[functionPosition].execute(argumentArray, &intFunctionReturn, &funcReturn);
+                            //set return value & type
+                            globalFunctionArray.functions[functionPosition].functionReturn = funcReturn;
 
-                        if(intFunctionReturn > 0) {
-                            return intFunctionReturn;
-                        }
+                            if(intFunctionReturn > 0) {
+                                return intFunctionReturn;
+                            }
 
-                        //executed the function in assigment operation
-                        if(isFunctionAssignmentMode) {
-                            isFunctionAssignmentMode = F;
-                            //assign function return to variable
-                            
-                            if(!isFunctionAssignmentUpdate) {
-                                //set variable
-                                switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
-                                    case ret_string_type:
-                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_string_type;
-                                        strcpy(globalVariableArray.variables[lastVariablePosition].string_value, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
-                                    break;
-                                    case ret_integer_type:
-                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_integer_type;
-                                        globalVariableArray.variables[lastVariablePosition].integer_value = globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
-                                    break;
-                                    case ret_float_type:
-                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_float_type;
-                                        globalVariableArray.variables[lastVariablePosition].float_value = globalFunctionArray.functions[functionPosition].functionReturn.float_value;
-                                    break;
-                                    default:
-                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_none_type;
-                                }
-                            } else {
-                                //update variable
-                                isFunctionAssignmentUpdate = F;
-                                strcpy(tempChar, ""); //clear temp char
+                            //executed the function in assigment operation
+                            if(isFunctionAssignmentMode) {
+                                isFunctionAssignmentMode = F;
+                                //assign function return to variable
+                                
+                                if(!isFunctionAssignmentUpdate) {
+                                    //set variable
+                                    switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
+                                        case ret_string_type:
+                                            globalVariableArray.variables[lastVariablePosition].variable_type = var_string_type;
+                                            strcpy(globalVariableArray.variables[lastVariablePosition].string_value, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
+                                        break;
+                                        case ret_integer_type:
+                                            globalVariableArray.variables[lastVariablePosition].variable_type = var_integer_type;
+                                            globalVariableArray.variables[lastVariablePosition].integer_value = globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                        break;
+                                        case ret_float_type:
+                                            globalVariableArray.variables[lastVariablePosition].variable_type = var_float_type;
+                                            globalVariableArray.variables[lastVariablePosition].float_value = globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                        break;
+                                        default:
+                                            globalVariableArray.variables[lastVariablePosition].variable_type = var_none_type;
+                                    }
+                                } else {
+                                    //update variable
+                                    isFunctionAssignmentUpdate = F;
+                                    strcpy(tempChar, ""); //clear temp char
 
-                                switch(globalVariableArray.variables[lastVariablePosition].variable_type) {
-                                    case var_float_type:
-                                    case var_integer_type:
-                                        switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
-                                            case ret_string_type:
-                                                if(currentOperation == plus_token) {
-                                                    strcpy(tempChar, "");
-                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
-                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[lastVariablePosition].integer_value);
-                                                    } else {
-                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[lastVariablePosition].float_value);
-                                                    }
-                                                    
-                                                    globalVariableArray.variables[lastVariablePosition].variable_type = var_string_type;
-                                                    strcpy(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
-
-                                                    strcpy(tempChar, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
-                                                    strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
-                                                } else {
-                                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid operation", strippedToken.tokens[x].fileName);
-                                                }
-                                            break;
-                                            case ret_integer_type:
-                                                if(currentOperation == plus_token) {
-                                                    //addition
-                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[lastVariablePosition].integer_value += globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
-                                                    } else {
-                                                        globalVariableArray.variables[lastVariablePosition].float_value += (double)globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
-                                                    }
-                                                } else if(currentOperation == minus_token) {
-                                                    //subtraction
-                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[lastVariablePosition].integer_value -= globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
-                                                    } else {
-                                                        globalVariableArray.variables[lastVariablePosition].float_value -= (double)globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
-                                                    }
-                                                } else if(currentOperation == multiply_token) {
-                                                    //multiplication
-                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[lastVariablePosition].integer_value *= globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
-                                                    } else {
-                                                        globalVariableArray.variables[lastVariablePosition].float_value *= (double)globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
-                                                    }
-                                                } else {
-                                                    //assume it's division
-                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[lastVariablePosition].integer_value /= globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
-                                                    } else {
-                                                        globalVariableArray.variables[lastVariablePosition].float_value /= (double)globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
-                                                    }
-                                                }
-                                            break;
-                                            case ret_float_type:
-                                                if(currentOperation == plus_token) {
-                                                    //addition
-                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[lastVariablePosition].integer_value += (long int)globalFunctionArray.functions[functionPosition].functionReturn.float_value;
-                                                    } else {
-                                                        globalVariableArray.variables[lastVariablePosition].float_value += globalFunctionArray.functions[functionPosition].functionReturn.float_value;
-                                                    }
-                                                } else if(currentOperation == minus_token) {
-                                                    //subtraction
-                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[lastVariablePosition].integer_value -= (long int)globalFunctionArray.functions[functionPosition].functionReturn.float_value;
-                                                    } else {
-                                                        globalVariableArray.variables[lastVariablePosition].float_value -= globalFunctionArray.functions[functionPosition].functionReturn.float_value;
-                                                    }
-                                                } else if(currentOperation == multiply_token) {
-                                                    //multiplication
-                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[lastVariablePosition].integer_value *= (long int)globalFunctionArray.functions[functionPosition].functionReturn.float_value;
-                                                    } else {
-                                                        globalVariableArray.variables[lastVariablePosition].float_value *= globalFunctionArray.functions[functionPosition].functionReturn.float_value;
-                                                    }
-                                                } else {
-                                                    //assume it's division
-                                                    if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
-                                                        globalVariableArray.variables[lastVariablePosition].integer_value /= (long int)globalFunctionArray.functions[functionPosition].functionReturn.float_value;
-                                                    } else {
-                                                        globalVariableArray.variables[lastVariablePosition].float_value /= globalFunctionArray.functions[functionPosition].functionReturn.float_value;
-                                                    }
-                                                }
-                                            break;
-                                            default:
-                                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
-                                        }
-                                    break;
-                                    case var_string_type:
-
-                                        if(currentOperation == plus_token) {
+                                    switch(globalVariableArray.variables[lastVariablePosition].variable_type) {
+                                        case var_float_type:
+                                        case var_integer_type:
                                             switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
                                                 case ret_string_type:
-                                                    strcat(globalVariableArray.variables[lastVariablePosition].string_value, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
+                                                    if(currentOperation == plus_token) {
+                                                        strcpy(tempChar, "");
+                                                        if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                            snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[lastVariablePosition].integer_value);
+                                                        } else {
+                                                            snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[lastVariablePosition].float_value);
+                                                        }
+                                                        
+                                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_string_type;
+                                                        strcpy(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
+
+                                                        strcpy(tempChar, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
+                                                        strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
+                                                    } else {
+                                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid operation", strippedToken.tokens[x].fileName);
+                                                    }
                                                 break;
                                                 case ret_integer_type:
-                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalFunctionArray.functions[functionPosition].functionReturn.integer_value);
-                                                    strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
+                                                    if(currentOperation == plus_token) {
+                                                        //addition
+                                                        if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[lastVariablePosition].integer_value += globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                        } else {
+                                                            globalVariableArray.variables[lastVariablePosition].float_value += (double)globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                        }
+                                                    } else if(currentOperation == minus_token) {
+                                                        //subtraction
+                                                        if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[lastVariablePosition].integer_value -= globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                        } else {
+                                                            globalVariableArray.variables[lastVariablePosition].float_value -= (double)globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                        }
+                                                    } else if(currentOperation == multiply_token) {
+                                                        //multiplication
+                                                        if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[lastVariablePosition].integer_value *= globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                        } else {
+                                                            globalVariableArray.variables[lastVariablePosition].float_value *= (double)globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                        }
+                                                    } else {
+                                                        //assume it's division
+                                                        if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[lastVariablePosition].integer_value /= globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                        } else {
+                                                            globalVariableArray.variables[lastVariablePosition].float_value /= (double)globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                                        }
+                                                    }
                                                 break;
                                                 case ret_float_type:
-                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalFunctionArray.functions[functionPosition].functionReturn.float_value);
-                                                    strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
+                                                    if(currentOperation == plus_token) {
+                                                        //addition
+                                                        if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[lastVariablePosition].integer_value += (long int)globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                        } else {
+                                                            globalVariableArray.variables[lastVariablePosition].float_value += globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                        }
+                                                    } else if(currentOperation == minus_token) {
+                                                        //subtraction
+                                                        if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[lastVariablePosition].integer_value -= (long int)globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                        } else {
+                                                            globalVariableArray.variables[lastVariablePosition].float_value -= globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                        }
+                                                    } else if(currentOperation == multiply_token) {
+                                                        //multiplication
+                                                        if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[lastVariablePosition].integer_value *= (long int)globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                        } else {
+                                                            globalVariableArray.variables[lastVariablePosition].float_value *= globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                        }
+                                                    } else {
+                                                        //assume it's division
+                                                        if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
+                                                            globalVariableArray.variables[lastVariablePosition].integer_value /= (long int)globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                        } else {
+                                                            globalVariableArray.variables[lastVariablePosition].float_value /= globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                                        }
+                                                    }
                                                 break;
                                                 default:
                                                     return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
                                             }
-                                        } else {
-                                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid operation", strippedToken.tokens[x].fileName);
-                                        }
+                                        break;
+                                        case var_string_type:
 
-                                    break;
-                                    default:
-                                        //none type
-                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                            if(currentOperation == plus_token) {
+                                                switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
+                                                    case ret_string_type:
+                                                        strcat(globalVariableArray.variables[lastVariablePosition].string_value, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
+                                                    break;
+                                                    case ret_integer_type:
+                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalFunctionArray.functions[functionPosition].functionReturn.integer_value);
+                                                        strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
+                                                    break;
+                                                    case ret_float_type:
+                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalFunctionArray.functions[functionPosition].functionReturn.float_value);
+                                                        strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
+                                                    break;
+                                                    default:
+                                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                                }
+                                            } else {
+                                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid operation", strippedToken.tokens[x].fileName);
+                                            }
+
+                                        break;
+                                        default:
+                                            //none type
+                                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                    }
                                 }
+                                checkOperationAndSetParser(x, &parserState, strippedToken);
+                            } else {
+                                parserState = get_start;
                             }
-                            checkOperationAndSetParser(x, &parserState, strippedToken);
                         } else {
-                            parserState = get_start;
+                            //execute user defined function
+                            //TODO: HANDLE EXECUTION USER DEFINED FUNCTION
                         }
 
                     } else if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
