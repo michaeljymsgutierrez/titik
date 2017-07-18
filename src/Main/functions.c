@@ -21,10 +21,10 @@
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 
-void setVariableInfo(int variablePosition, Token currentIdentifier) {
+void setVariableInfo(int variablePosition, Token currentIdentifier, char currentScope[]) {
     //set name & scope
     strcpy(globalVariableArray.variables[variablePosition].name, currentIdentifier.tokenValue);
-    strcpy(globalVariableArray.variables[variablePosition].scope_name, TITIK_MAIN_SCOPE_NAME);
+    strcpy(globalVariableArray.variables[variablePosition].scope_name, currentScope);
 
     //set constant or not
     //if the first letter is capital then it's a constant else it's not
@@ -35,7 +35,7 @@ void setVariableInfo(int variablePosition, Token currentIdentifier) {
     }
 }
 
-int evaluateToken(Token currentIdentifier, int * ifWithTrue) {
+int evaluateToken(Token currentIdentifier, int * ifWithTrue, char currentScope[]) {
     int ret = 0;
     int isVariablesExists = F;
     int variablePosition2 = 0;
@@ -43,7 +43,7 @@ int evaluateToken(Token currentIdentifier, int * ifWithTrue) {
     switch(currentIdentifier.tokenType) {
         case identifier_token:
 
-            isVariablesExists = isVariableExists(&variablePosition2, currentIdentifier.tokenValue, TITIK_MAIN_SCOPE_NAME);
+            isVariablesExists = isVariableExists(&variablePosition2, currentIdentifier.tokenValue, currentScope);
             if(!isVariablesExists) {
                 return unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Undefined variable ", currentIdentifier.tokenValue, currentIdentifier.fileName);
             }
@@ -148,14 +148,14 @@ void compareVariable(Variable tempVariable, Variable tempVariable2, TitikTokenTy
     }
 }
 
-int convertTokenToVariable(Variable * tempVariable, Token token) {
+int convertTokenToVariable(Variable * tempVariable, Token token, char currentScope[]) {
     int ret = 0;
     int isVariablesExists = F;
     int variablePosition = 0;
 
     switch(token.tokenType) {
         case identifier_token:
-            isVariablesExists = isVariableExists(&variablePosition, token.tokenValue, TITIK_MAIN_SCOPE_NAME);
+            isVariablesExists = isVariableExists(&variablePosition, token.tokenValue, currentScope);
             if(!isVariablesExists) {
                 return unexpected_error(token.tokenLine, token.tokenColumn, "Undefined variable ", token.tokenValue, token.fileName);
             }

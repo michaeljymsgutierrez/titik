@@ -177,7 +177,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                             isVariablesExists = F;
                             variablePosition = 0;
 
-                            isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                            isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, currentScope);
                             if(!isVariablesExists) {
                                 return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                             }
@@ -208,7 +208,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                             isVariablesExists = F;
                             variablePosition = 0;
 
-                            isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                            isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, currentScope);
                             if(!isVariablesExists) {
                                 return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                             }
@@ -315,13 +315,13 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                 break;
                 case get_if_end:
                     if(strippedToken.tokens[x].tokenType == close_parenthesis_token) {
-                        intFunctionReturn = convertTokenToVariable(&tempVariable, currentIdentifier);
+                        intFunctionReturn = convertTokenToVariable(&tempVariable, currentIdentifier, currentScope);
 
                         if(intFunctionReturn > 0) {
                             return intFunctionReturn;
                         }
 
-                        intFunctionReturn = convertTokenToVariable(&tempVariable2, currentIdentifier2);
+                        intFunctionReturn = convertTokenToVariable(&tempVariable2, currentIdentifier2, currentScope);
 
                         if(intFunctionReturn > 0) {
                             return intFunctionReturn;
@@ -355,7 +355,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                             //evaluate the expression
                             //if true then get all tokens
                             if(!elseIfMode) {
-                                intFunctionReturn = evaluateToken(currentIdentifier, &ifWithTrue);
+                                intFunctionReturn = evaluateToken(currentIdentifier, &ifWithTrue, currentScope);
 
                                 if(intFunctionReturn > 0) {
                                     return intFunctionReturn;
@@ -365,7 +365,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                             } else {
 
                                 if(!ifWithTrue && !elseIfWithTrue) {
-                                    intFunctionReturn = evaluateToken(currentIdentifier, &elseIfWithTrue);
+                                    intFunctionReturn = evaluateToken(currentIdentifier, &elseIfWithTrue, currentScope);
 
                                     if(intFunctionReturn > 0) {
                                         return intFunctionReturn;
@@ -675,7 +675,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                             isVariablesExists = F;
                             variablePosition = 0;
 
-                            isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                            isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, currentScope);
                             if(!isVariablesExists) {
                                 return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                             }
@@ -737,7 +737,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                     //check variable if existing and set the variable value here
                     if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token || strippedToken.tokens[x].tokenType == keyword_token) {
 
-                        isVariablesExists = isVariableExists(&variablePosition, currentIdentifier.tokenValue, TITIK_MAIN_SCOPE_NAME);
+                        isVariablesExists = isVariableExists(&variablePosition, currentIdentifier.tokenValue, currentScope);
                         
                         if(!isVariablesExists) {
                             variablePosition = globalVariableArray.variableCount;
@@ -752,7 +752,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                             isVariablesExists = F;
                             variablePosition2 = 0;
 
-                            isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                            isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, currentScope);
                             if(!isVariablesExists) {
                                 return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                             }
@@ -776,7 +776,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                         }
 
                         //set variable info
-                        setVariableInfo(variablePosition, currentIdentifier);
+                        setVariableInfo(variablePosition, currentIdentifier, currentScope);
 
                         //set variable type and value
                         if(strippedToken.tokens[x].tokenType == string_token) {
@@ -853,7 +853,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                                             variablePosition2 = 0;
                                             strcpy(tempChar, ""); //clear temp char
 
-                                            isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                                            isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, currentScope);
                                             if(!isVariablesExists) {
                                                 return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                             }
@@ -1000,7 +1000,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                                             variablePosition2 = 0;
                                             strcpy(tempChar, ""); //clear temp char
 
-                                            isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, TITIK_MAIN_SCOPE_NAME);
+                                            isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, currentScope);
                                             if(!isVariablesExists) {
                                                 return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                             }

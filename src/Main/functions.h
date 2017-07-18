@@ -94,10 +94,10 @@ typedef struct {
     int functionCount;
 } FunctionArray;
 
-void setVariableInfo(int variablePosition, Token currentIdentifier);
-int evaluateToken(Token currentIdentifier, int * ifWithTrue);
+void setVariableInfo(int variablePosition, Token currentIdentifier, char currentScope[]);
+int evaluateToken(Token currentIdentifier, int * ifWithTrue, char currentScope[]);
 void compareVariable(Variable tempVariable, Variable tempVariable2, TitikTokenType currentOperation, int * ifWithTrue);
-int convertTokenToVariable(Variable * tempVariable, Token token);
+int convertTokenToVariable(Variable * tempVariable, Token token, char currentScope[]);
 void p_execute(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn);
 void i_execute(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn);
 void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
