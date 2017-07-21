@@ -9,7 +9,7 @@
 #define T 1
 #define F 0
 
-#define TITIK_LOADED_FILES_INIT_LENGTH 50000
+#define TITIK_LOADED_FILES_INIT_LENGTH 10000
 
 //error list
 //TODO: "ALL" error number should be here

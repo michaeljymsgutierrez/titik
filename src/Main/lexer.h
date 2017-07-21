@@ -6,7 +6,7 @@
 #define LEXER_H_
 #include "util.h"
 
-#define TITIK_TOKEN_INIT_LENGTH 50000 //how many token can generate???
+#define TITIK_TOKEN_INIT_LENGTH 10000 //how many token can generate???
 
 typedef enum {
     identifier_token,

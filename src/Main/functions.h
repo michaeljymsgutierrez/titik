@@ -5,9 +5,9 @@
 #ifndef FUNCTIONS_H_
 #define FUNCTIONS_H_
 
-#define TITIK_VARIABLE_INIT_LENGTH 50000
-#define TITIK_FUNCTION_INIT_LENGTH 50000
-#define TITIK_ARGUMENT_INIT_LENGTH 50000
+#define TITIK_VARIABLE_INIT_LENGTH 10000
+#define TITIK_FUNCTION_INIT_LENGTH 10000
+#define TITIK_ARGUMENT_INIT_LENGTH 10000
 #define TITIK_MAIN_SCOPE_NAME "main"
 #include "util.h"
 #include "lexer.h"
@@ -28,10 +28,10 @@ static const char *variableTypeString[] = {
 };
 
 typedef struct _Variable{
-    char name[TITIK_VARIABLE_INIT_LENGTH];
+    char name[TITIK_CHAR_PER_LINE];
     char scope_name[TITIK_CHAR_PER_LINE];
     variable_type variable_type;
-    char string_value[TITIK_VARIABLE_INIT_LENGTH];
+    char string_value[TITIK_CHAR_PER_LINE];
     long int integer_value;
     double float_value;
     int is_constant;
