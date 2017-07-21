@@ -709,7 +709,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
 
                         argumentArray.argumentCount += 1;
                     } else if(strippedToken.tokens[x].tokenType == comma_token) {
-                        if(strippedToken.tokens[x - 1].tokenType == string_token || strippedToken.tokens[x - 1].tokenType == float_token || strippedToken.tokens[x - 1].tokenType == integer_token) {
+                        if(strippedToken.tokens[x - 1].tokenType == string_token || strippedToken.tokens[x - 1].tokenType == float_token || strippedToken.tokens[x - 1].tokenType == integer_token || strippedToken.tokens[x - 1].tokenType == identifier_token) {
                             //then ok
                             //nothing to do
                         } else {
