@@ -625,14 +625,13 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                 case get_function_parameters:
                     if(strippedToken.tokens[x].tokenType == close_parenthesis_token) {
                         
+                        //check first if # of arguments matched
+                        if(argumentArray.argumentCount != globalFunctionArray.functions[functionPosition].argumentArray.argumentCount) {
+                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Argument count didn't matched", strippedToken.tokens[x].fileName);
+                        }
+
                         if(globalFunctionArray.functions[functionPosition].isSystem) {
                             //execute system defined function
-                            //check first if # of arguments matched
-                            if(argumentArray.argumentCount != globalFunctionArray.functions[functionPosition].argumentArray.argumentCount) {
-                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Argument count didn't matched", strippedToken.tokens[x].fileName);
-                            }
-
-                            //execute function
                             globalFunctionArray.functions[functionPosition].execute(argumentArray, &intFunctionReturn, &funcReturn);
                             //set return value & type
                             globalFunctionArray.functions[functionPosition].functionReturn = funcReturn;
