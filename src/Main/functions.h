@@ -70,6 +70,7 @@ typedef enum {
 } ArgumentType;
 
 typedef struct {
+    char argumentName[TITIK_CHAR_PER_LINE];
     char string_value[TITIK_CHAR_PER_LINE];
     long int integer_value;
     double float_value;
@@ -108,6 +109,7 @@ void zzz_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
 void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn), int isSystem);
 void initFunctions();
 int isFunctionExists(int * functionPosition, char tokenValue[]);
+int isFunctionArgumentExists(ArgumentArray argArray, int * argumentPosition, char tokenValue[]);
 int isVariableExists(int * variablePosition, char tokenValue[], char scopeName[]);
 
 void defineConstantString(char variableName[], char variableValue[]);

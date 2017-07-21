@@ -56,6 +56,8 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
     FunctionReturn funcReturn;
     int isFunctionsExists = F;
     int functionPosition = 0;
+    int isArgumentExists = F;
+    int argumentPosition = 0;
     int isVariablesExists = F;
     int variablePosition = 0;
     int variablePosition2 = 0;
@@ -79,6 +81,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
     int fromLoop = 0;
     int toLoop = 0;
     int forLoopEndCount = 0;
+    int functionEndCount = 0;
 
     int willBreak = F;
 
@@ -153,6 +156,14 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                                     } else {
                                         return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);    
                                     }
+                                } else if(!strcmp(strippedToken.tokens[x].tokenValue, "fd")) {
+                                    //function definition
+                                    parserState = get_function_name;
+                                    functionEndCount = 0;
+                                    //prohibit declaration of function inside a function
+                                    if(strcmp(currentScope, TITIK_MAIN_SCOPE_NAME)) {
+                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot define a function inside a function", strippedToken.tokens[x].fileName);
+                                    }
                                 } else {
                                     return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 }                            
@@ -162,6 +173,120 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                             return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                     }
 
+                break;
+                case get_function_name:
+                    if(strippedToken.tokens[x].tokenType == identifier_token) {
+                        //check if the identifier is already defined as variable
+                        //if it is then raise an error
+                        isVariablesExists = F;
+                        variablePosition = 0;
+
+                        isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, currentScope);
+                        if(isVariablesExists) {
+                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Identifier is already defined as variable", strippedToken.tokens[x].fileName);
+                        }
+
+                        //check if the identifier is already defined as function
+                        //if it is then raise an error that tells the user it's already existing
+                        //(You cannot redefine function in Titik)
+                        isFunctionsExists = F;
+                        functionPosition = 0;
+
+                        isFunctionsExists = isFunctionExists(&functionPosition, strippedToken.tokens[x].tokenValue);
+                        if(isFunctionsExists) {
+                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Function already exists", strippedToken.tokens[x].fileName);
+                        }
+
+                        setTemporaryToken(&currentIdentifier, strippedToken, x, identifier_token);
+
+                        //init function arguments
+                        globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.argumentCount = 0;
+                        globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+                        //init function tokens
+                        globalFunctionArray.functions[globalFunctionArray.functionCount].tokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
+                        globalFunctionArray.functions[globalFunctionArray.functionCount].tokens.tokenCount = 0;
+                        //init other function info
+                        globalFunctionArray.functions[globalFunctionArray.functionCount].isSystem = F;
+
+                        parserState = get_function_declaration_open_parenthesis;
+                    } else {
+                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                    }
+                break;
+                case get_function_declaration_open_parenthesis:
+                    if(strippedToken.tokens[x].tokenType == open_parenthesis_token) {
+                        parserState = get_function_declaration_parameters;
+                    } else {
+                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting '('", strippedToken.tokens[x].fileName);
+                    }
+                break;
+                case get_function_declaration_parameters:
+                    if(strippedToken.tokens[x].tokenType == close_parenthesis_token) {
+                        parserState = get_function_body; //next: get the function contents
+                    } else if(strippedToken.tokens[x].tokenType == identifier_token) {
+                        //add to function arguments
+
+                        //check if the argument is already defined as a function
+                        isFunctionsExists = F;
+                        functionPosition = 0;
+
+                        isFunctionsExists = isFunctionExists(&functionPosition, strippedToken.tokens[x].tokenValue);
+                        if(isFunctionsExists) {
+                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Function argument is already defined as function", strippedToken.tokens[x].fileName);
+                        }
+
+                        //check if token is a constant
+                        //if yes then raise an error
+                        if(isupper(strippedToken.tokens[x].tokenValue[0])){
+                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Function argument cannot be a constant", strippedToken.tokens[x].fileName);
+                        }
+
+                        //check if argument is duplicate below
+                        //globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.arguments
+                        isArgumentExists = F;
+                        argumentPosition = 0;
+
+                        isArgumentExists = isFunctionArgumentExists(globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray, &argumentPosition, strippedToken.tokens[x].tokenValue);
+                        if(isArgumentExists) {
+                            return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Duplicate argument ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        }
+
+                        //set the argument below
+                        globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.arguments[globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.argumentCount].argumentType = arg_none_type;
+                        strcpy(globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.arguments[globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.argumentCount].argumentName, strippedToken.tokens[x].tokenValue);
+                        //increment arg
+                        globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray.argumentCount += 1;
+                    } else if(strippedToken.tokens[x].tokenType == comma_token) {
+                        if(strippedToken.tokens[x - 1].tokenType == identifier_token) {
+                            //then ok
+                            //nothing to do
+                        } else {
+                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ','", strippedToken.tokens[x].fileName);
+                        }
+                    } else {
+                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                    }
+                break;
+                case get_function_body:
+                    if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "df") && functionEndCount == 0) {
+                        //define function
+                        strcpy(globalFunctionArray.functions[globalFunctionArray.functionCount].functionName, currentIdentifier.tokenValue);
+                        //increment function count here
+                        globalFunctionArray.functionCount += 1;
+                        
+                        parserState = get_start;
+                    } else {
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "fd")) {
+                            functionEndCount += 1;
+                        }
+
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "df")) {
+                            functionEndCount -= 1;
+                        }
+
+                        //update function tokens below
+                        updateTemporaryTokens(&globalFunctionArray.functions[globalFunctionArray.functionCount].tokens, strippedToken, x);
+                    }
                 break;
                 case get_for_loop_opening:
                     if(strippedToken.tokens[x].tokenType == open_parenthesis_token) {
@@ -736,7 +861,16 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
 
                     //check variable if existing and set the variable value here
                     if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token || strippedToken.tokens[x].tokenType == keyword_token) {
+                        //check first if the identifier is existing as function
+                        isFunctionsExists = F;
+                        functionPosition = 0;
 
+                        isFunctionsExists = isFunctionExists(&functionPosition, currentIdentifier.tokenValue);
+                        if(isFunctionsExists) {
+                            return syntax_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Identifier is already defined as function", currentIdentifier.fileName);
+                        }
+
+                        //check if variable exists
                         isVariablesExists = isVariableExists(&variablePosition, currentIdentifier.tokenValue, currentScope);
                         
                         if(!isVariablesExists) {

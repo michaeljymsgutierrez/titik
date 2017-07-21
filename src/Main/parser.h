@@ -30,6 +30,10 @@ typedef enum {
     get_for_loop_to,
     get_for_loop_end,
     get_for_loop_statements,
+    get_function_name,
+    get_function_declaration_open_parenthesis,
+    get_function_declaration_parameters,
+    get_function_body,
     rebuild_tokens
 } ParserState;
 

@@ -374,6 +374,23 @@ int isFunctionExists(int * functionPosition, char tokenValue[]) {
     return isExists;
 }
 
+int isFunctionArgumentExists(ArgumentArray argArray, int * argumentPosition, char tokenValue[]) {
+    int isExists = F;
+    int strCompRet = 0;
+
+    for(int x2=0;x2 < argArray.argumentCount; x2++) {
+        strCompRet = strcmp(tokenValue, argArray.arguments[x2].argumentName);
+
+        if(!(strCompRet < 0) && !(strCompRet > 0)) {
+            isExists = T;
+            *argumentPosition = x2;
+            break;
+        }
+    }
+
+    return isExists;
+}
+
 int isVariableExists(int * variablePosition, char tokenValue[], char scopeName[]) {
     int isExists = F;
     int strCompRet = 0;
