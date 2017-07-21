@@ -207,6 +207,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                         globalFunctionArray.functions[globalFunctionArray.functionCount].tokens.tokenCount = 0;
                         //init other function info
                         globalFunctionArray.functions[globalFunctionArray.functionCount].isSystem = F;
+                        globalFunctionArray.functions[globalFunctionArray.functionCount].functionReturn.returnType = ret_none_type; //set the default return to none type
 
                         parserState = get_function_declaration_open_parenthesis;
                     } else {
