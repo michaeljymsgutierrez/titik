@@ -39,6 +39,6 @@ typedef enum {
 
 void checkOperationAndSetParser(int x, ParserState * parserState, TokenArray strippedToken);
 TokenArray stripUnwantedToken(TokenArray tokenArray);
-int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, char currentScope[]);
+int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, char currentScope[], FunctionReturn * thisReturn);
 
 #endif

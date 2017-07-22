@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
     int functionReturn;
     int totalLineCount;
     int needBreak = F;
+    FunctionReturn funcReturn;
 
     TokenArray tokenArray;
     //init token array
@@ -67,7 +68,7 @@ int main(int argc, char **argv) {
             return functionReturn;
 
         //parse token
-        functionReturn = parseToken(tokenArray, F, T, &needBreak, TITIK_MAIN_SCOPE_NAME);
+        functionReturn = parseToken(tokenArray, F, T, &needBreak, TITIK_MAIN_SCOPE_NAME, &funcReturn);
 
         if(functionReturn > 0)
             return functionReturn;
