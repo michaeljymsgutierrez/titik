@@ -96,6 +96,7 @@ typedef struct {
     int functionCount;
 } FunctionArray;
 
+void cleanVariable();
 void copyVariable(char toScope[]);
 void setVariableInfo(int variablePosition, Token currentIdentifier, char currentScope[]);
 int evaluateToken(Token currentIdentifier, int * ifWithTrue, char currentScope[]);

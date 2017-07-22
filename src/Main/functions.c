@@ -21,6 +21,33 @@
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 
+void cleanVariable() {
+    int counter = 0;
+    for(int x=0; x < globalVariableArray.variableCount; x++) {
+        if(!strcmp(globalVariableArray.variables[x].scope_name, TITIK_MAIN_SCOPE_NAME)) {
+
+            if(x != counter) {
+                strcpy(globalVariableArray.variables[counter].scope_name, TITIK_MAIN_SCOPE_NAME);
+                strcpy(globalVariableArray.variables[counter].name, globalVariableArray.variables[x].name);            
+                globalVariableArray.variables[counter].is_constant = globalVariableArray.variables[x].is_constant;
+                globalVariableArray.variables[counter].variable_type = globalVariableArray.variables[x].variable_type;
+                
+                if(globalVariableArray.variables[x].variable_type == var_integer_type) {
+                    globalVariableArray.variables[counter].integer_value = globalVariableArray.variables[x].integer_value;
+                } else if(globalVariableArray.variables[x].variable_type == var_float_type) {
+                    globalVariableArray.variables[counter].float_value = globalVariableArray.variables[x].float_value;
+                } else if(globalVariableArray.variables[x].variable_type == var_string_type) {
+                    strcpy(globalVariableArray.variables[counter].string_value,globalVariableArray.variables[x].string_value);
+                }                
+            }
+
+            counter += 1;
+        }        
+    }
+
+    globalVariableArray.variableCount = counter;
+}
+
 void copyVariable(char toScope[]) {
     for(int x=0; x < globalVariableArray.variableCount; x++) {
         if(!strcmp(globalVariableArray.variables[x].scope_name, TITIK_MAIN_SCOPE_NAME)) {

@@ -657,7 +657,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             //set the function return value & type below
 
                             //cleanup local first variables below (by scope name)
-
+                            cleanVariable();
                         }
 
                         if(intFunctionReturn > 0) {
