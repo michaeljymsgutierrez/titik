@@ -21,6 +21,27 @@
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 
+void copyVariable(char toScope[]) {
+    for(int x=0; x < globalVariableArray.variableCount; x++) {
+        if(!strcmp(globalVariableArray.variables[x].scope_name, TITIK_MAIN_SCOPE_NAME)) {
+            strcpy(globalVariableArray.variables[globalVariableArray.variableCount].scope_name, toScope);
+            strcpy(globalVariableArray.variables[globalVariableArray.variableCount].name, globalVariableArray.variables[x].name);            
+            globalVariableArray.variables[globalVariableArray.variableCount].is_constant = globalVariableArray.variables[x].is_constant;
+            globalVariableArray.variables[globalVariableArray.variableCount].variable_type = globalVariableArray.variables[x].variable_type;
+            
+            if(globalVariableArray.variables[x].variable_type == var_integer_type) {
+                globalVariableArray.variables[globalVariableArray.variableCount].integer_value = globalVariableArray.variables[x].integer_value;
+            } else if(globalVariableArray.variables[x].variable_type == var_float_type) {
+                globalVariableArray.variables[globalVariableArray.variableCount].float_value = globalVariableArray.variables[x].float_value;
+            } else if(globalVariableArray.variables[x].variable_type == var_string_type) {
+                strcpy(globalVariableArray.variables[globalVariableArray.variableCount].string_value,globalVariableArray.variables[x].string_value);
+            }
+
+            globalVariableArray.variableCount += 1;
+        }
+    }
+}
+
 void setVariableInfo(int variablePosition, Token currentIdentifier, char currentScope[]) {
     //set name & scope
     strcpy(globalVariableArray.variables[variablePosition].name, currentIdentifier.tokenValue);

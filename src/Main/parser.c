@@ -647,9 +647,8 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             strcpy(tempChar, "");
                             rand_str(tempChar, 10);
                             strcat(tempChar, globalFunctionArray.functions[functionPosition].functionName);
-
                             //add global variables to local variables below (by scope name)
-
+                            copyVariable(tempChar);
                             //convert function arguments to local variable below (by scope name)
 
                             //execute user defined function     
