@@ -96,6 +96,7 @@ typedef struct {
     int functionCount;
 } FunctionArray;
 
+void initArgument(ArgumentArray referenceArgument, int functionPosition, char scopeName[]);
 void cleanVariable();
 void copyVariable(char toScope[]);
 void setVariableInfo(int variablePosition, Token currentIdentifier, char currentScope[]);

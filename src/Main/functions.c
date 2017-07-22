@@ -21,6 +21,44 @@
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 
+void initArgument(ArgumentArray referenceArgument, int functionPosition, char scopeName[]) {
+
+    int isVariablesExists = F;
+    int variablePosition = 0;
+
+    for(int x=0; x < referenceArgument.argumentCount; x++) {
+        isVariablesExists = F;
+        variablePosition = 0;
+
+        isVariablesExists = isVariableExists(&variablePosition, globalFunctionArray.functions[functionPosition].argumentArray.arguments[x].argumentName, scopeName);
+        if(!isVariablesExists) {
+            variablePosition = globalVariableArray.variableCount;
+        }
+        //set variable
+        strcpy(globalVariableArray.variables[variablePosition].scope_name, scopeName);
+        strcpy(globalVariableArray.variables[variablePosition].name, globalFunctionArray.functions[functionPosition].argumentArray.arguments[x].argumentName);            
+        globalVariableArray.variables[variablePosition].is_constant = F;
+        
+        if(referenceArgument.arguments[x].argumentType == arg_integer_type) {
+            globalVariableArray.variables[variablePosition].variable_type = var_integer_type;
+            globalVariableArray.variables[variablePosition].integer_value = referenceArgument.arguments[x].integer_value;
+        } else if(referenceArgument.arguments[x].argumentType == arg_float_type) {
+            globalVariableArray.variables[variablePosition].variable_type = var_float_type;
+            globalVariableArray.variables[variablePosition].float_value = referenceArgument.arguments[x].float_value;
+        } else if(referenceArgument.arguments[x].argumentType == arg_string_type) {
+            globalVariableArray.variables[variablePosition].variable_type = var_string_type;
+            strcpy(globalVariableArray.variables[variablePosition].string_value,referenceArgument.arguments[x].string_value);
+        } else {
+            //arg_none_type
+            globalVariableArray.variables[variablePosition].variable_type = var_none_type;
+        }   
+
+        if(!isVariablesExists) {
+            globalVariableArray.variableCount += 1;
+        }
+    }
+}
+
 void cleanVariable() {
     int counter = 0;
     for(int x=0; x < globalVariableArray.variableCount; x++) {

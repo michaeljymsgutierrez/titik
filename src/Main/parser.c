@@ -647,7 +647,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             //add global variables to local variables below (by scope name)
                             copyVariable(tempChar);
                             //convert function arguments to local variable below (by scope name)
-
+                            initArgument(argumentArray, functionPosition, tempChar);
                             //execute user defined function     
                             intFunctionReturn = parseToken(globalFunctionArray.functions[functionPosition].tokens, F, F, &willBreak, tempChar);
 
