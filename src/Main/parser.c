@@ -132,6 +132,12 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             if(isFunctionsExists) {
                                 argumentArray.argumentCount = 0;
                                 parserState = get_function_open_parenthesis;
+
+                                if(!strcmp(strippedToken.tokens[x].tokenValue, "i")) {
+                                    if(strcmp(currentScope, TITIK_MAIN_SCOPE_NAME)) {
+                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot include file inside a function", strippedToken.tokens[x].fileName);
+                                    }
+                                }
                             } else {
                                 if(!strcmp(strippedToken.tokens[x].tokenValue, "if")) {
                                     parserState = get_if_opening;
