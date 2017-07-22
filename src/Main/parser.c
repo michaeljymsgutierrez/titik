@@ -604,9 +604,6 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         parserState = get_if_opening;
                     } else {
 
-                        //TODO: prohibit declaration of function inside if statement??
-                        //TODO: because it should be in a top level statement...
-
                         if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "if")) {
                             //track that it's not yet the end of the current if statement
                             ifEndCount += 1;
