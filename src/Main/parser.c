@@ -643,16 +643,18 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             globalFunctionArray.functions[functionPosition].functionReturn = funcReturn;
                         } else {
 
-                            //cleanup local first variables below
+                            //generate a random scope name
 
-                            //add global variables to local variables below
+                            //add global variables to local variables below (by scope name)
 
-                            //convert function arguments to local variable below
+                            //convert function arguments to local variable below (by scope name)
 
                             //execute user defined function     
                             intFunctionReturn = parseToken(globalFunctionArray.functions[functionPosition].tokens, F, F, &willBreak, globalFunctionArray.functions[functionPosition].functionName);
 
                             //set the function return value & type below
+
+                            //cleanup local first variables below (by scope name)
 
                         }
 
