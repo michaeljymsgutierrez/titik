@@ -68,7 +68,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
     Variable tempVariable; //this will hold data in if comparison
     Variable tempVariable2; //this will hold data in if comparision
     TitikTokenType currentOperation = none_token;
-    char tempChar[TITIK_VARIABLE_INIT_LENGTH];
+    char tempChar[TITIK_CHAR_PER_LINE];
     int ifWithTrue = F;
     int elseIfWithTrue = F;
     int ifEndCount = 0;
@@ -698,9 +698,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                 if(currentOperation == plus_token) {
                                                     strcpy(tempChar, "");
                                                     if(globalVariableArray.variables[lastVariablePosition].variable_type == var_integer_type) {
-                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[lastVariablePosition].integer_value);
+                                                        snprintf(tempChar, TITIK_CHAR_PER_LINE, "%ld", globalVariableArray.variables[lastVariablePosition].integer_value);
                                                     } else {
-                                                        snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[lastVariablePosition].float_value);
+                                                        snprintf(tempChar, TITIK_CHAR_PER_LINE, "%f", globalVariableArray.variables[lastVariablePosition].float_value);
                                                     }
                                                     
                                                     globalVariableArray.variables[lastVariablePosition].variable_type = var_string_type;
@@ -786,11 +786,11 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     strcat(globalVariableArray.variables[lastVariablePosition].string_value, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
                                                 break;
                                                 case ret_integer_type:
-                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalFunctionArray.functions[functionPosition].functionReturn.integer_value);
+                                                    snprintf(tempChar, TITIK_CHAR_PER_LINE, "%ld", globalFunctionArray.functions[functionPosition].functionReturn.integer_value);
                                                     strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
                                                 break;
                                                 case ret_float_type:
-                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalFunctionArray.functions[functionPosition].functionReturn.float_value);
+                                                    snprintf(tempChar, TITIK_CHAR_PER_LINE, "%f", globalFunctionArray.functions[functionPosition].functionReturn.float_value);
                                                     strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
                                                 break;
                                                 default:
@@ -1027,9 +1027,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     if(currentOperation == plus_token) {
                                                         strcpy(tempChar, "");
                                                         if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                            snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition].integer_value);
+                                                            snprintf(tempChar, TITIK_CHAR_PER_LINE, "%ld", globalVariableArray.variables[variablePosition].integer_value);
                                                         } else {
-                                                            snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition].float_value);
+                                                            snprintf(tempChar, TITIK_CHAR_PER_LINE, "%f", globalVariableArray.variables[variablePosition].float_value);
                                                         }
                                                         
                                                         globalVariableArray.variables[variablePosition].variable_type = var_string_type;
@@ -1139,9 +1139,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                 //if strippedToken is a string then convert variable to string then concat
                                                 strcpy(tempChar, "");
                                                 if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
-                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition].integer_value);
+                                                    snprintf(tempChar, TITIK_CHAR_PER_LINE, "%ld", globalVariableArray.variables[variablePosition].integer_value);
                                                 } else {
-                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition].float_value);
+                                                    snprintf(tempChar, TITIK_CHAR_PER_LINE, "%f", globalVariableArray.variables[variablePosition].float_value);
                                                 }
                                                 globalVariableArray.variables[variablePosition].variable_type = var_string_type;
                                                 strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
@@ -1171,7 +1171,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                                             switch(globalVariableArray.variables[variablePosition2].variable_type) {
                                                 case var_float_type:
-                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%f", globalVariableArray.variables[variablePosition2].float_value);
+                                                    snprintf(tempChar, TITIK_CHAR_PER_LINE, "%f", globalVariableArray.variables[variablePosition2].float_value);
                                                     strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
                                                 break;
                                                 case var_string_type:
@@ -1179,7 +1179,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
                                                 break;
                                                 case var_integer_type:
-                                                    snprintf(tempChar, TITIK_VARIABLE_INIT_LENGTH, "%ld", globalVariableArray.variables[variablePosition2].integer_value);
+                                                    snprintf(tempChar, TITIK_CHAR_PER_LINE, "%ld", globalVariableArray.variables[variablePosition2].integer_value);
                                                     strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
                                                 break;
                                                 default:

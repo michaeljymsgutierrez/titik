@@ -88,3 +88,16 @@ int unexpected_error(int lineNumber, int columnNumber, char description[], char 
     strcat(errorMessage1, errorMessage2);
     return syntax_error(lineNumber, columnNumber, errorMessage1, titikFileName);
 }
+
+//from: https://stackoverflow.com/questions/15767691/whats-the-c-library-function-to-generate-random-string
+void rand_str(char *dest, size_t length) {
+    char charset[] = "0123456789"
+                     "abcdefghijklmnopqrstuvwxyz"
+                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    while (length-- > 0) {
+        size_t index = (double) rand() / RAND_MAX * (sizeof charset - 1);
+        *dest++ = charset[index];
+    }
+    *dest = '\0';
+}

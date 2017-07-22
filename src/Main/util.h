@@ -5,6 +5,7 @@
 #ifndef UTIL_H_
 #define UTIL_H_
 
+#include <stdlib.h>
 #define TITIK_CHAR_PER_LINE 1000
 #define T 1
 #define F 0
@@ -30,5 +31,6 @@ char **readSourceFile(char fileName[], int * ret, int * lineCount);
 int token_error(int lineNumber, int columnNumber, char description[], char titikFileName[]);
 int syntax_error(int lineNumber, int columnNumber, char description[], char titikFileName[]);
 int unexpected_error(int lineNumber, int columnNumber, char description[], char tokenValue[], char titikFileName[]);
+void rand_str(char *dest, size_t length);
 
 #endif
