@@ -50,7 +50,7 @@ TokenArray stripUnwantedToken(TokenArray tokenArray) {
     return newTokens;
 }
 
-int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentScope[]) {
+int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, char currentScope[]) {
     ParserState parserState = get_start;
     TokenArray strippedToken;
     FunctionReturn funcReturn;
@@ -89,7 +89,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
     newTempTokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
     newTempTokens.tokenCount = 0;
 
-    if(isLoop) {
+    if(!stripIt) {
         strippedToken = tokenArray;
     } else {
         //strip all spaces and newline first before parsing the token
@@ -364,7 +364,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                         if(fromLoop < toLoop) {
                             //forward looping
                             for(int lc=fromLoop; lc <= toLoop; lc++) {
-                                intFunctionReturn = parseToken(newTempTokens, T, &willBreak, currentScope);
+                                intFunctionReturn = parseToken(newTempTokens, T, F, &willBreak, currentScope);
 
                                 if(willBreak) {
                                     break;
@@ -378,7 +378,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                         } else if(fromLoop > toLoop) {
                             //backward looping
                             for(int lc=fromLoop; lc >= toLoop; lc--) {
-                                intFunctionReturn = parseToken(newTempTokens, T, &willBreak, currentScope);
+                                intFunctionReturn = parseToken(newTempTokens, T, F, &willBreak, currentScope);
 
                                 if(willBreak) {
                                     break;
@@ -391,7 +391,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                             }
                         } else {
                             //execute once
-                            intFunctionReturn = parseToken(newTempTokens, T, &willBreak, currentScope);
+                            intFunctionReturn = parseToken(newTempTokens, T, F, &willBreak, currentScope);
 
                             if(willBreak) {
                                 break;
@@ -644,7 +644,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int * needBreak, char currentS
                             //convert function arguments to local variable below
 
                             //execute user defined function     
-                            intFunctionReturn = parseToken(globalFunctionArray.functions[functionPosition].tokens, F, &willBreak, globalFunctionArray.functions[functionPosition].functionName);
+                            intFunctionReturn = parseToken(globalFunctionArray.functions[functionPosition].tokens, F, F, &willBreak, globalFunctionArray.functions[functionPosition].functionName);
 
                             //set the function return value & type below
 
