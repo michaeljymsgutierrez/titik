@@ -388,7 +388,7 @@ void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * fu
 }
 
 void zzz_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
-
+    *intReturn = 0;
     if(argumentArray.arguments[0].argumentType != arg_integer_type) {
         *intReturn = 1;
         printf("Error: Parameter must be an integer\n");
@@ -403,7 +403,10 @@ void zzz_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
     #endif
 
     funcReturn->returnType = ret_none_type;
-    *intReturn = 0;
+}
+
+void toi_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+
 }
 
 void initFunctions() {
