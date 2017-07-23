@@ -406,7 +406,25 @@ void zzz_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
 }
 
 void toi_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
 
+    switch(argumentArray.arguments[0].argumentType){
+        case arg_string_type:
+            funcReturn->integer_value = atoi(argumentArray.arguments[0].string_value);
+        break;
+        case arg_float_type:
+            funcReturn->integer_value = (long int)argumentArray.arguments[0].float_value;
+        break;
+        case arg_integer_type:
+            funcReturn->integer_value = argumentArray.arguments[0].integer_value;
+        break;
+        default:
+            *intReturn = 1;
+            printf("Error: Can't convert None type to integer\n");
+    }
+
+    //funcReturn->integer_value = 0;
+    funcReturn->returnType = ret_integer_type;
 }
 
 void initFunctions() {
@@ -446,6 +464,13 @@ void initFunctions() {
     zzzArgArray.arguments[0].integer_value = 0;
     defineFunction("zzz", zzzArgArray, zzz_execute, T);
     //end zzz function
+
+    //toi function
+    ArgumentArray toiArgArray;
+    toiArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    toiArgArray.argumentCount = 1;
+    defineFunction("toi", toiArgArray, toi_execute, T);
+    //end toi function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
