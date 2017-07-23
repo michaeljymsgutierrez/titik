@@ -64,6 +64,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
     int variablePosition2 = 0;
     int intFunctionReturn = 0;
     int isParsing = T;
+    int checkVar = T;
     Token currentIdentifier;
     Token currentIdentifier2;
     Variable tempVariable; //this will hold data in if comparison
@@ -912,12 +913,35 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         }
 
                         if(strippedToken.tokens[x].tokenType == identifier_token) {
-                            isVariablesExists = F;
-                            variablePosition2 = 0;
+                            checkVar = T;
+                            if((x+1) < strippedToken.tokenCount) {
+                                if(strippedToken.tokens[x+1].tokenType == open_parenthesis_token) {
+                                    checkVar = F;
+                                    isFunctionsExists = F;
+                                    functionPosition = 0;
 
-                            isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, currentScope);
-                            if(!isVariablesExists) {
-                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                    isFunctionsExists = isFunctionExists(&functionPosition, strippedToken.tokens[x].tokenValue);
+
+                                    if(isFunctionsExists) {
+                                        argumentArray.argumentCount = 0;
+                                        parserState = get_function_open_parenthesis;
+                                        isFunctionAssignmentMode = T;
+                                        isFunctionAssignmentUpdate = F;
+                                        lastVariablePosition = variablePosition;
+                                    } else {
+                                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                    }
+                                }
+                            }
+
+                            if(checkVar) {
+                                isVariablesExists = F;
+                                variablePosition2 = 0;
+
+                                isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, currentScope);
+                                if(!isVariablesExists) {
+                                    return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                }
                             }
                         }
 
@@ -955,21 +979,22 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             globalVariableArray.variables[variablePosition].variable_type = var_integer_type;
                             checkOperationAndSetParser(x, &parserState, strippedToken);
                         } else if(strippedToken.tokens[x].tokenType == identifier_token) {
-
-                            if(globalVariableArray.variables[variablePosition2].variable_type == var_string_type) {
-                                globalVariableArray.variables[variablePosition].variable_type = var_string_type;
-                                strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
-                                strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
-                            } else if(globalVariableArray.variables[variablePosition2].variable_type == var_integer_type) {
-                                globalVariableArray.variables[variablePosition].integer_value = globalVariableArray.variables[variablePosition2].integer_value;
-                                globalVariableArray.variables[variablePosition].variable_type = var_integer_type;     
-                            } else if(globalVariableArray.variables[variablePosition2].variable_type == var_float_type) {
-                                globalVariableArray.variables[variablePosition].variable_type = var_float_type;
-                                globalVariableArray.variables[variablePosition].float_value = globalVariableArray.variables[variablePosition2].float_value;                
-                            } else if(globalVariableArray.variables[variablePosition2].variable_type == var_none_type) {
-                                globalVariableArray.variables[variablePosition].variable_type = var_none_type;                
+                            if(checkVar) {
+                                if(globalVariableArray.variables[variablePosition2].variable_type == var_string_type) {
+                                    globalVariableArray.variables[variablePosition].variable_type = var_string_type;
+                                    strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
+                                    strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
+                                } else if(globalVariableArray.variables[variablePosition2].variable_type == var_integer_type) {
+                                    globalVariableArray.variables[variablePosition].integer_value = globalVariableArray.variables[variablePosition2].integer_value;
+                                    globalVariableArray.variables[variablePosition].variable_type = var_integer_type;     
+                                } else if(globalVariableArray.variables[variablePosition2].variable_type == var_float_type) {
+                                    globalVariableArray.variables[variablePosition].variable_type = var_float_type;
+                                    globalVariableArray.variables[variablePosition].float_value = globalVariableArray.variables[variablePosition2].float_value;                
+                                } else if(globalVariableArray.variables[variablePosition2].variable_type == var_none_type) {
+                                    globalVariableArray.variables[variablePosition].variable_type = var_none_type;                
+                                }
+                                checkOperationAndSetParser(x, &parserState, strippedToken);
                             }
-                            checkOperationAndSetParser(x, &parserState, strippedToken);
                         }
                         
                     } else {
