@@ -50,7 +50,8 @@ TokenArray stripUnwantedToken(TokenArray tokenArray) {
     return newTokens;
 }
 
-int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, char currentScope[], FunctionReturn * thisReturn) {
+int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, char currentScope[], FunctionReturn * thisReturn, int * gotReturn) {
+    *gotReturn = F;
     ParserState parserState = get_start;
     TokenArray strippedToken;
     FunctionReturn funcReturn;
@@ -86,6 +87,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
     int functionEndCount = 0;
 
     int willBreak = F;
+    int loopReturn = F;
 
     TokenArray newTempTokens;
     newTempTokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
@@ -172,6 +174,12 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                     if(strcmp(currentScope, TITIK_MAIN_SCOPE_NAME)) {
                                         return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot define a function inside a function", strippedToken.tokens[x].fileName);
                                     }
+                                } else if(!strcmp(strippedToken.tokens[x].tokenValue, "rtn")) {
+                                    if(strcmp(currentScope, TITIK_MAIN_SCOPE_NAME)) {
+                                        parserState = get_return_value;
+                                    } else {
+                                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                    }
                                 } else {
                                     return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 }                            
@@ -181,6 +189,56 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                     }
 
+                break;
+                case get_return_value:
+                    if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
+                        switch(strippedToken.tokens[x].tokenType) {
+                            case string_token:
+                                thisReturn->returnType = ret_string_type;
+                                strcpy(thisReturn->string_value, strippedToken.tokens[x].tokenValue);
+                            break;
+                            case float_token:
+                                thisReturn->returnType = ret_float_type;
+                                thisReturn->float_value = atof(strippedToken.tokens[x].tokenValue);
+                            break;
+                            case integer_token:
+                                thisReturn->returnType = ret_integer_type;
+                                thisReturn->integer_value = atoi(strippedToken.tokens[x].tokenValue);
+                            break;
+                            case identifier_token:
+                                isVariablesExists = F;
+                                variablePosition = 0;
+
+                                isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, currentScope);
+                                if(!isVariablesExists) {
+                                    return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                }
+
+                                switch(globalVariableArray.variables[variablePosition].variable_type) {
+                                    case var_float_type:
+                                        thisReturn->returnType = ret_float_type;
+                                        thisReturn->float_value = globalVariableArray.variables[variablePosition].float_value;
+                                    break;
+                                    case var_integer_type:
+                                        thisReturn->returnType = ret_integer_type;
+                                        thisReturn->integer_value = globalVariableArray.variables[variablePosition].integer_value;
+                                    break;
+                                    case var_string_type:
+                                        thisReturn->returnType = ret_string_type;
+                                        strcpy(thisReturn->string_value, globalVariableArray.variables[variablePosition].string_value);
+                                    break;
+                                    default:
+                                        thisReturn->returnType = ret_none_type;
+                                }
+                            break;
+                            default:
+                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        }
+                        *gotReturn = T;
+                        return 0;
+                    } else {
+                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                    }
                 break;
                 case get_function_name:
                     if(strippedToken.tokens[x].tokenType == identifier_token) {
@@ -372,9 +430,14 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         if(fromLoop < toLoop) {
                             //forward looping
                             for(int lc=fromLoop; lc <= toLoop; lc++) {
-                                intFunctionReturn = parseToken(newTempTokens, T, F, &willBreak, currentScope, &funcReturn);
+                                intFunctionReturn = parseToken(newTempTokens, T, F, &willBreak, currentScope, &funcReturn, &loopReturn);
 
                                 if(willBreak) {
+                                    break;
+                                }
+
+                                if(loopReturn) {
+                                    *gotReturn = T;
                                     break;
                                 }
 
@@ -386,9 +449,14 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         } else if(fromLoop > toLoop) {
                             //backward looping
                             for(int lc=fromLoop; lc >= toLoop; lc--) {
-                                intFunctionReturn = parseToken(newTempTokens, T, F, &willBreak, currentScope, &funcReturn);
+                                intFunctionReturn = parseToken(newTempTokens, T, F, &willBreak, currentScope, &funcReturn, &loopReturn);
 
                                 if(willBreak) {
+                                    break;
+                                }
+
+                                if(loopReturn) {
+                                    *gotReturn = T;
                                     break;
                                 }
 
@@ -399,17 +467,22 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             }
                         } else {
                             //execute once
-                            intFunctionReturn = parseToken(newTempTokens, T, F, &willBreak, currentScope, &funcReturn);
-
+                            intFunctionReturn = parseToken(newTempTokens, T, F, &willBreak, currentScope, &funcReturn, &loopReturn);
+                            /*
                             if(willBreak) {
                                 break;
                             }
-
+                            */
+                            if(loopReturn) {
+                                *gotReturn = T;
+                            }
                             if(intFunctionReturn > 0) {
                                 return intFunctionReturn;
-                                break;
+                                //break;
                             }
                         }
+
+                        *thisReturn = funcReturn;
 
                         parserState = get_start;
                     } else {
@@ -651,7 +724,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             //convert function arguments to local variable below (by scope name)
                             initArgument(argumentArray, functionPosition, tempChar);
                             //execute user defined function     
-                            intFunctionReturn = parseToken(globalFunctionArray.functions[functionPosition].tokens, F, F, &willBreak, tempChar, &funcReturn);
+                            intFunctionReturn = parseToken(globalFunctionArray.functions[functionPosition].tokens, F, F, &willBreak, tempChar, &funcReturn, &loopReturn);
                             //set the function return value & type below
                             globalFunctionArray.functions[functionPosition].functionReturn = funcReturn;
                             //cleanup local first variables below (by scope name)

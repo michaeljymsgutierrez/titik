@@ -317,6 +317,7 @@ void i_execute(ArgumentArray argumentArray2,  int * intReturn, FunctionReturn * 
     tokenArray.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
     tokenArray.tokenCount = 0;
     *intReturn = 0;
+    int gotReturn = F;
 
     strcpy(fName, argumentArray2.arguments[0].string_value);
     strcat(fName, ".ttk");
@@ -339,7 +340,7 @@ void i_execute(ArgumentArray argumentArray2,  int * intReturn, FunctionReturn * 
                 *intReturn = functionReturn;
             } else {
                 //parse token
-                functionReturn = parseToken(tokenArray, F, T, &needBreak, TITIK_MAIN_SCOPE_NAME, &thisReturn);
+                functionReturn = parseToken(tokenArray, F, T, &needBreak, TITIK_MAIN_SCOPE_NAME, &thisReturn, &gotReturn);
             }
         }
     } 

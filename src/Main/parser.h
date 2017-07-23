@@ -34,11 +34,12 @@ typedef enum {
     get_function_declaration_open_parenthesis,
     get_function_declaration_parameters,
     get_function_body,
+    get_return_value,
     rebuild_tokens
 } ParserState;
 
 void checkOperationAndSetParser(int x, ParserState * parserState, TokenArray strippedToken);
 TokenArray stripUnwantedToken(TokenArray tokenArray);
-int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, char currentScope[], FunctionReturn * thisReturn);
+int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, char currentScope[], FunctionReturn * thisReturn, int * gotReturn);
 
 #endif
