@@ -5,7 +5,7 @@
 #ifndef RESERVED_H_
 #define RESERVED_H_
 
-#define RESERVED_WORD_COUNT 17
+#define RESERVED_WORD_COUNT 18
 
 static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "zzz", //sleep
@@ -23,6 +23,7 @@ static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "b", //break loop
     "tof", //convert to float
     "toi", //convert to integer
+    "tos", //convert to string
     "rtn", //return
     "r" //readline
 };
