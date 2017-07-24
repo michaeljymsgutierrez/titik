@@ -427,6 +427,10 @@ void toi_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
     funcReturn->returnType = ret_integer_type;
 }
 
+void tof_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+
+}
+
 void initFunctions() {
 
     //p function
