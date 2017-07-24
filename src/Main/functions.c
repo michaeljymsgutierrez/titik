@@ -428,7 +428,24 @@ void toi_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
 }
 
 void tof_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
 
+    switch(argumentArray.arguments[0].argumentType){
+        case arg_string_type:
+            funcReturn->float_value = atof(argumentArray.arguments[0].string_value);
+        break;
+        case arg_float_type:
+            funcReturn->float_value = argumentArray.arguments[0].float_value;
+        break;
+        case arg_integer_type:
+            funcReturn->float_value = (double)argumentArray.arguments[0].integer_value;
+        break;
+        default:
+            *intReturn = 1;
+            printf("Error: Can't convert None type to float\n");
+    }
+
+    funcReturn->returnType = ret_float_type;
 }
 
 void initFunctions() {
@@ -475,6 +492,13 @@ void initFunctions() {
     toiArgArray.argumentCount = 1;
     defineFunction("toi", toiArgArray, toi_execute, T);
     //end toi function
+
+    //tof function
+    ArgumentArray tofArgArray;
+    tofArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    tofArgArray.argumentCount = 1;
+    defineFunction("tof", tofArgArray, tof_execute, T);
+    //end tof function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
