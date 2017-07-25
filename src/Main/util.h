@@ -32,5 +32,6 @@ int token_error(int lineNumber, int columnNumber, char description[], char titik
 int syntax_error(int lineNumber, int columnNumber, char description[], char titikFileName[]);
 int unexpected_error(int lineNumber, int columnNumber, char description[], char tokenValue[], char titikFileName[]);
 void rand_str(char *dest, size_t length);
+char * replace_crlf(char str[]);
 
 #endif

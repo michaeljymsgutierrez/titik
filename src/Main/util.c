@@ -101,3 +101,38 @@ void rand_str(char *dest, size_t length) {
     }
     *dest = '\0';
 }
+
+char * replace_crlf(char str[]) {
+    static char retStr[TITIK_CHAR_PER_LINE];
+    int ctr = 0;
+    int opened = F;
+    for(int x=0; x < strlen(str); x++) {
+        if(opened) {
+            if(str[x] == 'n') {
+                retStr[ctr] = '\n';
+                ctr += 1;
+            } else {
+                retStr[ctr] = '\\';
+                ctr += 1;
+                retStr[ctr] = str[x];
+                ctr += 1;
+            }
+            opened = F;
+        } else {
+            if(str[x] == '\\') {
+                opened = T;
+            } else {
+                retStr[ctr] = str[x];
+                ctr += 1;
+            }
+        }
+    }
+
+    if(ctr > 0) {
+        retStr[ctr + 1] = 0;
+    } else {
+        retStr[ctr] = 0;
+    }
+
+    return retStr;
+}
