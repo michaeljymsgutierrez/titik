@@ -37,7 +37,7 @@ void dumpVariable(VariableArray variableArray) {
                 printf("Variable Value: %ld\n", variableArray.variables[x].integer_value);
             break;
             case var_none_type:
-                printf("Variable Value: None\n");
+                printf("Variable Value: Nil\n");
             break;
             default:
                 continue;

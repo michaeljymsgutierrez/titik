@@ -848,7 +848,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                 }
                                             break;
                                             default:
-                                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
                                         }
                                     break;
                                     case var_string_type:
@@ -867,7 +867,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
                                                 break;
                                                 default:
-                                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
                                             }
                                         } else {
                                             return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid operation", strippedToken.tokens[x].fileName);
@@ -876,7 +876,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                     break;
                                     default:
                                         //none type
-                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
                                 }
                             }
                             checkOperationAndSetParser(x, &parserState, strippedToken);
@@ -1221,7 +1221,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     break;
                                                     default:
                                                         //variable is a none type
-                                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
                                                 }
 
                                                 checkOperationAndSetParser(x, &parserState, strippedToken);
@@ -1330,7 +1330,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     break;
                                                     default:
                                                         //variable is a none type
-                                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
                                                 }
                                                 checkOperationAndSetParser(x, &parserState, strippedToken);
                                             }
@@ -1347,7 +1347,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                 break;
                                 default:
                                     //none type
-                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a None type", strippedToken.tokens[x].fileName);
+                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
                             }
                         }
 

@@ -298,7 +298,7 @@ void p_execute(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * f
             printf("%f\n", argumentArray.arguments[0].float_value);
         break;
         default:
-            printf("None\n");
+            printf("Nil\n");
     }
 
     funcReturn->returnType = ret_none_type;
@@ -366,7 +366,7 @@ void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * fu
             printf("%f", argumentArray.arguments[0].float_value);
         break;
         default:
-            printf("None");
+            printf("Nil");
     }
 
     fgets(userInput, 1000, stdin);
@@ -420,7 +420,7 @@ void toi_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
         break;
         default:
             *intReturn = 1;
-            printf("Error: Can't convert None type to integer\n");
+            printf("Error: Can't convert Nil type to integer\n");
     }
 
     //funcReturn->integer_value = 0;
@@ -442,7 +442,7 @@ void tof_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
         break;
         default:
             *intReturn = 1;
-            printf("Error: Can't convert None type to float\n");
+            printf("Error: Can't convert Nil type to float\n");
     }
 
     funcReturn->returnType = ret_float_type;
@@ -465,7 +465,7 @@ void tos_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
             strcpy(funcReturn->string_value, tempChar);
         break;
         default:
-            strcpy(funcReturn->string_value, "None");
+            strcpy(funcReturn->string_value, "Nil");
     }
 
     funcReturn->returnType = ret_string_type;
@@ -604,5 +604,5 @@ void defineConstantNone(char variableName[]) {
 void initVariables() {
     defineConstantString("__AUTHOR__", TITIK_AUTHOR);
     defineConstantString("__VERSION_STRING__", TITIK_STRING_VERSION);
-    defineConstantNone("None");
+    defineConstantNone("Nil");
 }
