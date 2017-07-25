@@ -449,7 +449,26 @@ void tof_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
 }
 
 void tos_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    char tempChar[TITIK_CHAR_PER_LINE];
 
+    switch(argumentArray.arguments[0].argumentType){
+        case arg_string_type:
+            strcpy(funcReturn->string_value, argumentArray.arguments[0].string_value);
+        break;
+        case arg_float_type:
+            snprintf(tempChar, TITIK_CHAR_PER_LINE, "%f",argumentArray.arguments[0].float_value);
+            strcpy(funcReturn->string_value, tempChar);
+        break;
+        case arg_integer_type:
+            snprintf(tempChar, TITIK_CHAR_PER_LINE, "%ld",argumentArray.arguments[0].integer_value);
+            strcpy(funcReturn->string_value, tempChar);
+        break;
+        default:
+            strcpy(funcReturn->string_value, "None");
+    }
+
+    funcReturn->returnType = ret_float_type;
 }
 
 void initFunctions() {
