@@ -114,6 +114,9 @@ char * replace_crlf(char str[]) {
             } else if(str[x] == 't') {
                 retStr[ctr] = '\t';
                 ctr += 1;
+            } else if(str[x] == 'r') {
+                retStr[ctr] = '\r';
+                ctr += 1;
             } else {
                 retStr[ctr] = '\\';
                 ctr += 1;
