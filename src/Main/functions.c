@@ -468,7 +468,7 @@ void tos_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
             strcpy(funcReturn->string_value, "None");
     }
 
-    funcReturn->returnType = ret_float_type;
+    funcReturn->returnType = ret_string_type;
 }
 
 void initFunctions() {
