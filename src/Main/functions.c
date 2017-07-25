@@ -448,6 +448,10 @@ void tof_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
     funcReturn->returnType = ret_float_type;
 }
 
+void tos_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+
+}
+
 void initFunctions() {
 
     //p function
