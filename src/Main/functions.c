@@ -289,7 +289,7 @@ void defineFunction(char functionName[], ArgumentArray argumentArray, void(*exec
 void p_execute(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * funcReturn) {
     switch(argumentArray.arguments[0].argumentType) {
         case arg_string_type:
-            printf("%s\n", argumentArray.arguments[0].string_value);
+            printf("%s\n", replace_crlf(argumentArray.arguments[0].string_value));
         break;
         case arg_integer_type:
             printf("%ld\n", argumentArray.arguments[0].integer_value);
