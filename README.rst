@@ -44,15 +44,20 @@ Sample Code
     floatVariable = 25.55
     strVariable = "Hello " + 'World' #concatenation
 
-    #if statement
-    if(strVariable = 'Hello World')
+    #function definition
+    fd hello_world(var)
+        #if statement
+        if(var = 'Hello World')
 
-        #loop statement
-        fl (1 to 5)
-            p(strVariable) #It will print "Hello World" 5 times
-            zzz(2000) #sleep for 2 seconds
-        lf
-        
-    e
-        p('Not Hello World')
-    fi
+            #loop statement
+            fl (1 to 5)
+                p(var) #It will print "Hello World" 5 times
+                zzz(2000) #sleep for 2 seconds
+            lf
+            
+        e
+            p('Not Hello World')
+        fi
+    df
+
+    hello_world(strVariable) #call function
