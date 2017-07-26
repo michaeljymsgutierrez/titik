@@ -352,8 +352,8 @@ void i_execute(ArgumentArray argumentArray2,  int * intReturn, FunctionReturn * 
 
 void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
 
-    char userInput[1000];
-    char tempChar[1000];
+    char userInput[TITIK_CHAR_PER_LINE];
+    char tempChar[TITIK_CHAR_PER_LINE];
     strcpy(funcReturn->string_value, "");
     switch(argumentArray.arguments[0].argumentType) {
         case arg_string_type:
@@ -369,7 +369,7 @@ void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * fu
             printf("Nil");
     }
 
-    fgets(userInput, 1000, stdin);
+    fgets(userInput, TITIK_CHAR_PER_LINE, stdin);
 
     memset(tempChar, 0, strlen(tempChar));
     //cleanup new line
