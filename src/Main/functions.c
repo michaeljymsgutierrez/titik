@@ -472,6 +472,15 @@ void tos_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
 }
 
 void ext_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    if(argumentArray.arguments[0].argumentType != arg_integer_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be an integer\n");
+    }
+
+    exit(argumentArray.arguments[0].integer_value);
+
+    funcReturn->returnType = ret_none_type;
 }
 
 void initFunctions() {
