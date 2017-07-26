@@ -102,7 +102,7 @@ void rand_str(char *dest, size_t length) {
     *dest = '\0';
 }
 
-char * replace_crlf(char str[]) {
+char * escape_string(char str[]) {
     static char retStr[TITIK_CHAR_PER_LINE];
     int ctr = 0;
     int opened = F;
