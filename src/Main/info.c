@@ -11,6 +11,7 @@ void help(char exeName[]) {
     printf("Usage: %s [-options] filename.ttk\n", exeName);
     printf("\nwhere options include:\n");
     printf("\t-v\tget current version\n");
+    printf("\t-i\topen interactive shell\n");
     printf("\t-h\tprint this usage info\n");
 }
 
