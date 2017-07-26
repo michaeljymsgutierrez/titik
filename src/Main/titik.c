@@ -11,6 +11,7 @@
 #include "parser.h"
 #include "functions.h"
 #include "debug.h"
+#include "interactive.h"
 
 FunctionArray globalFunctionArray;
 VariableArray globalVariableArray;
@@ -55,6 +56,8 @@ int main(int argc, char **argv) {
         version();
     } else if(!strcmp(argv[1], "-h")) {
         help(argv[0]);
+    } else if(!strcmp(argv[1], "-i")) {
+        interactive_shell();
     } else {
         //open titik file
         fileContent = readSourceFile(argv[1], &functionReturn, &totalLineCount);
