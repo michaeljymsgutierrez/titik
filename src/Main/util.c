@@ -110,13 +110,20 @@ char * replace_crlf(char str[]) {
     for(int x=0; x < strlen(str); x++) {
         if(opened) {
             if(str[x] == 'n') {
+                //newline
                 retStr[ctr] = '\n';
                 ctr += 1;
             } else if(str[x] == 't') {
+                //tab
                 retStr[ctr] = '\t';
                 ctr += 1;
             } else if(str[x] == 'r') {
+                //carriage return
                 retStr[ctr] = '\r';
+                ctr += 1;
+            } else if(str[x] == 'b') {
+                //backspace
+                retStr[ctr] = '\b';
                 ctr += 1;
             } else {
                 retStr[ctr] = '\\';
