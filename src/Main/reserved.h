@@ -25,7 +25,7 @@ static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "toi", //convert to integer
     "tos", //convert to string
     "rtn", //return
-    "ext", //exit
+    "ex", //exit
     "r" //readline
 };
 

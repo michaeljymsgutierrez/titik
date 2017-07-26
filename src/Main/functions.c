@@ -471,7 +471,7 @@ void tos_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
     funcReturn->returnType = ret_string_type;
 }
 
-void ext_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+void ex_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
     *intReturn = 0;
     if(argumentArray.arguments[0].argumentType != arg_integer_type) {
         *intReturn = 1;
@@ -542,12 +542,12 @@ void initFunctions() {
     defineFunction("tos", tosArgArray, tos_execute, T);
     //end tos function
 
-    //ext function
-    ArgumentArray extArgArray;
-    extArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
-    extArgArray.argumentCount = 1;
-    defineFunction("ext", extArgArray, ext_execute, T);
-    //end ext function
+    //ex function
+    ArgumentArray exArgArray;
+    exArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    exArgArray.argumentCount = 1;
+    defineFunction("ex", exArgArray, ex_execute, T);
+    //end ex function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
