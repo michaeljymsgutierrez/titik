@@ -16,9 +16,9 @@ void help(char exeName[]) {
 }
 
 void version() {
-    #ifdef _WIN32
     printf("%s %s\n", TITIK_APP_NAME, TITIK_STRING_VERSION);
     printf("By: %s\n", TITIK_AUTHOR);
+    #ifdef _WIN32
     printf("Operating System: Windows\n");
     #else
     int sys_ret = 0;
@@ -26,10 +26,6 @@ void version() {
     char fileBuffer[100];
     char osInfo[100];
     strcpy(osInfo, "");
-
-    printf("%s %s\n", TITIK_APP_NAME, TITIK_STRING_VERSION);
-    printf("By: %s\n", TITIK_AUTHOR);
-
     sys_ret = system("uname > os_info");
     
     if(sys_ret == 0) {
