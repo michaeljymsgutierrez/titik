@@ -15,14 +15,12 @@ void help(char exeName[]) {
     printf("\t-h\tprint this usage info\n");
 }
 
-#ifdef _WIN32
 void version() {
+    #ifdef _WIN32
     printf("%s %s\n", TITIK_APP_NAME, TITIK_STRING_VERSION);
     printf("By: %s\n", TITIK_AUTHOR);
     printf("Operating System: Windows\n");
-}
-#else
-void version() {
+    #else
     int sys_ret = 0;
     FILE *os_file;
     char fileBuffer[100];
@@ -47,5 +45,5 @@ void version() {
     } else {
         printf("Operating System: Unknown\n");
     }
+    #endif
 }
-#endif
