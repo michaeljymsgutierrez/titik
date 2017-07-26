@@ -129,6 +129,10 @@ char * replace_crlf(char str[]) {
                 //vertical tab
                 retStr[ctr] = '\v';
                 ctr += 1;
+            } else if(str[x] == 'f') {
+                //formfeed
+                retStr[ctr] = '\f';
+                ctr += 1;
             } else {
                 retStr[ctr] = '\\';
                 ctr += 1;
