@@ -133,6 +133,10 @@ char * replace_crlf(char str[]) {
                 //formfeed
                 retStr[ctr] = '\f';
                 ctr += 1;
+            } else if(str[x] == 'a') {
+                //beep
+                retStr[ctr] = '\a';
+                ctr += 1;
             } else {
                 retStr[ctr] = '\\';
                 ctr += 1;
