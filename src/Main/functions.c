@@ -541,6 +541,13 @@ void initFunctions() {
     tosArgArray.argumentCount = 1;
     defineFunction("tos", tosArgArray, tos_execute, T);
     //end tos function
+
+    //ext function
+    ArgumentArray extArgArray;
+    extArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    extArgArray.argumentCount = 1;
+    defineFunction("ext", extArgArray, ext_execute, T);
+    //end ext function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
