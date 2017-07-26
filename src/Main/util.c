@@ -125,6 +125,10 @@ char * replace_crlf(char str[]) {
                 //backspace
                 retStr[ctr] = '\b';
                 ctr += 1;
+            } else if(str[x] == 'v') {
+                //vertical tab
+                retStr[ctr] = '\v';
+                ctr += 1;
             } else {
                 retStr[ctr] = '\\';
                 ctr += 1;
