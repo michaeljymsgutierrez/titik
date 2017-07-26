@@ -357,7 +357,7 @@ void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * fu
     strcpy(funcReturn->string_value, "");
     switch(argumentArray.arguments[0].argumentType) {
         case arg_string_type:
-            printf("%s", argumentArray.arguments[0].string_value);
+            printf("%s", replace_crlf(argumentArray.arguments[0].string_value));
         break;
         case arg_integer_type:
             printf("%ld", argumentArray.arguments[0].integer_value);
