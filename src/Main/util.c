@@ -106,6 +106,7 @@ char * replace_crlf(char str[]) {
     static char retStr[TITIK_CHAR_PER_LINE];
     int ctr = 0;
     int opened = F;
+    memset(retStr, 0, strlen(retStr));
     for(int x=0; x < strlen(str); x++) {
         if(opened) {
             if(str[x] == 'n') {
