@@ -471,6 +471,9 @@ void tos_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
     funcReturn->returnType = ret_string_type;
 }
 
+void ext_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+}
+
 void initFunctions() {
 
     //p function
