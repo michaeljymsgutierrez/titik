@@ -85,6 +85,7 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
                             tokenArray->tokens[tokenArray->tokenCount - 1].tokenLine = x;
                             tokenArray->tokens[tokenArray->tokenCount - 1].tokenColumn = x2;
                             tokenArray->tokens[tokenArray->tokenCount - 1].tokenType = identifier_token;
+                            memset(tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue, 0, strlen(tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue));
                             strcpy(tokenArray->tokens[tokenArray->tokenCount - 1].fileName, titikFileName);
                         }
 
@@ -260,6 +261,7 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
                             tokenArray->tokens[tokenArray->tokenCount - 1].tokenLine = x;
                             tokenArray->tokens[tokenArray->tokenCount - 1].tokenColumn = x2;
                             tokenArray->tokens[tokenArray->tokenCount - 1].tokenType = identifier_token;
+                            memset(tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue, 0, strlen(tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue));
                             strcpy(tokenArray->tokens[tokenArray->tokenCount - 1].fileName, titikFileName);
                             tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue[strPos] = fileContent[x][x2];
                             strPos += 1;
