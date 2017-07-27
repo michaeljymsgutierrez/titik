@@ -22,38 +22,21 @@ void interactive_shell() {
     int lineCount = 0;
     TokenArray tokenArray;
     int isContinue = F;
+    int ifEndCount = 0;
 
     printf("%s %s\n", TITIK_APP_NAME, TITIK_STRING_VERSION);
     printf("To exit, press ^C\n");
 
     while(T) {
-        /*
-        tokenArray.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
-        tokenArray.tokenCount = 0;
-
-        strcpy(userInput, "");
-        printf("%s ", indicator);
-        fgets(userInput, TITIK_CHAR_PER_LINE, stdin);
-
-        inputStr = malloc(lineCount * sizeof(char*));
-        inputStr[0] = malloc(TITIK_CHAR_PER_LINE * sizeof(char));
-        strcpy(inputStr[0], userInput);
-
-        generateToken(inputStr, lineCount, &tokenArray, "interactive_shell");
-        parseToken(tokenArray, F, T, &needBreak, TITIK_MAIN_SCOPE_NAME, &funcReturn, &gotReturn);
-        //dumpToken(tokenArray);
-        free(tokenArray.tokens);
-        free(inputStr[0]);
-        free(inputStr);
-        */
         if(!isContinue) {
             strcpy(indicator, ">>>");
-            tokenArray.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
-            tokenArray.tokenCount = 0;
         } else {
             strcpy(indicator, "...");
         }
 
+        tokenArray.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
+        tokenArray.tokenCount = 0;
+        ifEndCount = 0;
         lineCount += 1;
         printf("%s ", indicator);
         fgets(userInput, TITIK_CHAR_PER_LINE, stdin);
@@ -67,12 +50,27 @@ void interactive_shell() {
         generateToken(inputStr, lineCount, &tokenArray, "interactive_shell");
         
         //check tokens below (TODO:)
+        for(int x=0; x < tokenArray.tokenCount; x++) {
+            if(!strcmp(tokenArray.tokens[x].tokenValue, "if")) {
+                ifEndCount += 1;
+            }
+            if(!strcmp(tokenArray.tokens[x].tokenValue, "fi")) {
+                ifEndCount -= 1;
+            }
+        }
+
+        if(ifEndCount > 0) {
+            isContinue = T;
+        } else {
+            isContinue = F;
+        }
 
         if(!isContinue) {
             parseToken(tokenArray, F, T, &needBreak, TITIK_MAIN_SCOPE_NAME, &funcReturn, &gotReturn);
             lineCount = 0;
-            free(tokenArray.tokens);
             free(inputStr);
         }
+
+        free(tokenArray.tokens);
     }
 }
