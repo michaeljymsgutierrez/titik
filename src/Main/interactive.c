@@ -14,13 +14,13 @@
 void interactive_shell() {
     char userInput[TITIK_CHAR_PER_LINE];
     char indicator[TITIK_CHAR_PER_LINE];
-    char **inputStr;
-    int lineCount = 1;
     int functionReturn;
-    TokenArray tokenArray;
     int needBreak = F;
     int gotReturn = F;
     FunctionReturn funcReturn;
+    char **inputStr;
+    int lineCount = 1;
+    TokenArray tokenArray;
 
     strcpy(indicator, ">>>");
 
@@ -35,14 +35,12 @@ void interactive_shell() {
         printf("%s ", indicator);
         fgets(userInput, TITIK_CHAR_PER_LINE, stdin);
 
-        printf("%s\n", userInput);
-
         inputStr = malloc(lineCount * sizeof(char*));
         inputStr[0] = malloc(TITIK_CHAR_PER_LINE * sizeof(char));
         strcpy(inputStr[0], userInput);
 
-        //generateToken(inputStr, lineCount, &tokenArray, "interactive_shell");
-        //parseToken(tokenArray, F, T, &needBreak, TITIK_MAIN_SCOPE_NAME, &funcReturn, &gotReturn);
+        generateToken(inputStr, lineCount, &tokenArray, "interactive_shell");
+        parseToken(tokenArray, F, T, &needBreak, TITIK_MAIN_SCOPE_NAME, &funcReturn, &gotReturn);
         //dumpToken(tokenArray);
         free(tokenArray.tokens);
         free(inputStr[0]);
