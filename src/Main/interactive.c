@@ -12,12 +12,6 @@
 #include "parser.h"
 
 void interactive_shell() {
-    /*
-        TODO:
-        Try to fix the bug when:
-        >>> p("test")
-        >>> i('f') 
-    */
     char userInput[TITIK_CHAR_PER_LINE];
     char indicator[TITIK_CHAR_PER_LINE];
     int functionReturn;

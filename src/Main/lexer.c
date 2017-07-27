@@ -185,6 +185,7 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
                         tokenArray->tokens[tokenArray->tokenCount - 1].tokenLine = x;
                         tokenArray->tokens[tokenArray->tokenCount - 1].tokenColumn = x2;
                         tokenArray->tokens[tokenArray->tokenCount - 1].tokenType = string_token;
+                        memset(tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue, 0, strlen(tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue));
                         strcpy(tokenArray->tokens[tokenArray->tokenCount - 1].fileName, titikFileName);
                         tokenizerState = get_string;
                         strPos = 0;
@@ -346,6 +347,7 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
                             tokenArray->tokens[tokenArray->tokenCount - 1].tokenLine = x;
                             tokenArray->tokens[tokenArray->tokenCount - 1].tokenColumn = x2;
                             tokenArray->tokens[tokenArray->tokenCount - 1].tokenType = string_token;
+                            memset(tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue, 0, strlen(tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue));
                             strcpy(tokenArray->tokens[tokenArray->tokenCount - 1].fileName, titikFileName);
                             tokenizerState = get_string;
                         } else if(fileContent[x][x2] == '#') {
