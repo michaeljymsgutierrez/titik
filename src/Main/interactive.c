@@ -12,6 +12,12 @@
 #include "parser.h"
 
 void interactive_shell() {
+    /*
+        TODO:
+        Try to fix the bug when:
+        >>> p("test")
+        >>> i('f') 
+    */
     char userInput[TITIK_CHAR_PER_LINE];
     char indicator[TITIK_CHAR_PER_LINE];
     int functionReturn;
@@ -23,6 +29,7 @@ void interactive_shell() {
     TokenArray tokenArray;
     int isContinue = F;
     int ifEndCount = 0;
+    int fdEndCount = 0;
 
     printf("%s %s\n", TITIK_APP_NAME, TITIK_STRING_VERSION);
     printf("To exit, press ^C\n");
@@ -37,6 +44,7 @@ void interactive_shell() {
         tokenArray.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
         tokenArray.tokenCount = 0;
         ifEndCount = 0;
+        fdEndCount = 0;
         lineCount += 1;
         printf("%s ", indicator);
         fgets(userInput, TITIK_CHAR_PER_LINE, stdin);
@@ -49,7 +57,6 @@ void interactive_shell() {
         strcpy(inputStr[lineCount - 1], userInput);
         generateToken(inputStr, lineCount, &tokenArray, "interactive_shell");
         
-        //check tokens below (TODO:)
         for(int x=0; x < tokenArray.tokenCount; x++) {
             if(!strcmp(tokenArray.tokens[x].tokenValue, "if")) {
                 ifEndCount += 1;
@@ -57,9 +64,15 @@ void interactive_shell() {
             if(!strcmp(tokenArray.tokens[x].tokenValue, "fi")) {
                 ifEndCount -= 1;
             }
+            if(!strcmp(tokenArray.tokens[x].tokenValue, "fd")) {
+                fdEndCount += 1;
+            }
+            if(!strcmp(tokenArray.tokens[x].tokenValue, "df")) {
+                fdEndCount -= 1;
+            }
         }
 
-        if(ifEndCount > 0) {
+        if(ifEndCount > 0 || fdEndCount > 0) {
             isContinue = T;
         } else {
             isContinue = F;
