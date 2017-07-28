@@ -453,6 +453,7 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
         }
     }
 
+    free(tokenArray->tokens);
     *tokenArray = finalTokenArray;
 
     //just for debugging
