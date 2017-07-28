@@ -20,7 +20,6 @@ void interactive_shell() {
     FunctionReturn funcReturn;
     char **inputStr;
     int lineCount = 0;
-    TokenArray tokenArray;
     int isContinue = F;
     int ifEndCount = 0;
     int fdEndCount = 0;
@@ -36,6 +35,7 @@ void interactive_shell() {
             strcpy(indicator, "...");
         }
 
+        TokenArray tokenArray;
         tokenArray.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
         tokenArray.tokenCount = 0;
         ifEndCount = 0;
@@ -44,15 +44,15 @@ void interactive_shell() {
         lineCount += 1;
         printf("%s ", indicator);
         fgets(userInput, TITIK_CHAR_PER_LINE, stdin);
-        
+
         if(!isContinue) {
-            inputStr = malloc(lineCount * sizeof(char*));
+            inputStr = malloc(50000 * sizeof(char*)); //temporary fix
         }
 
         inputStr[lineCount - 1] = malloc(TITIK_CHAR_PER_LINE * sizeof(char));
         strcpy(inputStr[lineCount - 1], userInput);
         generateToken(inputStr, lineCount, &tokenArray, "interactive_shell");
-        
+
         for(int x=0; x < tokenArray.tokenCount; x++) {
             if(!strcmp(tokenArray.tokens[x].tokenValue, "if")) {
                 ifEndCount += 1;
@@ -81,7 +81,10 @@ void interactive_shell() {
         }
 
         if(!isContinue) {
-            parseToken(tokenArray, F, T, &needBreak, TITIK_MAIN_SCOPE_NAME, &funcReturn, &gotReturn);
+
+            if(tokenArray.tokenCount > 1) {
+                parseToken(tokenArray, F, T, &needBreak, TITIK_MAIN_SCOPE_NAME, &funcReturn, &gotReturn);
+            }
             lineCount = 0;
             free(inputStr);
         }
