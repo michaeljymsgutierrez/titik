@@ -46,7 +46,7 @@ void interactive_shell() {
         fgets(userInput, TITIK_CHAR_PER_LINE, stdin);
 
         if(!isContinue) {
-            inputStr = malloc(50000 * sizeof(char*)); //temporary fix
+            inputStr = malloc(INITIAL_INTERACTIVE_LINES * sizeof(char*)); //temporary fix
         }
 
         inputStr[lineCount - 1] = malloc(TITIK_CHAR_PER_LINE * sizeof(char));
