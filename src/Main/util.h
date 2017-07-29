@@ -11,7 +11,6 @@
 #define F 0
 
 #ifdef _WIN32
-#define TITIK_COLOR_NORMAL 15
 #define TITIK_COLOR_RED 4
 #define TITIK_COLOR_GREEN 2
 #define TITIK_COLOR_YELLOW 14

@@ -483,6 +483,9 @@ void ex_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
     funcReturn->returnType = ret_none_type;
 }
 
+#ifdef _WIN32
+CONSOLE_SCREEN_BUFFER_INFO Info;
+#endif
 void sc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
     *intReturn = 0;
     if(argumentArray.arguments[0].argumentType != arg_integer_type) {
@@ -495,7 +498,8 @@ void sc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     switch(argumentArray.arguments[0].integer_value) {
         case 0:
-            SetConsoleTextAttribute(hConsole, TITIK_COLOR_NORMAL);
+            //SetConsoleTextAttribute(hConsole, TITIK_COLOR_NORMAL);
+            SetConsoleTextAttribute(hConsole, Info.wAttributes);
         break;
         case 1:
             SetConsoleTextAttribute(hConsole, TITIK_COLOR_RED);

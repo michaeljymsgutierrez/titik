@@ -12,12 +12,20 @@
 #include "functions.h"
 #include "debug.h"
 #include "interactive.h"
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 FunctionArray globalFunctionArray;
 VariableArray globalVariableArray;
 LoadedFileArray globalLoadedFileArray;
-
+#ifdef _WIN32
+extern CONSOLE_SCREEN_BUFFER_INFO Info;
+#endif
 int main(int argc, char **argv) {
+    #ifdef _WIN32
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &Info);
+    #endif
     char **fileContent;
     int functionReturn;
     int totalLineCount;
