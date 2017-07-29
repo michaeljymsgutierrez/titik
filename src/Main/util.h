@@ -10,6 +10,16 @@
 #define T 1
 #define F 0
 
+#ifdef _WIN32
+#define TITIK_COLOR_NORMAL 15
+#define TITIK_COLOR_RED 4
+#define TITIK_COLOR_GREEN 2
+#define TITIK_COLOR_YELLOW 14
+#define TITIK_COLOR_BLUE 1
+#define TITIK_COLOR_MAGENTA 5
+#define TITIK_COLOR_CYAN 3
+#define TITIK_COLOR_WHITE 15
+#else
 #define TITIK_COLOR_NORMAL "\x1B[0m"
 #define TITIK_COLOR_RED "\x1B[31m"
 #define TITIK_COLOR_GREEN "\x1B[32m"
@@ -18,6 +28,7 @@
 #define TITIK_COLOR_MAGENTA "\x1B[35m"
 #define TITIK_COLOR_CYAN "\x1B[36m"
 #define TITIK_COLOR_WHITE "\x1B[37m"
+#endif
 #define TITIK_LOADED_FILES_INIT_LENGTH 10000
 
 //error list

@@ -490,6 +490,39 @@ void sc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
         printf("Error: Parameter must be an integer\n");
     }
 
+    #ifdef _WIN32
+    HANDLE hConsole;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    switch(argumentArray.arguments[0].integer_value) {
+        case 0:
+            SetConsoleTextAttribute(hConsole, TITIK_COLOR_NORMAL);
+        break;
+        case 1:
+            SetConsoleTextAttribute(hConsole, TITIK_COLOR_RED);
+        break;
+        case 2:
+            SetConsoleTextAttribute(hConsole, TITIK_COLOR_GREEN);
+        break;
+        case 3:
+            SetConsoleTextAttribute(hConsole, TITIK_COLOR_YELLOW);
+        break;
+        case 4:
+            SetConsoleTextAttribute(hConsole, TITIK_COLOR_BLUE);
+        break;
+        case 5:
+            SetConsoleTextAttribute(hConsole, TITIK_COLOR_MAGENTA);
+        break;
+        case 6:
+            SetConsoleTextAttribute(hConsole, TITIK_COLOR_CYAN);
+        break;
+        case 7:
+            SetConsoleTextAttribute(hConsole, TITIK_COLOR_WHITE);
+        break;
+        default:
+            *intReturn = 1;
+            printf("Error: Invalid value\n");
+    }
+    #else
     switch(argumentArray.arguments[0].integer_value) {
         case 0:
             printf(TITIK_COLOR_NORMAL);
@@ -519,7 +552,7 @@ void sc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
             *intReturn = 1;
             printf("Error: Invalid value\n");
     }
-
+    #endif
     funcReturn->returnType = ret_none_type;
 }
 
