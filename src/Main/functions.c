@@ -483,6 +483,31 @@ void ex_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
     funcReturn->returnType = ret_none_type;
 }
 
+void sc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    if(argumentArray.arguments[0].argumentType != arg_integer_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be an integer\n");
+    }
+
+    switch(argumentArray.arguments[0].integer_value) {
+        case 0:
+            printf(TITIK_COLOR_NORMAL);
+        break;
+        case 1:
+            printf(TITIK_COLOR_RED);
+        break;
+        case 2:
+            printf(TITIK_COLOR_GREEN);
+        break;
+        default:
+            *intReturn = 1;
+            printf("Error: Invalid value\n");
+    }
+
+    funcReturn->returnType = ret_none_type;
+}
+
 void initFunctions() {
 
     //p function
