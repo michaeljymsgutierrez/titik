@@ -28,30 +28,9 @@ void checkOperationAndSetParser(int x, ParserState * parserState, TokenArray str
     }
 }
 
-TokenArray stripUnwantedToken(TokenArray tokenArray) {
-    TokenArray newTokens;
-    newTokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
-    newTokens.tokenCount = 0;
-
-    for(int x=0; x < tokenArray.tokenCount; x++) {
-        //remove space, newline, comments, carriage return & tab
-        if(tokenArray.tokens[x].tokenType == newline_token || tokenArray.tokens[x].tokenType == space_token || tokenArray.tokens[x].tokenType == single_comment_token || tokenArray.tokens[x].tokenType == multi_comment_token || tokenArray.tokens[x].tokenType == close_multi_comment_token || tokenArray.tokens[x].tokenType == close_string_token || tokenArray.tokens[x].tokenType == tab_token || tokenArray.tokens[x].tokenType == carriage_return_token) {
-            continue;
-        } else {
-            newTokens.tokens[newTokens.tokenCount].tokenLine = tokenArray.tokens[x].tokenLine;
-            newTokens.tokens[newTokens.tokenCount].tokenColumn = tokenArray.tokens[x].tokenColumn;
-            newTokens.tokens[newTokens.tokenCount].tokenType = tokenArray.tokens[x].tokenType;
-            strcpy(newTokens.tokens[newTokens.tokenCount].tokenValue, tokenArray.tokens[x].tokenValue);
-            strcpy(newTokens.tokens[newTokens.tokenCount].fileName, tokenArray.tokens[x].fileName);
-            newTokens.tokenCount += 1;
-        }
-    }
-
-    return newTokens;
-}
-
-void freeArrays(TokenArray * newTempTokens, ArgumentArray * argumentArray) {
+void freeArrays(TokenArray * newTempTokens, ArgumentArray * argumentArray, TokenArray * newTokens) {
     free(newTempTokens->tokens);
+    free(newTokens->tokens);
     free(argumentArray->arguments);
 }
 
@@ -59,6 +38,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
     *gotReturn = F;
     ParserState parserState = get_start;
     TokenArray strippedToken;
+    TokenArray newTokens;
+    newTokens.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
+    newTokens.tokenCount = 0;
     FunctionReturn funcReturn;
     thisReturn->returnType = ret_none_type; //return on function call
     int isFunctionsExists = F;
@@ -102,7 +84,21 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
         strippedToken = tokenArray;
     } else {
         //strip all spaces and newline first before parsing the token
-        strippedToken = stripUnwantedToken(tokenArray);
+        for(int x=0; x < tokenArray.tokenCount; x++) {
+            //remove space, newline, comments, carriage return & tab
+            if(tokenArray.tokens[x].tokenType == newline_token || tokenArray.tokens[x].tokenType == space_token || tokenArray.tokens[x].tokenType == single_comment_token || tokenArray.tokens[x].tokenType == multi_comment_token || tokenArray.tokens[x].tokenType == close_multi_comment_token || tokenArray.tokens[x].tokenType == close_string_token || tokenArray.tokens[x].tokenType == tab_token || tokenArray.tokens[x].tokenType == carriage_return_token) {
+                continue;
+            } else {
+                newTokens.tokens[newTokens.tokenCount].tokenLine = tokenArray.tokens[x].tokenLine;
+                newTokens.tokens[newTokens.tokenCount].tokenColumn = tokenArray.tokens[x].tokenColumn;
+                newTokens.tokens[newTokens.tokenCount].tokenType = tokenArray.tokens[x].tokenType;
+                strcpy(newTokens.tokens[newTokens.tokenCount].tokenValue, tokenArray.tokens[x].tokenValue);
+                strcpy(newTokens.tokens[newTokens.tokenCount].fileName, tokenArray.tokens[x].fileName);
+                newTokens.tokenCount += 1;
+            }
+        }
+
+        strippedToken = newTokens;
     }
 
     ArgumentArray argumentArray;
@@ -1371,6 +1367,6 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
         }
     }
 
-    freeArrays(&newTempTokens, &argumentArray);
+    freeArrays(&newTempTokens, &argumentArray, &newTokens);
     return 0;
 }
