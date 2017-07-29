@@ -10,6 +10,14 @@
 #define T 1
 #define F 0
 
+#define TITIK_COLOR_NORMAL "\x1B[0m"
+#define TITIK_COLOR_RED "\x1B[31m"
+#define TITIK_COLOR_GREEN "\x1B[32m"
+#define TITIK_COLOR_YELLOW "\x1B[33m"
+#define TITIK_COLOR_BLUE "\x1B[34m"
+#define TITIK_COLOR_MAGENTA "\x1B[35m"
+#define TITIK_COLOR_CYAN "\x1B[36m"
+#define TITIK_COLOR_WHITE "\x1B[37m"
 #define TITIK_LOADED_FILES_INIT_LENGTH 10000
 
 //error list
