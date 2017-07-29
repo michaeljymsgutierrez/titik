@@ -140,8 +140,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                                 if(!strcmp(strippedToken.tokens[x].tokenValue, "i")) {
                                     if(strcmp(currentScope, TITIK_MAIN_SCOPE_NAME)) {
+                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot include file inside a function", strippedToken.tokens[x].fileName);
                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot include file inside a function", strippedToken.tokens[x].fileName);
+                                        return intFunctionReturn;
                                     }
                                 }
                             } else {
@@ -167,8 +168,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                         return 0;
                                     } else {
+                                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);   
                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);    
+                                        return intFunctionReturn; 
                                     }
                                 } else if(!strcmp(strippedToken.tokens[x].tokenValue, "fd")) {
                                     //function definition
@@ -176,25 +178,29 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                     functionEndCount = 0;
                                     //prohibit declaration of function inside a function
                                     if(strcmp(currentScope, TITIK_MAIN_SCOPE_NAME)) {
+                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot define a function inside a function", strippedToken.tokens[x].fileName);
                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot define a function inside a function", strippedToken.tokens[x].fileName);
+                                        return intFunctionReturn;
                                     }
                                 } else if(!strcmp(strippedToken.tokens[x].tokenValue, "rtn")) {
                                     if(strcmp(currentScope, TITIK_MAIN_SCOPE_NAME)) {
                                         parserState = get_return_value;
                                     } else {
+                                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                        return intFunctionReturn;
                                     }
                                 } else {
+                                    intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                     freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                    return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                    return intFunctionReturn;
                                 }                            
                             }
                         break;
                         default:
+                            intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                            return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                            return intFunctionReturn;
                     }
 
                 break;
@@ -219,8 +225,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                                 isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, currentScope);
                                 if(!isVariablesExists) {
+                                    intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                     freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                    return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                    return intFunctionReturn;
                                 }
 
                                 switch(globalVariableArray.variables[variablePosition].variable_type) {
@@ -241,15 +248,17 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                 }
                             break;
                             default:
+                                intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                return intFunctionReturn;
                         }
                         *gotReturn = T;
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
                         return 0;
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_function_name:
@@ -261,8 +270,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                         isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, currentScope);
                         if(isVariablesExists) {
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Identifier is already defined as variable", strippedToken.tokens[x].fileName);
                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Identifier is already defined as variable", strippedToken.tokens[x].fileName);
+                            return intFunctionReturn;
                         }
 
                         //check if the identifier is already defined as function
@@ -273,8 +283,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                         isFunctionsExists = isFunctionExists(&functionPosition, strippedToken.tokens[x].tokenValue);
                         if(isFunctionsExists) {
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Function already exists", strippedToken.tokens[x].fileName);
                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Function already exists", strippedToken.tokens[x].fileName);
+                            return intFunctionReturn;
                         }
 
                         setTemporaryToken(&currentIdentifier, strippedToken, x, identifier_token);
@@ -291,16 +302,18 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                         parserState = get_function_declaration_open_parenthesis;
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_function_declaration_open_parenthesis:
                     if(strippedToken.tokens[x].tokenType == open_parenthesis_token) {
                         parserState = get_function_declaration_parameters;
                     } else {
+                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting '('", strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting '('", strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_function_declaration_parameters:
@@ -315,15 +328,17 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                         isFunctionsExists = isFunctionExists(&functionPosition, strippedToken.tokens[x].tokenValue);
                         if(isFunctionsExists) {
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Function argument is already defined as function", strippedToken.tokens[x].fileName);
                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Function argument is already defined as function", strippedToken.tokens[x].fileName);
+                            return intFunctionReturn;
                         }
 
                         //check if token is a constant
                         //if yes then raise an error
                         if(isupper(strippedToken.tokens[x].tokenValue[0])){
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Function argument cannot be a constant", strippedToken.tokens[x].fileName);
                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Function argument cannot be a constant", strippedToken.tokens[x].fileName);
+                            return intFunctionReturn;
                         }
 
                         //check if argument is duplicate below
@@ -333,8 +348,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                         isArgumentExists = isFunctionArgumentExists(globalFunctionArray.functions[globalFunctionArray.functionCount].argumentArray, &argumentPosition, strippedToken.tokens[x].tokenValue);
                         if(isArgumentExists) {
+                            intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Duplicate argument ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                            return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Duplicate argument ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                            return intFunctionReturn;
                         }
 
                         //set the argument below
@@ -347,12 +363,14 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             //then ok
                             //nothing to do
                         } else {
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ','", strippedToken.tokens[x].fileName);
                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ','", strippedToken.tokens[x].fileName);
+                            return intFunctionReturn;
                         }
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_function_body:
@@ -380,8 +398,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                     if(strippedToken.tokens[x].tokenType == open_parenthesis_token) {
                         parserState = get_for_loop_from;
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }                    
                 break;
                 case get_for_loop_from:
@@ -393,13 +412,15 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                             isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, currentScope);
                             if(!isVariablesExists) {
+                                intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                return intFunctionReturn;
                             }
 
                             if(globalVariableArray.variables[variablePosition].variable_type != var_integer_type) {
+                                intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting integer variable", strippedToken.tokens[x].fileName);
                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting integer variable", strippedToken.tokens[x].fileName);
+                                return intFunctionReturn;
                             }
 
                             fromLoop = globalVariableArray.variables[variablePosition].integer_value;
@@ -407,16 +428,18 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             fromLoop = atoi(strippedToken.tokens[x].tokenValue);
                         }
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }  
                 break;
                 case get_for_loop_to_word:
                     if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "to")) {
                         parserState = get_for_loop_to;
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_for_loop_to:
@@ -428,13 +451,15 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                             isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, currentScope);
                             if(!isVariablesExists) {
+                                intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                return intFunctionReturn;
                             }
 
                             if(globalVariableArray.variables[variablePosition].variable_type != var_integer_type) {
+                                intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting integer variable", strippedToken.tokens[x].fileName);
                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting integer variable", strippedToken.tokens[x].fileName);
+                                return intFunctionReturn;
                             }
 
                             toLoop = globalVariableArray.variables[variablePosition].integer_value;
@@ -442,16 +467,18 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             toLoop = atoi(strippedToken.tokens[x].tokenValue);
                         }
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     } 
                 break;
                 case get_for_loop_end:
                     if(strippedToken.tokens[x].tokenType == close_parenthesis_token) {
                         parserState = get_for_loop_statements;
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }  
                 break;
                 case get_for_loop_statements:
@@ -534,8 +561,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                     if(strippedToken.tokens[x].tokenType == open_parenthesis_token) {
                         parserState = get_if_expression1;
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_if_expression1:
@@ -543,8 +571,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         setTemporaryToken(&currentIdentifier, strippedToken, x, strippedToken.tokens[x].tokenType);
                         parserState = get_if_operator_or_end;
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_if_expression2:
@@ -552,8 +581,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         setTemporaryToken(&currentIdentifier2, strippedToken, x, strippedToken.tokens[x].tokenType);
                         parserState = get_if_end;
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_if_end:
@@ -585,8 +615,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         }
 
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_if_operator_or_end:
@@ -624,8 +655,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             }
                         }
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case rebuild_tokens:
@@ -739,8 +771,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                     if(strippedToken.tokens[x].tokenType == open_parenthesis_token) {
                         parserState = get_function_parameters;
                     } else {
+                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting '('", strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting '('", strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_function_parameters:
@@ -748,8 +781,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         
                         //check first if # of arguments matched
                         if(argumentArray.argumentCount != globalFunctionArray.functions[functionPosition].argumentArray.argumentCount) {
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Argument count didn't matched", strippedToken.tokens[x].fileName);
                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Argument count didn't matched", strippedToken.tokens[x].fileName);
+                            return intFunctionReturn;
                         }
 
                         if(globalFunctionArray.functions[functionPosition].isSystem) {
@@ -827,8 +861,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     strcpy(tempChar, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
                                                     strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
                                                 } else {
+                                                    intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid operation", strippedToken.tokens[x].fileName);
                                                     freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid operation", strippedToken.tokens[x].fileName);
+                                                    return intFunctionReturn;
                                                 }
                                             break;
                                             case ret_integer_type:
@@ -894,8 +929,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                 }
                                             break;
                                             default:
+                                                intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
                                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
+                                                return intFunctionReturn;
                                         }
                                     break;
                                     case var_string_type:
@@ -914,19 +950,22 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
                                                 break;
                                                 default:
+                                                    intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
                                                     freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
+                                                    return intFunctionReturn;
                                             }
                                         } else {
+                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid operation", strippedToken.tokens[x].fileName);
                                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid operation", strippedToken.tokens[x].fileName);
+                                            return intFunctionReturn;
                                         }
 
                                     break;
                                     default:
                                         //none type
+                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
+                                        return intFunctionReturn;
                                 }
                             }
                             checkOperationAndSetParser(x, &parserState, strippedToken);
@@ -943,8 +982,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                             isVariablesExists = isVariableExists(&variablePosition, strippedToken.tokens[x].tokenValue, currentScope);
                             if(!isVariablesExists) {
+                                intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                return intFunctionReturn;
                             }
                         }
 
@@ -980,12 +1020,14 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             //then ok
                             //nothing to do
                         } else {
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ','", strippedToken.tokens[x].fileName);
                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                            return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ','", strippedToken.tokens[x].fileName);
+                            return intFunctionReturn;
                         }
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_assignment_or_function:
@@ -1001,16 +1043,18 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         isFunctionsExists = isFunctionExists(&functionPosition, currentIdentifier.tokenValue);
 
                         if(!isFunctionsExists) {
+                            intFunctionReturn = unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Undefined function ", currentIdentifier.tokenValue, currentIdentifier.fileName);
                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                            return unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Undefined function ", currentIdentifier.tokenValue, currentIdentifier.fileName);
+                            return intFunctionReturn;
                         }
 
                         argumentArray.argumentCount = 0;
                         parserState = get_function_parameters;
                     } else {
                         //unexpected token
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_assignment_value:
@@ -1025,8 +1069,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                         isFunctionsExists = isFunctionExists(&functionPosition, currentIdentifier.tokenValue);
                         if(isFunctionsExists) {
+                            intFunctionReturn = syntax_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Identifier is already defined as function", currentIdentifier.fileName);
                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                            return syntax_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Identifier is already defined as function", currentIdentifier.fileName);
+                            return intFunctionReturn;
                         }
 
                         //check if variable exists
@@ -1037,8 +1082,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             globalVariableArray.variableCount += 1;
                         } else {
                             if(globalVariableArray.variables[variablePosition].is_constant) {
+                                intFunctionReturn = unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Cannot override constant ", currentIdentifier.tokenValue, currentIdentifier.fileName);
                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                return unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Cannot override constant ", currentIdentifier.tokenValue, currentIdentifier.fileName);
+                                return intFunctionReturn;
                             }
                         }
 
@@ -1059,8 +1105,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                         isFunctionAssignmentUpdate = F;
                                         lastVariablePosition = variablePosition;
                                     } else {
+                                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                        return intFunctionReturn;
                                     }
                                 }
                             }
@@ -1071,8 +1118,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                                 isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, currentScope);
                                 if(!isVariablesExists) {
+                                    intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                     freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                    return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                    return intFunctionReturn;
                                 }
                             }
                         }
@@ -1090,8 +1138,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                 isFunctionAssignmentUpdate = F;
                                 lastVariablePosition = variablePosition;
                             } else {
+                                intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                return intFunctionReturn;
                             }                          
                         }
 
@@ -1131,8 +1180,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         }
                         
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case get_assigment_operation:
@@ -1141,8 +1191,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                     parserState = update_assigment_value;
 
                     if(!((x+1) < strippedToken.tokenCount)) {
+                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unfinished operation", strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unfinished operation", strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 case update_assigment_value:
@@ -1162,8 +1213,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                 isFunctionAssignmentUpdate = T;
                                 lastVariablePosition = variablePosition;
                             } else {
+                                intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                return intFunctionReturn;
                             }  
                         } else {
                             switch(globalVariableArray.variables[variablePosition].variable_type) {
@@ -1189,8 +1241,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                         isFunctionAssignmentUpdate = T;
                                                         lastVariablePosition = variablePosition;
                                                     } else {
+                                                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                                        return intFunctionReturn;
                                                     } 
                                                 }
                                             }
@@ -1202,8 +1255,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                                                 isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, currentScope);
                                                 if(!isVariablesExists) {
+                                                    intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                                     freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                                    return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                                    return intFunctionReturn;
                                                 }
 
                                                 switch(globalVariableArray.variables[variablePosition2].variable_type) {
@@ -1222,8 +1276,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                             strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
                                                             strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
                                                         } else {
+                                                            intFunctionReturn = unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
                                                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                                            return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
+                                                            return intFunctionReturn;
                                                         }
 
                                                     break;
@@ -1287,8 +1342,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     break;
                                                     default:
                                                         //variable is a none type
+                                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
                                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
+                                                        return intFunctionReturn;
                                                 }
 
                                                 checkOperationAndSetParser(x, &parserState, strippedToken);
@@ -1337,14 +1393,16 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                 strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
                                                 strcat(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
                                             } else {
+                                                intFunctionReturn = unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
                                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                                return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
+                                                return intFunctionReturn;
                                             }
                                             checkOperationAndSetParser(x, &parserState, strippedToken);
                                         break;
                                         default:
+                                            intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                            return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                            return intFunctionReturn;
                                     }
                                 break;
                                 case var_string_type:
@@ -1368,8 +1426,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                         isFunctionAssignmentUpdate = T;
                                                         lastVariablePosition = variablePosition;
                                                     } else {
+                                                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected keyword ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                                        return intFunctionReturn;
                                                     } 
                                                 }
                                             }
@@ -1382,8 +1441,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                                                 isVariablesExists = isVariableExists(&variablePosition2, strippedToken.tokens[x].tokenValue, currentScope);
                                                 if(!isVariablesExists) {
+                                                    intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                                                     freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                                    return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                                    return intFunctionReturn;
                                                 }
 
                                                 switch(globalVariableArray.variables[variablePosition2].variable_type) {
@@ -1401,8 +1461,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     break;
                                                     default:
                                                         //variable is a none type
+                                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
                                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                                        return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
+                                                        return intFunctionReturn;
                                                 }
                                                 checkOperationAndSetParser(x, &parserState, strippedToken);
                                             }
@@ -1413,21 +1474,24 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                         }
 
                                     } else {
+                                        intFunctionReturn = unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                        return unexpected_error(strippedToken.tokens[x-1].tokenLine, strippedToken.tokens[x-1].tokenColumn, "Invalid operation ", strippedToken.tokens[x-1].tokenValue, strippedToken.tokens[x-1].fileName);
+                                        return intFunctionReturn;
                                     }
 
                                 break;
                                 default:
                                     //none type
+                                    intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
                                     freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                                    return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
+                                    return intFunctionReturn;
                             }
                         }
 
                     } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                        return unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        return intFunctionReturn;
                     }
                 break;
                 default:
@@ -1435,8 +1499,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
             }
 
             if((x+1) == strippedToken.tokenCount && parserState != get_start) {
+                intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unfinished statement", strippedToken.tokens[x].fileName);
                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
-                return syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unfinished statement", strippedToken.tokens[x].fileName);
+                return intFunctionReturn;
             }
 
         }
