@@ -40,6 +40,7 @@ typedef enum {
 
 void checkOperationAndSetParser(int x, ParserState * parserState, TokenArray strippedToken);
 TokenArray stripUnwantedToken(TokenArray tokenArray);
+void freeArrays(TokenArray * newTempTokens, ArgumentArray * argumentArray);
 int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, char currentScope[], FunctionReturn * thisReturn, int * gotReturn);
 
 #endif

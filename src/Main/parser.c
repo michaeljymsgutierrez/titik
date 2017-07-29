@@ -50,6 +50,11 @@ TokenArray stripUnwantedToken(TokenArray tokenArray) {
     return newTokens;
 }
 
+void freeArrays(TokenArray * newTempTokens, ArgumentArray * argumentArray) {
+    free(newTempTokens->tokens);
+    free(argumentArray->arguments);
+}
+
 int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, char currentScope[], FunctionReturn * thisReturn, int * gotReturn) {
     *gotReturn = F;
     ParserState parserState = get_start;
@@ -1366,7 +1371,6 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
         }
     }
 
-    free(newTempTokens.tokens);
-    free(argumentArray.arguments);
+    freeArrays(&newTempTokens, &argumentArray);
     return 0;
 }
