@@ -500,6 +500,21 @@ void sc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
         case 2:
             printf(TITIK_COLOR_GREEN);
         break;
+        case 3:
+            printf(TITIK_COLOR_YELLOW);
+        break;
+        case 4:
+            printf(TITIK_COLOR_BLUE);
+        break;
+        case 5:
+            printf(TITIK_COLOR_MAGENTA);
+        break;
+        case 6:
+            printf(TITIK_COLOR_CYAN);
+        break;
+        case 7:
+            printf(TITIK_COLOR_WHITE);
+        break;
         default:
             *intReturn = 1;
             printf("Error: Invalid value\n");
