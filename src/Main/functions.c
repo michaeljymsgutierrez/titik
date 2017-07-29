@@ -573,6 +573,13 @@ void initFunctions() {
     exArgArray.argumentCount = 1;
     defineFunction("ex", exArgArray, ex_execute, T);
     //end ex function
+
+    //sc function
+    ArgumentArray scArgArray;
+    scArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    scArgArray.argumentCount = 1;
+    defineFunction("sc", scArgArray, sc_execute, T);
+    //end sc function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
