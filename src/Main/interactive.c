@@ -85,6 +85,11 @@ void interactive_shell() {
             if(tokenArray.tokenCount > 1) {
                 parseToken(tokenArray, F, T, &needBreak, TITIK_MAIN_SCOPE_NAME, &funcReturn, &gotReturn);
             }
+
+            for(int x=0; x < lineCount; x++) {
+                free(inputStr[x]);
+            }
+            
             lineCount = 0;
             free(inputStr);
         }
