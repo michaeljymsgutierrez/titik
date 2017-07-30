@@ -167,6 +167,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                     parserState = get_while_loop_opening;
                                     whileLoopEndCount = 0;
                                     willBreak = F;
+                                    currentOperation = none_token;
                                     newTempTokens.tokenCount = 0; 
                                 } else if(!strcmp(strippedToken.tokens[x].tokenValue, "b")) {
                                     if(isLoop) {
