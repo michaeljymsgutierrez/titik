@@ -230,7 +230,24 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         return intFunctionReturn;
                     }
                 break;
+                case get_while_condition2:
+                break;
                 case get_while_operator_or_end:
+                    if(strippedToken.tokens[x].tokenType == greater_than_token || strippedToken.tokens[x].tokenType == less_than_token || strippedToken.tokens[x].tokenType == equals_token || strippedToken.tokens[x].tokenType == close_parenthesis_token) {
+
+                        if(strippedToken.tokens[x].tokenType == greater_than_token || strippedToken.tokens[x].tokenType == less_than_token || strippedToken.tokens[x].tokenType == equals_token) {
+                            currentOperation = strippedToken.tokens[x].tokenType;
+                            parserState = get_while_condition2;
+                        } else {
+                            //close parenthesis
+                            
+                        }
+
+                    } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                        return intFunctionReturn;
+                    }
                 break;
                 case get_return_value:
                     if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
