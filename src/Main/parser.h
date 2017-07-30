@@ -24,6 +24,7 @@ typedef enum {
     get_if_statements,
     get_if_statements_else,
     get_else_if_statements,
+    get_while_loop_opening,
     get_for_loop_opening,
     get_for_loop_from,
     get_for_loop_to_word,

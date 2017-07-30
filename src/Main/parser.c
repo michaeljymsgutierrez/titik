@@ -71,6 +71,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
     int fromLoop = 0;
     int toLoop = 0;
     int forLoopEndCount = 0;
+    int whileLoopEndCount = 0;
     int functionEndCount = 0;
 
     int willBreak = F;
@@ -162,6 +163,11 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                     forLoopEndCount = 0;
                                     willBreak = F;
                                     newTempTokens.tokenCount = 0; //if error occurs then need to have a new temporary container of the token array
+                                } else if(!strcmp(strippedToken.tokens[x].tokenValue, "wl")) {
+                                    parserState = get_while_loop_opening;
+                                    whileLoopEndCount = 0;
+                                    willBreak = F;
+                                    newTempTokens.tokenCount = 0; 
                                 } else if(!strcmp(strippedToken.tokens[x].tokenValue, "b")) {
                                     if(isLoop) {
                                         *needBreak = T;
@@ -203,6 +209,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             return intFunctionReturn;
                     }
 
+                break;
+                case get_while_loop_opening:
+                
                 break;
                 case get_return_value:
                     if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
