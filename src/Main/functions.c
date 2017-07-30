@@ -716,5 +716,15 @@ void defineConstantNone(char variableName[]) {
 void initVariables() {
     defineConstantString("__AUTHOR__", TITIK_AUTHOR);
     defineConstantString("__VERSION_STRING__", TITIK_STRING_VERSION);
+    //colors
+    defineConstantInteger("CNRM", 0);
+    defineConstantInteger("CRED", 1);
+    defineConstantInteger("CGRN", 2);
+    defineConstantInteger("CYLW", 3);
+    defineConstantInteger("CBLU", 4);
+    defineConstantInteger("CMAG", 5);
+    defineConstantInteger("CCYN", 6);
+    defineConstantInteger("CWHT", 7);
+    //end of colors
     defineConstantNone("Nil");
 }
