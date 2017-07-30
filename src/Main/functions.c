@@ -687,6 +687,15 @@ int isVariableExists(int * variablePosition, char tokenValue[], char scopeName[]
     return isExists;    
 }
 
+void defineConstantInteger(char variableName[], int variableValue) {
+    globalVariableArray.variables[globalVariableArray.variableCount].variable_type = var_integer_type;
+    strcpy(globalVariableArray.variables[globalVariableArray.variableCount].name, variableName);
+    strcpy(globalVariableArray.variables[globalVariableArray.variableCount].scope_name, TITIK_MAIN_SCOPE_NAME);
+    globalVariableArray.variables[globalVariableArray.variableCount].integer_value = variableValue;
+    globalVariableArray.variables[globalVariableArray.variableCount].is_constant = T;
+    globalVariableArray.variableCount += 1;
+}
+
 void defineConstantString(char variableName[], char variableValue[]) {
     globalVariableArray.variables[globalVariableArray.variableCount].variable_type = var_string_type;
     strcpy(globalVariableArray.variables[globalVariableArray.variableCount].name, variableName);

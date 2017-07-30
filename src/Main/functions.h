@@ -120,6 +120,7 @@ int isFunctionExists(int * functionPosition, char tokenValue[]);
 int isFunctionArgumentExists(ArgumentArray argArray, int * argumentPosition, char tokenValue[]);
 int isVariableExists(int * variablePosition, char tokenValue[], char scopeName[]);
 
+void defineConstantInteger(char variableName[], int variableValue);
 void defineConstantString(char variableName[], char variableValue[]);
 void defineConstantNone(char variableName[]);
 void initVariables();
