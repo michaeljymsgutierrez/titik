@@ -240,7 +240,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             parserState = get_while_condition2;
                         } else {
                             //close parenthesis
-                            
+                            parserState = get_while_statements;
                         }
 
                     } else {
@@ -248,6 +248,9 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
                         return intFunctionReturn;
                     }
+                break;
+                case get_while_statements:
+
                 break;
                 case get_return_value:
                     if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {

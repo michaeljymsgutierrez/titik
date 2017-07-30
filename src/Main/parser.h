@@ -27,6 +27,7 @@ typedef enum {
     get_while_loop_opening,
     get_while_condition1,
     get_while_condition2,
+    get_while_statements,
     get_while_operator_or_end,
     get_for_loop_opening,
     get_for_loop_from,
