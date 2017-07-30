@@ -5,7 +5,7 @@
 #ifndef RESERVED_H_
 #define RESERVED_H_
 
-#define RESERVED_WORD_COUNT 20
+#define RESERVED_WORD_COUNT 22
 
 static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "zzz", //sleep
@@ -14,6 +14,8 @@ static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "df", //end of function declaration
     "fl", //for loop
     "lf", //end of for loop
+    "wl", //while loop
+    "lw", //end of while loop
     "i", //include
     "if", //if
     "fi", //end of if
