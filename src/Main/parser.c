@@ -60,6 +60,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
     TitikTokenType currentOperation = none_token;
     char tempChar[TITIK_CHAR_PER_LINE];
     int ifWithTrue = F;
+    int whileWithTrue = F;
     int elseIfWithTrue = F;
     int ifEndCount = 0;
     int elseIfMode = F;
@@ -167,6 +168,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                     parserState = get_while_loop_opening;
                                     whileLoopEndCount = 0;
                                     willBreak = F;
+                                    whileWithTrue = F;
                                     currentOperation = none_token;
                                     newTempTokens.tokenCount = 0; 
                                 } else if(!strcmp(strippedToken.tokens[x].tokenValue, "b")) {
@@ -250,7 +252,53 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                     }
                 break;
                 case get_while_statements:
+                    if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "lw") && whileLoopEndCount == 0) {
+                        //execute looping statement
+                        while(T) {
 
+                            intFunctionReturn = evaluateToken(currentIdentifier, &whileWithTrue, currentScope);
+
+                            if(intFunctionReturn > 0) {
+                                freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                                return intFunctionReturn;
+                                break;
+                            }
+
+                            if(whileWithTrue) {
+                                intFunctionReturn = parseToken(newTempTokens, T, F, &willBreak, currentScope, &funcReturn, &loopReturn);
+
+                                if(willBreak) {
+                                    break;
+                                }
+
+                                if(loopReturn) {
+                                    *gotReturn = T;
+                                    break;
+                                }
+
+                                if(intFunctionReturn > 0) {
+                                    freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                                    return intFunctionReturn;
+                                    break;
+                                } 
+                            } else {
+                                break;
+                            }
+                        }
+
+                        *thisReturn = funcReturn;
+                        parserState = get_start;
+                    } else {
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "wl")) {
+                            whileLoopEndCount += 1;
+                        }
+
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "lw")) {
+                            whileLoopEndCount -= 1;
+                        }
+
+                        updateTemporaryTokens(&newTempTokens, strippedToken, x);
+                    }
                 break;
                 case get_return_value:
                     if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
