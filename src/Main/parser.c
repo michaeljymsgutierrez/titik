@@ -242,6 +242,8 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         return intFunctionReturn;
                     }
                 break;
+                case get_while_end:
+                break;
                 case get_while_operator_or_end:
                     if(strippedToken.tokens[x].tokenType == greater_than_token || strippedToken.tokens[x].tokenType == less_than_token || strippedToken.tokens[x].tokenType == equals_token || strippedToken.tokens[x].tokenType == close_parenthesis_token) {
 
