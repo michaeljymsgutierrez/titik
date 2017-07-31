@@ -24,6 +24,7 @@ void interactive_shell() {
     int ifEndCount = 0;
     int fdEndCount = 0;
     int flEndCount = 0;
+    int wlEndCount = 0;
 
     printf("%s %s\n", TITIK_APP_NAME, TITIK_STRING_VERSION);
     printf("To exit, press ^C\n");
@@ -41,6 +42,7 @@ void interactive_shell() {
         ifEndCount = 0;
         fdEndCount = 0;
         flEndCount = 0;
+        wlEndCount = 0;
         lineCount += 1;
         printf("%s ", indicator);
         fgets(userInput, TITIK_CHAR_PER_LINE, stdin);
@@ -54,6 +56,12 @@ void interactive_shell() {
         generateToken(inputStr, lineCount, &tokenArray, "interactive_shell");
 
         for(int x=0; x < tokenArray.tokenCount; x++) {
+            if(!strcmp(tokenArray.tokens[x].tokenValue, "wl")) {
+                wlEndCount += 1;
+            }
+            if(!strcmp(tokenArray.tokens[x].tokenValue, "lw")) {
+                wlEndCount -= 1;
+            }
             if(!strcmp(tokenArray.tokens[x].tokenValue, "if")) {
                 ifEndCount += 1;
             }
@@ -74,7 +82,7 @@ void interactive_shell() {
             }
         }
 
-        if(ifEndCount > 0 || fdEndCount > 0 || flEndCount > 0) {
+        if(ifEndCount > 0 || fdEndCount > 0 || flEndCount > 0 || wlEndCount > 0) {
             isContinue = T;
         } else {
             isContinue = F;
