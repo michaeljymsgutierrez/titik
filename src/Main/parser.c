@@ -252,6 +252,63 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                     }
                 break;
                 case get_while_statements2:
+                    if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "lw") && whileLoopEndCount == 0) {
+                        //execute looping statement
+                        while(T) {
+
+                            intFunctionReturn = convertTokenToVariable(&tempVariable, currentIdentifier, currentScope);
+
+                            if(intFunctionReturn > 0) {
+                                freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                                return intFunctionReturn;
+                                break;
+                            }
+
+                            intFunctionReturn = convertTokenToVariable(&tempVariable2, currentIdentifier2, currentScope);
+
+                            if(intFunctionReturn > 0) {
+                                freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                                return intFunctionReturn;
+                                break;
+                            }
+
+                            compareVariable(tempVariable, tempVariable2, currentOperation, &whileWithTrue);
+
+                            if(whileWithTrue) {
+                                intFunctionReturn = parseToken(newTempTokens, T, F, &willBreak, currentScope, &funcReturn, &loopReturn);
+
+                                if(willBreak) {
+                                    break;
+                                }
+
+                                if(loopReturn) {
+                                    *gotReturn = T;
+                                    break;
+                                }
+
+                                if(intFunctionReturn > 0) {
+                                    freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                                    return intFunctionReturn;
+                                    break;
+                                } 
+                            } else {
+                                break;
+                            }
+                        }
+
+                        *thisReturn = funcReturn;
+                        parserState = get_start;
+                    } else {
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "wl")) {
+                            whileLoopEndCount += 1;
+                        }
+
+                        if(strippedToken.tokens[x].tokenType == keyword_token && !strcmp(strippedToken.tokens[x].tokenValue, "lw")) {
+                            whileLoopEndCount -= 1;
+                        }
+
+                        updateTemporaryTokens(&newTempTokens, strippedToken, x);
+                    }
                 break;
                 case get_while_operator_or_end:
                     if(strippedToken.tokens[x].tokenType == greater_than_token || strippedToken.tokens[x].tokenType == less_than_token || strippedToken.tokens[x].tokenType == equals_token || strippedToken.tokens[x].tokenType == close_parenthesis_token) {
