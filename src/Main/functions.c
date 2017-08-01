@@ -484,6 +484,8 @@ void ex_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
 }
 
 void flcp_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    FILE *source, *target;
+    char ch;
     *intReturn = 0;
     funcReturn->returnType = ret_string_type;
     strcpy(funcReturn->string_value, "");
