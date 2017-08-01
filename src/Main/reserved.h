@@ -5,7 +5,7 @@
 #ifndef RESERVED_H_
 #define RESERVED_H_
 
-#define RESERVED_WORD_COUNT 24
+#define RESERVED_WORD_COUNT 25
 
 static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "zzz", //sleep
@@ -31,6 +31,7 @@ static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "sc", //set color
     "flcp", //file copy
     "flmv", //file cut
+    "flrm", //file remove
     "r" //readline
 };
 
