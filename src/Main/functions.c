@@ -483,6 +483,10 @@ void ex_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
     funcReturn->returnType = ret_none_type;
 }
 
+void flcp_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+
+}
+
 #ifdef _WIN32
 CONSOLE_SCREEN_BUFFER_INFO Info;
 #endif
