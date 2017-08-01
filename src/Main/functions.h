@@ -114,6 +114,7 @@ void ex_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
 int cpmv(char sourceFile[], char targetFile[], int removeIt);
 void flcp_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 void flmv_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
+void flrm_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 void sc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 //the first argument array is the structure of the function
 //the function pointer with argumentarray is the user inputted argument
