@@ -499,6 +499,23 @@ void flcp_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
         *intReturn = 1;
         printf("Error: Parameter must be a string\n");
     }
+    source = fopen(argumentArray.arguments[0].string_value, "r");
+
+   if(source != NULL){
+        target = fopen(argumentArray.arguments[1].string_value, "w");
+
+        if(target == NULL) {
+            fclose(source);
+        } else {
+            while((ch = fgetc(source)) != EOF) {
+                fputc(ch, target);
+            }
+            fclose(source);
+            fclose(target);
+
+            strcpy(funcReturn->string_value, argumentArray.arguments[1].string_value);
+        }
+   }
 }
 
 #ifdef _WIN32
