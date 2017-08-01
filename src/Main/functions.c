@@ -490,12 +490,12 @@ void flcp_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
     funcReturn->returnType = ret_string_type;
     strcpy(funcReturn->string_value, "");
 
-    if(argumentArray.arguments[0].argumentType != arg_integer_type) {
+    if(argumentArray.arguments[0].argumentType != arg_string_type) {
         *intReturn = 1;
         printf("Error: Parameter must be a string\n");
     }
 
-    if(argumentArray.arguments[1].argumentType != arg_integer_type) {
+    if(argumentArray.arguments[1].argumentType != arg_string_type) {
         *intReturn = 1;
         printf("Error: Parameter must be a string\n");
     }
