@@ -5,7 +5,7 @@
 #ifndef RESERVED_H_
 #define RESERVED_H_
 
-#define RESERVED_WORD_COUNT 25
+#define RESERVED_WORD_COUNT 26
 
 static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "zzz", //sleep
@@ -32,6 +32,7 @@ static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "flcp", //file copy
     "flmv", //file cut
     "flrm", //file remove
+    "exe", //execute command
     "r" //readline
 };
 
