@@ -483,9 +483,34 @@ void ex_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
     funcReturn->returnType = ret_none_type;
 }
 
-void flcp_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+//helper for flcp_execute & flmv_execute
+int cpmv(char sourceFile[], char targetFile[]) {
     FILE *source, *target;
     char ch;
+
+    source = fopen(sourceFile, "r");
+
+   if(source != NULL){
+        target = fopen(targetFile, "w");
+
+        if(target == NULL) {
+            fclose(source);
+        } else {
+            while((ch = fgetc(source)) != EOF) {
+                fputc(ch, target);
+            }
+            fclose(source);
+            fclose(target);
+
+            return T;
+        }
+   }
+
+   return F;
+}
+
+void flcp_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+
     *intReturn = 0;
     funcReturn->returnType = ret_string_type;
     strcpy(funcReturn->string_value, "");
@@ -499,23 +524,10 @@ void flcp_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
         *intReturn = 1;
         printf("Error: Parameter must be a string\n");
     }
-    source = fopen(argumentArray.arguments[0].string_value, "r");
 
-   if(source != NULL){
-        target = fopen(argumentArray.arguments[1].string_value, "w");
-
-        if(target == NULL) {
-            fclose(source);
-        } else {
-            while((ch = fgetc(source)) != EOF) {
-                fputc(ch, target);
-            }
-            fclose(source);
-            fclose(target);
-
-            strcpy(funcReturn->string_value, argumentArray.arguments[1].string_value);
-        }
-   }
+    if(cpmv(argumentArray.arguments[0].string_value, argumentArray.arguments[1].string_value)) {
+        strcpy(funcReturn->string_value, argumentArray.arguments[1].string_value);
+    }
 }
 
 #ifdef _WIN32

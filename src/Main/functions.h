@@ -111,6 +111,7 @@ void toi_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
 void tof_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 void tos_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 void ex_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
+int cpmv(char sourceFile[], char targetFile[]);
 void flcp_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 void sc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 //the first argument array is the structure of the function
