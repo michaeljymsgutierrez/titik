@@ -574,6 +574,24 @@ void flrm_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
 
 }
 
+void exe_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    funcReturn->returnType = ret_integer_type;
+    funcReturn->integer_value = T;
+    int ret;
+
+    if(argumentArray.arguments[0].argumentType != arg_string_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be a string\n");
+    }
+
+    ret = system(argumentArray.arguments[0].string_value);
+
+    if(ret) {
+        funcReturn->integer_value = F;
+    }
+}
+
 #ifdef _WIN32
 CONSOLE_SCREEN_BUFFER_INFO Info;
 #endif
@@ -744,6 +762,13 @@ void initFunctions() {
     flrmArgArray.argumentCount = 1;
     defineFunction("flrm", flrmArgArray, flrm_execute, T);
     //end flrm function
+
+    //exe function
+    ArgumentArray exeArgArray;
+    exeArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    exeArgArray.argumentCount = 1;
+    defineFunction("exe", exeArgArray, exe_execute, T);
+    //end exe function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
