@@ -636,6 +636,13 @@ void initFunctions() {
     scArgArray.argumentCount = 1;
     defineFunction("sc", scArgArray, sc_execute, T);
     //end sc function
+
+    //flcp function
+    ArgumentArray flcpArgArray;
+    flcpArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    flcpArgArray.argumentCount = 2;
+    defineFunction("flcp", flcpArgArray, flcp_execute, T);
+    //end flcp function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
