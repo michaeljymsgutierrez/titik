@@ -484,7 +484,7 @@ void ex_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
 }
 
 //helper for flcp_execute & flmv_execute
-int cpmv(char sourceFile[], char targetFile[]) {
+int cpmv(char sourceFile[], char targetFile[], int removeIt) {
     FILE *source, *target;
     char ch;
 
@@ -501,6 +501,10 @@ int cpmv(char sourceFile[], char targetFile[]) {
             }
             fclose(source);
             fclose(target);
+
+            if(removeIt) {
+                remove(sourceFile);
+            }
 
             return T;
         }
@@ -525,7 +529,7 @@ void flcp_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
         printf("Error: Parameter must be a string\n");
     }
 
-    if(cpmv(argumentArray.arguments[0].string_value, argumentArray.arguments[1].string_value)) {
+    if(cpmv(argumentArray.arguments[0].string_value, argumentArray.arguments[1].string_value, F)) {
         strcpy(funcReturn->string_value, argumentArray.arguments[1].string_value);
     }
 }
