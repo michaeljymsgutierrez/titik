@@ -534,6 +534,27 @@ void flcp_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
     }
 }
 
+void flmv_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+
+    *intReturn = 0;
+    funcReturn->returnType = ret_string_type;
+    strcpy(funcReturn->string_value, "");
+
+    if(argumentArray.arguments[0].argumentType != arg_string_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be a string\n");
+    }
+
+    if(argumentArray.arguments[1].argumentType != arg_string_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be a string\n");
+    }
+
+    if(cpmv(argumentArray.arguments[0].string_value, argumentArray.arguments[1].string_value, T)) {
+        strcpy(funcReturn->string_value, argumentArray.arguments[1].string_value);
+    }
+}
+
 #ifdef _WIN32
 CONSOLE_SCREEN_BUFFER_INFO Info;
 #endif
@@ -690,6 +711,13 @@ void initFunctions() {
     flcpArgArray.argumentCount = 2;
     defineFunction("flcp", flcpArgArray, flcp_execute, T);
     //end flcp function
+
+    //flmv function
+    ArgumentArray flmvArgArray;
+    flmvArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    flmvArgArray.argumentCount = 2;
+    defineFunction("flmv", flmvArgArray, flmv_execute, T);
+    //end flmv function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
