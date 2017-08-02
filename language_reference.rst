@@ -16,3 +16,7 @@ Variables
 **Data Types:**
 
 - *Integer* - a non-decimal number between −2,147,483,647 and 2,147,483,647
+
+.. image:: http://ferdinandsilva.com/media/integer.png
+
+- *String* - a sequence of characters. A string can be any text inside quotes. You can use single or double quotes.
