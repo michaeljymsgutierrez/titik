@@ -26,3 +26,7 @@ Variables
 - *Float* - a number with a decimal point.
 
 .. image:: http://ferdinandsilva.com/media/float.png
+
+- *Nil* - a special data type that represents a variable with no value
+
+.. image:: http://ferdinandsilva.com/media/nil.png
