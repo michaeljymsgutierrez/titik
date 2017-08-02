@@ -20,3 +20,5 @@ Variables
 .. image:: http://ferdinandsilva.com/media/integer.png
 
 - *String* - a sequence of characters. A string can be any text inside quotes. You can use single or double quotes.
+
+.. image:: http://ferdinandsilva.com/media/string.png
