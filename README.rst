@@ -51,8 +51,8 @@ Sample Code
 
             #loop statement
             fl (1 to 7)
-				intVariable = intVariable + 1
-				sc(intVariable) #change text color
+                intVariable = intVariable + 1
+                sc(intVariable) #change text color
                 p(var) #It will print "Hello World" 5 times
                 zzz(2000) #sleep for 2 seconds
             lf
