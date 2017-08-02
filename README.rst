@@ -57,7 +57,7 @@ Sample Code
                 zzz(2000) #sleep for 2 seconds
             lf
             
-			sc(CNRM) #reset the text color
+            sc(CNRM) #reset the text color
         e
             p('Not Hello World')
         fi
