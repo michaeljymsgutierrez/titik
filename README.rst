@@ -64,3 +64,10 @@ Sample Code
     df
 
     hello_world(strVariable) #call function
+    
+    Language Reference
+    ==================
+
+    Click here_
+
+    .. _here: https://github.com/six519/titik/blob/master/language_reference.rst
