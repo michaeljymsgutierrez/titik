@@ -22,3 +22,7 @@ Variables
 - *String* - a sequence of characters. A string can be any text inside quotes. You can use single or double quotes.
 
 .. image:: http://ferdinandsilva.com/media/string.png
+
+- *Float* - a number with a decimal point.
+
+.. image:: http://ferdinandsilva.com/media/float.png
