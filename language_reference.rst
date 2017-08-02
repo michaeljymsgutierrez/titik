@@ -6,9 +6,13 @@ Hello World Code
 Variables
 =========
 
-Rules:
+**Rules:**
 
 - A variable name must start with a letter or the underscore character
 - A variable name cannot start with a number
 - A variable name can only contain alpha-numeric characters and underscores (A-z, 0-9, and _ )
 - Variable names are case-sensitive (name and nAme are two different variables)
+
+**Data Types:**
+
+- *Integer* - a non-decimal number between −2,147,483,647 and 2,147,483,647
