@@ -65,9 +65,9 @@ Sample Code
 
     hello_world(strVariable) #call function
     
-    Language Reference
-    ==================
+Language Reference
+==================
 
-    Click here_
+Click here_
 
-    .. _here: https://github.com/six519/titik/blob/master/language_reference.rst
+.. _here: https://github.com/six519/titik/blob/master/language_reference.rst
