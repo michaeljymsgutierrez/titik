@@ -41,25 +41,25 @@ Sample Code
     \
 
     floatVariable = 25.55
-    strVariable = "Hello " + 'World' #concatenation
+    strVariable = "Mabuhay " + 'Ka' #concatenation
 
     #function definition
     fd hello_world(var)
         intVariable = 0
         #if statement
-        if(var = 'Hello World')
+        if(var = 'Mabuhay Ka')
 
             #loop statement
             fl (1 to 7)
                 intVariable = intVariable + 1
                 sc(intVariable) #change text color
-                p(var) #It will print "Hello World" 5 times
+                p(var) #It will print "Mabuhay Ka" 5 times
                 zzz(2000) #sleep for 2 seconds
             lf
             
             sc(CNRM) #reset the text color
         e
-            p('Not Hello World')
+            p('Not Mabuhay Ka')
         fi
     df
 
