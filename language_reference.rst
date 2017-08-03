@@ -30,3 +30,9 @@ Variables
 - *Nil* - a special data type that represents a variable with no value
 
 .. image:: http://ferdinandsilva.com/media/nil.png
+
+**Constant:**
+
+It has a name starting with an uppercase character.
+
+.. image:: http://ferdinandsilva.com/media/constant.png
