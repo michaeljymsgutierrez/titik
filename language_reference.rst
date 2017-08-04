@@ -1,7 +1,7 @@
 Hello World Code
 ================
 
-.. image:: http://ferdinandsilva.com/media/hello.png
+.. image:: http://ferdinandsilva.com/media/mabuhay.png
 
 Variables
 =========
