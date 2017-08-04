@@ -45,7 +45,7 @@ Operators
 +----------+-----------------+-----------------------------------------------------------------------+
 | Operator |       Name      |                  Example                                              |
 +==========+=================+=======================================================================+
-|    \+    |    Addition     | .. image:: http://ferdinandsilva.com/media/sum.png                    |
+|      \+  |    Addition     | .. image:: http://ferdinandsilva.com/media/sum.png                    |
 +----------+-----------------+-----------------------------------------------------------------------+
-|    -     |   Subtraction   | .. image:: http://ferdinandsilva.com/media/difference.png             |
+|      \-  |   Subtraction   | .. image:: http://ferdinandsilva.com/media/difference.png             |
 +----------+-----------------+-----------------------------------------------------------------------+   
