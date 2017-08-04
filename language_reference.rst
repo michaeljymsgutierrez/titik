@@ -36,3 +36,14 @@ Variables
 It has a name starting with an uppercase character.
 
 .. image:: http://ferdinandsilva.com/media/constant.png
+
+Operators
+=========
+
+**Arithmetic Operators**
+
++----------+-----------------+---------------------------------------------------------+
+| Operator |       Name      |                  Example                                |
++==========+=================+=========================================================+
+|    +     |    Addition     | .. image:: http://ferdinandsilva.com/media/constant.png |
++----------+-----------------+---------------------------------------------------------+  
