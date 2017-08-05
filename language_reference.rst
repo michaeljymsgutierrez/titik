@@ -49,5 +49,5 @@ Operators
 +----------+-----------------+-----------------------------------------------------------------------+
 |      \-  |   Subtraction   | .. image:: http://ferdinandsilva.com/media/difference.png             |
 +----------+-----------------+-----------------------------------------------------------------------+
-|      *   | Multiplication  | .. image:: http://ferdinandsilva.com/media/product.png                |
+|      \*  | Multiplication  | .. image:: http://ferdinandsilva.com/media/product.png                |
 +----------+-----------------+-----------------------------------------------------------------------+ 
