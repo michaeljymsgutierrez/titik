@@ -161,3 +161,11 @@ Execute a block of code while the specified condition is true.
 **Example**
 
 .. image:: http://ferdinandsilva.com/media/while.png
+
+**Break Statement**
+
+When a break statement is encountered inside a loop, the loop is immediately terminated and the program control resumes at the next statement following the loop.
+
+**Example**
+
+.. image:: http://ferdinandsilva.com/media/break.png
