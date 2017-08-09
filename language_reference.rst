@@ -82,3 +82,19 @@ Executes some code if one condition is true.
 **Example**
 
 .. image:: http://ferdinandsilva.com/media/equal.png
+
+**If...Else Statement**
+
+Executes some code if condition is true and another code if that condition is false.
+
+**Syntax**
+::
+    if (condition)
+        code to be executed if condition is true
+    e 
+        code to be executed if condition is false
+    fi
+
+**Example**
+
+.. image:: http://ferdinandsilva.com/media/ifelse.png
