@@ -116,3 +116,34 @@ Executes different codes for more than two conditions.
 **Example**
 
 .. image:: http://ferdinandsilva.com/media/ifelseif.png
+
+Looping Statements
+==================
+
+**Forward For Loop**
+
+Execute a block of code a specified number of times where start counter is lower than end counter.
+
+**Syntax**
+::
+    fl (start counter to end counter)
+        code to be executed
+    lf
+
+**Example**
+
+.. image:: http://ferdinandsilva.com/media/forward.png
+
+**Backward For Loop**
+
+Execute a block of code a specified number of times where start counter is greater than end counter.
+
+**Syntax**
+::
+    fl (start counter to end counter)
+        code to be executed
+    lf
+
+**Example**
+
+.. image:: http://ferdinandsilva.com/media/backward.png
