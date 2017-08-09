@@ -147,3 +147,17 @@ Execute a block of code a specified number of times where start counter is great
 **Example**
 
 .. image:: http://ferdinandsilva.com/media/backward.png
+
+**While Loop**
+
+Execute a block of code while the specified condition is true.
+
+**Syntax**
+::
+    wl (condition)
+        code to be executed
+    lw
+
+**Example**
+
+.. image:: http://ferdinandsilva.com/media/while.png
