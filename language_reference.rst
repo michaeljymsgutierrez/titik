@@ -65,3 +65,20 @@ Operators
 +----------+-----------------+-----------------------------------------------------------------------+
 |     <    | Less than       | .. image:: http://ferdinandsilva.com/media/less.png                   |
 +----------+-----------------+-----------------------------------------------------------------------+
+
+If Statement
+============
+
+**If Statement**
+
+Executes some code if one condition is true.
+
+**Syntax**
+::
+    if (condition)
+        code to be executed if condition is true
+    fi
+
+**Example**
+
+.. image:: http://ferdinandsilva.com/media/equal.png
