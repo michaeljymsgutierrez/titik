@@ -98,3 +98,21 @@ Executes some code if condition is true and another code if that condition is fa
 **Example**
 
 .. image:: http://ferdinandsilva.com/media/ifelse.png
+
+**If...ElseIf...Else Statement**
+
+Executes different codes for more than two conditions.
+
+**Syntax**
+::
+    if (condition)
+        code to be executed if this condition is true
+    ef (condition)
+        code to be executed if this condition is true
+    e
+        code to be executed if all conditions are false
+    fi
+
+**Example**
+
+.. image:: http://ferdinandsilva.com/media/ifelseif.png
