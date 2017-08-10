@@ -197,3 +197,18 @@ Functions
 **Example 2 (Function with parameters & return)**
 
 .. image:: http://ferdinandsilva.com/media/function2.png
+
+Built-in Functions
+==================
+
+- **zzz** - delays program execution for a given number of milliseconds.
+
+**Declaration:**
+::
+    Nil zzz(integer)
+
+- **p** - writes string to the standard output (stdout).
+
+**Declaration:**
+::
+    Nil p(string)
