@@ -3,6 +3,17 @@ Hello World Code
 
 .. image:: http://ferdinandsilva.com/media/mabuhay.png
 
+Comments
+========
+
+**Single Line Comment**
+
+.. image:: http://ferdinandsilva.com/media/comment1.png
+
+**Multiline Comment**
+
+.. image:: http://ferdinandsilva.com/media/comment2.png
+
 Variables
 =========
 
