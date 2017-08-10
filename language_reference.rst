@@ -169,3 +169,17 @@ When a break statement is encountered inside a loop, the loop is immediately ter
 **Example**
 
 .. image:: http://ferdinandsilva.com/media/break.png
+
+Functions
+=========
+
+**Syntax**
+::
+    fd functionName(parameter1, parameter2)
+        code to be executed
+    df
+
+**Example 1 (Function without parameter & return)**
+
+.. image:: http://ferdinandsilva.com/media/function1.png
+
