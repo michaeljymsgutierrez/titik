@@ -230,3 +230,51 @@ Built-in Functions
 **Declaration:**
 ::
     integer toi(string or float)
+
+- **tos** - convert float/integer to string type.
+
+**Declaration:**
+::
+    string tos(float or integer)
+
+- **ex** - terminates program execution and returns the status value to the system.
+
+**Declaration:**
+::
+    Nil ex(integer)
+
+- **sc** - a function to set the text color on a console screen.
+
+**Declaration:**
+::
+    Nil sc(integer 0..7)
+
+- **flcp** - makes a copy of the file source to destination. If successfull, the return is the destination.
+
+**Declaration:**
+::
+    string flcp(string, string)
+
+- **flmv** - moves the file source to destination. If successfull, the return is the destination.
+
+**Declaration:**
+::
+    string flmv(string, string)
+
+- **flrm** - deletes a file. If successfull, the return is 1, if not then it will return 0.
+
+**Declaration:**
+::
+    integer flrm(string)
+
+- **exe** - executes an internal operating system command. If successfull, the return is 1, if not then it will return 0.
+
+**Declaration:**
+::
+    integer exe(string)
+
+- **r** - presents a prompt to the user and read a string from standard input (stdin).
+
+**Declaration:**
+::
+    string r(string)
