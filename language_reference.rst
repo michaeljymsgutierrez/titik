@@ -183,3 +183,6 @@ Functions
 
 .. image:: http://ferdinandsilva.com/media/function1.png
 
+**Example 2 (Function with parameters & return)**
+
+.. image:: http://ferdinandsilva.com/media/function2.png
