@@ -212,3 +212,21 @@ Built-in Functions
 **Declaration:**
 ::
     Nil p(string)
+
+- **i** - used to include a titik file in another file.
+
+**Declaration:**
+::
+    Nil i(string)
+
+- **tof** - convert string/integer to float type.
+
+**Declaration:**
+::
+    float tof(string or integer)
+
+- **toi** - convert float/string to integer type.
+
+**Declaration:**
+::
+    integer toi(string or float)
