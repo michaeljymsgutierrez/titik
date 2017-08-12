@@ -91,6 +91,7 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
 
                         tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue[strPos] = fileContent[x][x2];
                         strPos += 1;
+                        tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue[strPos] = 0;
 
                     } else if(fileContent[x][x2] == '\n') {
                         //new line
@@ -266,6 +267,7 @@ int generateToken(char **fileContent, int totalLineCount, TokenArray * tokenArra
                             strcpy(tokenArray->tokens[tokenArray->tokenCount - 1].fileName, titikFileName);
                             tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue[strPos] = fileContent[x][x2];
                             strPos += 1;
+                            tokenArray->tokens[tokenArray->tokenCount - 1].tokenValue[strPos] = 0;
 
                         } else if(fileContent[x][x2] == '\n') {
                             //new line
