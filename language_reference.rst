@@ -278,3 +278,9 @@ Built-in Functions
 **Declaration:**
 ::
     string r(string)
+
+- **rnd** - return a random integer between first parameter and second parameter.
+
+**Declaration:**
+::
+    integer rnd(integer, integer)
