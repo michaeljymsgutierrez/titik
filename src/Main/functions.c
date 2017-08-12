@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <time.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -669,6 +670,27 @@ void sc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
     funcReturn->returnType = ret_none_type;
 }
 
+void rnd_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    //srand(time(NULL));
+    *intReturn = 0;
+    funcReturn->returnType = ret_integer_type;
+
+    if(argumentArray.arguments[0].argumentType != arg_integer_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be an integer\n");
+    }
+
+    if(argumentArray.arguments[1].argumentType != arg_integer_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be an integer\n");
+    }
+
+    int n = argumentArray.arguments[0].integer_value + rand() / (RAND_MAX / (argumentArray.arguments[1].integer_value - argumentArray.arguments[0].integer_value + 1) + 1);
+    n = argumentArray.arguments[0].integer_value + rand() / (RAND_MAX / (argumentArray.arguments[1].integer_value - argumentArray.arguments[0].integer_value + 1) + 1);
+    //printf("%d\n", n);
+    funcReturn->integer_value = n;
+}
+
 void initFunctions() {
 
     //p function
@@ -769,6 +791,13 @@ void initFunctions() {
     exeArgArray.argumentCount = 1;
     defineFunction("exe", exeArgArray, exe_execute, T);
     //end exe function
+
+    //rnd function
+    ArgumentArray rndArgArray;
+    rndArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    rndArgArray.argumentCount = 2;
+    defineFunction("rnd", rndArgArray, rnd_execute, T);
+    //end rnd function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {

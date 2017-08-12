@@ -5,7 +5,7 @@
 #ifndef RESERVED_H_
 #define RESERVED_H_
 
-#define RESERVED_WORD_COUNT 26
+#define RESERVED_WORD_COUNT 27
 
 static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "zzz", //sleep
@@ -33,7 +33,8 @@ static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "flmv", //file cut
     "flrm", //file remove
     "exe", //execute command
-    "r" //readline
+    "r", //readline
+    "rnd" //random
 };
 
 int isReservedWord(char wrd[]);

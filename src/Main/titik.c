@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #include "util.h"
 #include "lexer.h"
 #include "parser.h"
@@ -23,6 +24,7 @@ LoadedFileArray globalLoadedFileArray;
 extern CONSOLE_SCREEN_BUFFER_INFO Info;
 #endif
 int main(int argc, char **argv) {
+    srand(time(NULL));
     #ifdef _WIN32
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &Info);
     #endif
