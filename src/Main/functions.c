@@ -804,7 +804,7 @@ void initFunctions() {
     //rnd function
     ArgumentArray rndArgArray;
     rndArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
-    rndArgArray.argumentCount = 2;
+    rndArgArray.argumentCount = 1;
     defineFunction("rnd", rndArgArray, rnd_execute, T);
     //end rnd function
 }
