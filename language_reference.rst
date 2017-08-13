@@ -279,8 +279,8 @@ Built-in Functions
 ::
     string r(string)
 
-- **rnd** - return a random integer between first parameter and second parameter.
+- **rnd** - return a random integer between 0 and a specified max number.
 
 **Declaration:**
 ::
-    integer rnd(integer, integer)
+    integer rnd(integer)
