@@ -692,9 +692,9 @@ void rnd_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
     */
     int n;
 
-    do {
+    //do {
         n = rand() % (argumentArray.arguments[1].integer_value + 1);
-    } while(n < argumentArray.arguments[0].integer_value);
+    //} while(n < argumentArray.arguments[0].integer_value);
 
     funcReturn->integer_value = n;
 }
