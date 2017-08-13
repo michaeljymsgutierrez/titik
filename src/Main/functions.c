@@ -685,9 +685,17 @@ void rnd_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
         printf("Error: Parameter must be an integer\n");
     }
 
+    /*
     int n = argumentArray.arguments[0].integer_value + rand() / (RAND_MAX / (argumentArray.arguments[1].integer_value - argumentArray.arguments[0].integer_value + 1) + 1);
     n = argumentArray.arguments[0].integer_value + rand() / (RAND_MAX / (argumentArray.arguments[1].integer_value - argumentArray.arguments[0].integer_value + 1) + 1);
     //printf("%d\n", n);
+    */
+    int n;
+
+    do {
+        n = rand() % (argumentArray.arguments[1].integer_value + 1);
+    } while(n < argumentArray.arguments[0].integer_value);
+
     funcReturn->integer_value = n;
 }
 
