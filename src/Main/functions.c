@@ -708,6 +708,17 @@ void sac_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
     funcReturn->integer_value = globalArgC;
 }
 
+void savf_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    funcReturn->returnType = ret_string_type;
+    
+    strcpy(funcReturn->string_value, "");
+
+    if(globalArgC > 2) {
+        strcpy(funcReturn->string_value, globalArgV[2]);
+    }
+}
+
 void initFunctions() {
 
     //p function
@@ -822,6 +833,13 @@ void initFunctions() {
     sacArgArray.argumentCount = 0;
     defineFunction("sac", sacArgArray, sac_execute, T);
     //end sac function
+
+    //savf function
+    ArgumentArray savfArgArray;
+    savfArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    savfArgArray.argumentCount = 0;
+    defineFunction("savf", savfArgArray, savf_execute, T);
+    //end savf function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {

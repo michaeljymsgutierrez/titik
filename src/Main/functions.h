@@ -119,6 +119,7 @@ void exe_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
 void sc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 void rnd_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 void sac_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
+void savf_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 //the first argument array is the structure of the function
 //the function pointer with argumentarray is the user inputted argument
 void defineFunction(char functionName[], ArgumentArray argumentArray, void(*execute)(ArgumentArray argumentArray2, int * intReturn, FunctionReturn * funcReturn), int isSystem);

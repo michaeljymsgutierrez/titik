@@ -35,7 +35,7 @@ static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "exe", //execute command
     "r", //readline
     "sac", //system arg count
-    "sav", //system arg value
+    "sav", //get system arg values (must be an array)
     "savf", //get first system arg value
     "rnd" //random
 };
