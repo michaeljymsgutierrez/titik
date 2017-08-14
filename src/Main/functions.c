@@ -719,6 +719,18 @@ void savf_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
     }
 }
 
+void rndstr_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    funcReturn->returnType = ret_string_type;
+
+    if(argumentArray.arguments[0].argumentType != arg_integer_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be an integer\n");
+    }
+
+    rand_str(funcReturn->string_value, argumentArray.arguments[0].integer_value);
+}
+
 void initFunctions() {
 
     //p function
@@ -840,6 +852,13 @@ void initFunctions() {
     savfArgArray.argumentCount = 0;
     defineFunction("savf", savfArgArray, savf_execute, T);
     //end savf function
+
+    //rndstr function
+    ArgumentArray rndstrArgArray;
+    rndstrArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    rndstrArgArray.argumentCount = 1;
+    defineFunction("rndstr", rndstrArgArray, rndstr_execute, T);
+    //end rndstr function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
