@@ -20,6 +20,8 @@
 FunctionArray globalFunctionArray;
 VariableArray globalVariableArray;
 LoadedFileArray globalLoadedFileArray;
+int globalArgC;
+char **globalArgV;
 #ifdef _WIN32
 extern CONSOLE_SCREEN_BUFFER_INFO Info;
 #endif
@@ -34,6 +36,9 @@ int main(int argc, char **argv) {
     int needBreak = F;
     int gotReturn = F;
     FunctionReturn funcReturn;
+
+    globalArgC = argc;
+    globalArgV = argv;
 
     TokenArray tokenArray;
     //init token array
@@ -57,7 +62,7 @@ int main(int argc, char **argv) {
     //init global variables & constants
     initVariables(&globalVariableArray);
 
-    if (argc != 2) {
+    if (argc < 2) {
         help(argv[0]);
         return 1;
     }

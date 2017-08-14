@@ -5,7 +5,7 @@
 #ifndef RESERVED_H_
 #define RESERVED_H_
 
-#define RESERVED_WORD_COUNT 27
+#define RESERVED_WORD_COUNT 30
 
 static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "zzz", //sleep
@@ -34,6 +34,9 @@ static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "flrm", //file remove
     "exe", //execute command
     "r", //readline
+    "sac", //system arg count
+    "sav", //system arg value
+    "savf", //get first system arg value
     "rnd" //random
 };
 

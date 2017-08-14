@@ -21,6 +21,8 @@
 
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
+extern int globalArgC;
+extern char **globalArgV;
 
 void initArgument(ArgumentArray referenceArgument, int functionPosition, char scopeName[]) {
 
@@ -700,6 +702,12 @@ void rnd_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
     funcReturn->integer_value = n;
 }
 
+void sac_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    funcReturn->returnType = ret_integer_type;
+    funcReturn->integer_value = globalArgC;
+}
+
 void initFunctions() {
 
     //p function
@@ -807,6 +815,13 @@ void initFunctions() {
     rndArgArray.argumentCount = 1;
     defineFunction("rnd", rndArgArray, rnd_execute, T);
     //end rnd function
+
+    //sac function
+    ArgumentArray sacArgArray;
+    sacArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    sacArgArray.argumentCount = 0;
+    defineFunction("sac", sacArgArray, sac_execute, T);
+    //end sac function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
