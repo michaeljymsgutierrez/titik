@@ -28,19 +28,19 @@ Variables
 
 - *Integer* - a non-decimal number between −2,147,483,647 and 2,147,483,647
 
-.. image:: http://ferdinandsilva.com/media/integer.png
+    .. image:: http://ferdinandsilva.com/media/integer.png
 
 - *String* - a sequence of characters. A string can be any text inside quotes. You can use single or double quotes.
 
-.. image:: http://ferdinandsilva.com/media/string.png
+    .. image:: http://ferdinandsilva.com/media/string.png
 
 - *Float* - a number with a decimal point.
 
-.. image:: http://ferdinandsilva.com/media/float.png
+    .. image:: http://ferdinandsilva.com/media/float.png
 
 - *Nil* - a special data type that represents a variable with no value
 
-.. image:: http://ferdinandsilva.com/media/nil.png
+    .. image:: http://ferdinandsilva.com/media/nil.png
 
 **Constant:**
 
@@ -215,90 +215,90 @@ Built-in Functions
 
 - **i** - used to include a titik file in another file.
 
-**Declaration:**
-::
-    Nil i(string)
+    **Declaration:**
+    ::
+        Nil i(string)
 
 - **tof** - convert string/integer to float type.
 
-**Declaration:**
-::
-    float tof(string or integer)
+    **Declaration:**
+    ::
+        float tof(string or integer)
 
 - **toi** - convert float/string to integer type.
 
-**Declaration:**
-::
-    integer toi(string or float)
+    **Declaration:**
+    ::
+        integer toi(string or float)
 
 - **tos** - convert float/integer to string type.
 
-**Declaration:**
-::
-    string tos(float or integer)
+    **Declaration:**
+    ::
+        string tos(float or integer)
 
 - **ex** - terminates program execution and returns the status value to the system.
 
-**Declaration:**
-::
-    Nil ex(integer)
+    **Declaration:**
+    ::
+        Nil ex(integer)
 
 - **sc** - a function to set the text color on a console screen.
 
-**Declaration:**
-::
-    Nil sc(integer 0..7)
+    **Declaration:**
+    ::
+        Nil sc(integer 0..7)
 
 - **flcp** - makes a copy of the file source to destination. If successfull, the return is the destination.
 
-**Declaration:**
-::
-    string flcp(string, string)
+    **Declaration:**
+    ::
+        string flcp(string, string)
 
 - **flmv** - moves the file source to destination. If successfull, the return is the destination.
 
-**Declaration:**
-::
-    string flmv(string, string)
+    **Declaration:**
+    ::
+        string flmv(string, string)
 
 - **flrm** - deletes a file. If successfull, the return is 1, if not then it will return 0.
 
-**Declaration:**
-::
-    integer flrm(string)
+    **Declaration:**
+    ::
+        integer flrm(string)
 
 - **exe** - executes an internal operating system command. If successfull, the return is 1, if not then it will return 0.
 
-**Declaration:**
-::
-    integer exe(string)
+    **Declaration:**
+    ::
+        integer exe(string)
 
 - **r** - presents a prompt to the user and read a string from standard input (stdin).
 
-**Declaration:**
-::
-    string r(string)
+    **Declaration:**
+    ::
+        string r(string)
 
 - **rnd** - return a random integer between 0 and a specified max number.
 
-**Declaration:**
-::
-    integer rnd(integer)
+    **Declaration:**
+    ::
+        integer rnd(integer)
 
 - **sac** - return count of command line arguments.
 
-**Declaration:**
-::
-    integer sac()
+    **Declaration:**
+    ::
+        integer sac()
 
 - **savf** - return the first command line argument passed to a Titik script.
 
-**Declaration:**
-::
-    string savf()
+    **Declaration:**
+    ::
+        string savf()
 
 - **rndstr** - return a random string with a length specified by a parameter.
 
-**Declaration:**
-::
-    string rndstr(integer)
+    **Declaration:**
+    ::
+        string rndstr(integer)
