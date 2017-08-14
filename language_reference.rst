@@ -284,3 +284,21 @@ Built-in Functions
 **Declaration:**
 ::
     integer rnd(integer)
+
+- **sac** - return count of command line arguments.
+
+**Declaration:**
+::
+    integer sac()
+
+- **savf** - return the first command line argument passed to a Titik script.
+
+**Declaration:**
+::
+    string savf()
+
+- **rndstr** - return a random string with a length specified by a parameter.
+
+**Declaration:**
+::
+    string rndstr(integer)
