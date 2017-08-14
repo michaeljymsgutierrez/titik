@@ -203,15 +203,15 @@ Built-in Functions
 
 - **zzz** - delays program execution for a given number of milliseconds.
 
-**Declaration:**
-::
-    Nil zzz(integer)
+    **Declaration:**
+    ::
+        Nil zzz(integer)
 
 - **p** - writes string to the standard output (stdout).
 
-**Declaration:**
-::
-    Nil p(string)
+    **Declaration:**
+    ::
+        Nil p(string)
 
 - **i** - used to include a titik file in another file.
 
