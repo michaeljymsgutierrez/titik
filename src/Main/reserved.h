@@ -5,7 +5,7 @@
 #ifndef RESERVED_H_
 #define RESERVED_H_
 
-#define RESERVED_WORD_COUNT 31
+#define RESERVED_WORD_COUNT 33
 
 static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "zzz", //sleep
@@ -38,7 +38,9 @@ static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
     "sav", //get system arg values (must be an array)
     "savf", //get first system arg value
     "rndstr", //generate random string
-    "rnd" //random
+    "rnd", //random
+    "genv", //get environment variable
+    "senv" //set environment variable
 };
 
 int isReservedWord(char wrd[]);

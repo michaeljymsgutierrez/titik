@@ -731,6 +731,36 @@ void rndstr_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn
     rand_str(funcReturn->string_value, argumentArray.arguments[0].integer_value);
 }
 
+void senv_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    funcReturn->returnType = ret_none_type;
+
+    if(argumentArray.arguments[0].argumentType != arg_string_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be a string\n");
+    }
+    
+    if(argumentArray.arguments[1].argumentType != arg_string_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be a string\n");
+    }
+
+    setenv(argumentArray.arguments[0].string_value, argumentArray.arguments[1].string_value, 1);
+}
+
+void genv_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    funcReturn->returnType = ret_string_type;
+
+    if(argumentArray.arguments[0].argumentType != arg_string_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be a string\n");
+    }
+
+    char *tempChar = getenv(argumentArray.arguments[0].string_value);
+    strcpy(funcReturn->string_value, tempChar);
+}
+
 void initFunctions() {
 
     //p function
@@ -859,6 +889,20 @@ void initFunctions() {
     rndstrArgArray.argumentCount = 1;
     defineFunction("rndstr", rndstrArgArray, rndstr_execute, T);
     //end rndstr function
+
+    //senv function
+    ArgumentArray senvArgArray;
+    senvArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    senvArgArray.argumentCount = 2;
+    defineFunction("senv", senvArgArray, senv_execute, T);
+    //end senv function
+
+    //genv function
+    ArgumentArray genvArgArray;
+    genvArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    genvArgArray.argumentCount = 1;
+    defineFunction("genv", genvArgArray, genv_execute, T);
+    //end genv function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
