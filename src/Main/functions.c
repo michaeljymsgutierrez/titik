@@ -24,6 +24,13 @@ extern VariableArray globalVariableArray;
 extern int globalArgC;
 extern char **globalArgV;
 
+int addArrayItem(Token token, int variablePosition) {
+    int ret = 0;
+
+
+    return ret;
+}
+
 void initArgument(ArgumentArray referenceArgument, int functionPosition, char scopeName[]) {
 
     int isVariablesExists = F;

@@ -1229,12 +1229,36 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         return intFunctionReturn;
                     }
                 break;
+                case get_assigment_array:
+                    if(strippedToken.tokens[x].tokenType == close_braces_token) {
+                        parserState = get_start;
+                    } else if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
+                        //add to array
+                        intFunctionReturn = addArrayItem(strippedToken.tokens[x], variablePosition);
+
+                        if(intFunctionReturn > 0) {
+                            freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                            return intFunctionReturn;
+                        }
+                        
+                    } else if(strippedToken.tokens[x].tokenType == comma_token) {
+                        if(globalVariableArray.variables[variablePosition].array_count == 0) {
+                            intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                            freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                            return intFunctionReturn;
+                        }
+                    } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                        return intFunctionReturn;
+                    }
+                break;
                 case get_assignment_value:
                     //reset current operation
                     currentOperation = none_token;
 
                     //check variable if existing and set the variable value here
-                    if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token || strippedToken.tokens[x].tokenType == keyword_token) {
+                    if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token || strippedToken.tokens[x].tokenType == keyword_token || strippedToken.tokens[x].tokenType == open_braces_token) {
                         //check first if the identifier is existing as function
                         isFunctionsExists = F;
                         functionPosition = 0;
@@ -1349,6 +1373,15 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                 }
                                 checkOperationAndSetParser(x, &parserState, strippedToken);
                             }
+                        } else if(strippedToken.tokens[x].tokenType == open_braces_token) {
+                            globalVariableArray.variables[variablePosition].variable_type = var_array_type;
+                            globalVariableArray.variables[variablePosition].array_count = 0;
+                            if(!globalVariableArray.variables[variablePosition].array_init) {
+                                //init array
+                                globalVariableArray.variables[variablePosition].array_init = T;
+                                globalVariableArray.variables[variablePosition].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Variable));
+                            }
+                            parserState = get_assigment_array;
                         }
                         
                     } else {

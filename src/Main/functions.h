@@ -16,15 +16,16 @@ typedef enum {
     var_none_type,
     var_integer_type,
     var_string_type,
-    var_float_type
-    //array_type
+    var_float_type,
+    var_array_type
 } variable_type;
 
 static const char *variableTypeString[] = {
     "none_type",
     "integer_type",
     "string_type",
-    "float_type"
+    "float_type",
+    "array_type"
 };
 
 typedef struct _Variable{
@@ -35,8 +36,9 @@ typedef struct _Variable{
     long int integer_value;
     double float_value;
     int is_constant;
-    //int array_count;
-    //struct _Variable* array_value;
+    int array_count;
+    int array_init;
+    struct _Variable* array_value;
 } Variable;
 
 typedef struct {
@@ -50,6 +52,7 @@ typedef enum {
     ret_string_type,
     ret_integer_type,
     ret_float_type,
+    ret_array_type,
     ret_none_type
 } FunctionReturnType;
 
@@ -96,6 +99,7 @@ typedef struct {
     int functionCount;
 } FunctionArray;
 
+int addArrayItem(Token token, int variablePosition);
 void initArgument(ArgumentArray referenceArgument, int functionPosition, char scopeName[]);
 void cleanVariable();
 void copyVariable(char toScope[]);

@@ -15,6 +15,7 @@ typedef enum {
     get_assignment_or_function,
     get_assignment_value,
     get_assigment_operation,
+    get_assigment_array,
     update_assigment_value,
     get_if_opening,
     get_if_expression1,
