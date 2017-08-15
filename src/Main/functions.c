@@ -752,7 +752,10 @@ void senv_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
         printf("Error: Parameter must be a string\n");
     }
 
-    setenv(argumentArray.arguments[0].string_value, argumentArray.arguments[1].string_value, 1);
+    #ifdef _WIN32
+    #else
+        setenv(argumentArray.arguments[0].string_value, argumentArray.arguments[1].string_value, 1);
+    #endif
 }
 
 void genv_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
@@ -765,7 +768,12 @@ void genv_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
     }
 
     char *tempChar = getenv(argumentArray.arguments[0].string_value);
-    strcpy(funcReturn->string_value, tempChar);
+
+    if(tempChar == NULL) {
+        strcpy(funcReturn->string_value, "");
+    } else {
+        strcpy(funcReturn->string_value, tempChar);
+    }
 }
 
 void initFunctions() {
