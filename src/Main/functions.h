@@ -99,7 +99,12 @@ typedef struct {
     int functionCount;
 } FunctionArray;
 
-int addArrayItem(Token token, int variablePosition, char scopeName[]);
+#ifdef __linux__
+//dirty fix for the warning in linux
+int setenv(const char * envname, const char * envval, int overwrite);
+#endif
+
+int addArrayItem(Token token, int variablePosition);
 void initArgument(ArgumentArray referenceArgument, int functionPosition, char scopeName[]);
 void cleanVariable();
 void copyVariable(char toScope[]);
