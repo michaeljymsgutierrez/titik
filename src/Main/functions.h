@@ -104,7 +104,7 @@ typedef struct {
 int setenv(const char * envname, const char * envval, int overwrite);
 #endif
 
-int addArrayItem(Token token, int variablePosition);
+int addArrayItem(Token token, int variablePosition, char scopeName[]);
 void initArgument(ArgumentArray referenceArgument, int functionPosition, char scopeName[]);
 void cleanVariable();
 void copyVariable(char toScope[]);
