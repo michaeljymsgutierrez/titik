@@ -1234,7 +1234,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         parserState = get_start;
                     } else if(strippedToken.tokens[x].tokenType == string_token || strippedToken.tokens[x].tokenType == float_token || strippedToken.tokens[x].tokenType == integer_token || strippedToken.tokens[x].tokenType == identifier_token) {
                         //add to array
-                        intFunctionReturn = addArrayItem(strippedToken.tokens[x], variablePosition);
+                        intFunctionReturn = addArrayItem(strippedToken.tokens[x], variablePosition, currentScope);
 
                         if(intFunctionReturn > 0) {
                             freeArrays(&newTempTokens, &argumentArray, &newTokens);

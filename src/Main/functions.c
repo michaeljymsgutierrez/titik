@@ -24,9 +24,49 @@ extern VariableArray globalVariableArray;
 extern int globalArgC;
 extern char **globalArgV;
 
-int addArrayItem(Token token, int variablePosition) {
+int addArrayItem(Token token, int variablePosition, char scopeName[]) {
     int ret = 0;
+    int isVariablesExists = F;
+    int variablePosition2 = 0;
 
+    if(token.tokenType == string_token) {
+        globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_string_type;
+        strcpy(globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].string_value, token.tokenValue);
+    } else if(token.tokenType == integer_token) {
+        globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_integer_type;
+        globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].integer_value = atoi(token.tokenValue);
+    } else if(token.tokenType == float_token) {
+        globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_float_type;
+        globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].float_value = atof(token.tokenValue);
+    } else if(token.tokenType == identifier_token) {
+        isVariablesExists = isVariableExists(&variablePosition2, token.tokenValue, scopeName);
+        if(!isVariablesExists) {
+            return unexpected_error(token.tokenLine, token.tokenColumn, "Undefined variable ", token.tokenValue, token.fileName);
+        }
+
+        switch(globalVariableArray.variables[variablePosition2].variable_type) {
+            case var_float_type:
+                globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_float_type;
+                globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].float_value = globalVariableArray.variables[variablePosition2].float_value;
+            break;
+            case var_integer_type:
+                globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_integer_type;
+                globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].integer_value = globalVariableArray.variables[variablePosition2].integer_value;
+            break;
+            case var_string_type:
+                globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_string_type;
+                strcpy(globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].string_value ,globalVariableArray.variables[variablePosition2].string_value);
+            break;
+            case var_none_type:
+                globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_none_type;
+            break;
+            default:
+                return syntax_error(token.tokenLine, token.tokenColumn, "Cannot add array type as an item", token.fileName);
+        }
+
+    }
+
+    globalVariableArray.variables[variablePosition].array_count += 1;
 
     return ret;
 }
