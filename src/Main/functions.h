@@ -104,6 +104,7 @@ typedef struct {
 int setenv(const char * envname, const char * envval, int overwrite);
 #endif
 
+void setArrayItem(int variablePosition, int variablePosition2);
 int addArrayItem(Token token, int variablePosition, char scopeName[]);
 void initArgument(ArgumentArray referenceArgument, int functionPosition, char scopeName[]);
 void cleanVariable();

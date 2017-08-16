@@ -39,6 +39,10 @@ void dumpVariable(VariableArray variableArray) {
             case var_none_type:
                 printf("Variable Value: Nil\n");
             break;
+            case var_array_type:
+                printf("Variable Value: []\n");
+                printf("Array Length: %d\n", variableArray.variables[x].array_count);
+            break;
             default:
                 continue;
         }

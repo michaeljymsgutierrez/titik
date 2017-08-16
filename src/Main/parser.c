@@ -1378,7 +1378,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                         globalVariableArray.variables[variablePosition].array_init = T;
                                         globalVariableArray.variables[variablePosition].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Variable));
                                     }
-                                    //TODO: ASSIGN array value below
+                                    setArrayItem(variablePosition, variablePosition2);
                                 }
                                 checkOperationAndSetParser(x, &parserState, strippedToken);
                             }

@@ -24,6 +24,29 @@ extern VariableArray globalVariableArray;
 extern int globalArgC;
 extern char **globalArgV;
 
+void setArrayItem(int variablePosition, int variablePosition2) {
+
+    for(int x=0; x < globalVariableArray.variables[variablePosition2].array_count; x++) {
+
+        if(globalVariableArray.variables[variablePosition2].array_value[x].variable_type == var_float_type) {
+            globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_float_type;
+            globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].float_value = globalVariableArray.variables[variablePosition2].array_value[x].float_value;
+        } else if(globalVariableArray.variables[variablePosition2].array_value[x].variable_type == var_integer_type) {
+            globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_integer_type;
+            globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].integer_value = globalVariableArray.variables[variablePosition2].array_value[x].integer_value;
+        } else if(globalVariableArray.variables[variablePosition2].array_value[x].variable_type == var_string_type) {
+            globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_string_type;
+            strcpy(globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].string_value, globalVariableArray.variables[variablePosition2].array_value[x].string_value);
+        } else {
+            //none type
+            globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_none_type;
+        }
+
+        globalVariableArray.variables[variablePosition].array_count += 1;
+    }
+
+}
+
 int addArrayItem(Token token, int variablePosition, char scopeName[]) {
     int ret = 0;
     int isVariablesExists = F;
