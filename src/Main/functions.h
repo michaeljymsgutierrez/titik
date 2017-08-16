@@ -56,28 +56,35 @@ typedef enum {
     ret_none_type
 } FunctionReturnType;
 
-typedef struct {
+typedef struct _FunctionReturn{
     //char returnValue[TITIK_CHAR_PER_LINE];
     char string_value[TITIK_CHAR_PER_LINE];
     long int integer_value;
     double float_value;    
     FunctionReturnType returnType;
+    int array_count;
+    int array_init;
+    struct _FunctionReturn* array_value;
 } FunctionReturn;
 
 typedef enum {
     arg_string_type,
     arg_integer_type,
     arg_float_type,
+    arg_array_type,
     arg_none_type
     //variable_type HERE <<--- ?
 } ArgumentType;
 
-typedef struct {
+typedef struct _Argument{
     char argumentName[TITIK_CHAR_PER_LINE];
     char string_value[TITIK_CHAR_PER_LINE];
     long int integer_value;
     double float_value;
     ArgumentType argumentType;
+    int array_count;
+    int array_init;
+    struct _Argument* array_value;
 } Argument;
 
 typedef struct {
