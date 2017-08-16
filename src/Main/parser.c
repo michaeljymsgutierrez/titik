@@ -1101,7 +1101,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                 }
                                             break;
                                             default:
-                                                intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
+                                                intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
                                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                                 return intFunctionReturn;
                                         }
@@ -1122,7 +1122,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
                                                 break;
                                                 default:
-                                                    intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
+                                                    intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
                                                     freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                                     return intFunctionReturn;
                                             }
@@ -1134,8 +1134,8 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                                     break;
                                     default:
-                                        //none type
-                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
+                                        //none type or array
+                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                         return intFunctionReturn;
                                 }
@@ -1370,6 +1370,15 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                     globalVariableArray.variables[variablePosition].float_value = globalVariableArray.variables[variablePosition2].float_value;                
                                 } else if(globalVariableArray.variables[variablePosition2].variable_type == var_none_type) {
                                     globalVariableArray.variables[variablePosition].variable_type = var_none_type;                
+                                } else if(globalVariableArray.variables[variablePosition2].variable_type == var_array_type) {
+                                    globalVariableArray.variables[variablePosition].variable_type = var_array_type;
+                                    globalVariableArray.variables[variablePosition].array_count = 0;
+                                    if(!globalVariableArray.variables[variablePosition].array_init) {
+                                        //init array
+                                        globalVariableArray.variables[variablePosition].array_init = T;
+                                        globalVariableArray.variables[variablePosition].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Variable));
+                                    }
+                                    //TODO: ASSIGN array value below
                                 }
                                 checkOperationAndSetParser(x, &parserState, strippedToken);
                             }
@@ -1546,8 +1555,8 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                         }
                                                     break;
                                                     default:
-                                                        //variable is a none type
-                                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
+                                                        //variable is a none type or array
+                                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
                                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                                         return intFunctionReturn;
                                                 }
@@ -1665,8 +1674,8 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                         strcat(globalVariableArray.variables[variablePosition].string_value, tempChar);
                                                     break;
                                                     default:
-                                                        //variable is a none type
-                                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
+                                                        //variable is a none type or array
+                                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
                                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                                         return intFunctionReturn;
                                                 }
@@ -1686,8 +1695,8 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                                 break;
                                 default:
-                                    //none type
-                                    intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "You cannot perform an operation with a Nil type", strippedToken.tokens[x].fileName);
+                                    //none type or array
+                                    intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
                                     freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                     return intFunctionReturn;
                             }
