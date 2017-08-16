@@ -753,6 +753,7 @@ void senv_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
     }
 
     #ifdef _WIN32
+        _putenv_s(argumentArray.arguments[0].string_value, argumentArray.arguments[1].string_value);
     #else
         setenv(argumentArray.arguments[0].string_value, argumentArray.arguments[1].string_value, 1);
     #endif
