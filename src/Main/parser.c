@@ -1182,6 +1182,18 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                 argumentArray.arguments[argumentArray.argumentCount].float_value = globalVariableArray.variables[variablePosition].float_value;                           
                             } else if(globalVariableArray.variables[variablePosition].variable_type == var_none_type) {
                                 argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_none_type;                        
+                            } else if(globalVariableArray.variables[variablePosition].variable_type == var_array_type) {
+                                argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_array_type;  
+                                
+                                argumentArray.arguments[argumentArray.argumentCount].array_count = 0;
+                                if(!argumentArray.arguments[argumentArray.argumentCount].array_init) {
+                                    //init argument array
+                                    argumentArray.arguments[argumentArray.argumentCount].array_init = T;
+                                    argumentArray.arguments[argumentArray.argumentCount].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Argument));
+                                }
+
+                                setArrayArgument(variablePosition, &argumentArray.arguments[argumentArray.argumentCount]);
+
                             }
 
                         }

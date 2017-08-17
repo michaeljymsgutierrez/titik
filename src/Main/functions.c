@@ -24,6 +24,28 @@ extern VariableArray globalVariableArray;
 extern int globalArgC;
 extern char **globalArgV;
 
+void setArrayArgument(int variablePosition, Argument * argument) {
+
+    for(int x=0; x < globalVariableArray.variables[variablePosition].array_count; x++) {
+
+        if(globalVariableArray.variables[variablePosition].array_value[x].variable_type == var_float_type) {
+            argument->array_value[argument->array_count].argumentType = arg_float_type;
+            argument->array_value[argument->array_count].float_value = globalVariableArray.variables[variablePosition].array_value[x].float_value;
+        } else if(globalVariableArray.variables[variablePosition].array_value[x].variable_type == var_integer_type) {
+            argument->array_value[argument->array_count].argumentType = arg_integer_type;
+            argument->array_value[argument->array_count].integer_value = globalVariableArray.variables[variablePosition].array_value[x].integer_value;
+        } else if(globalVariableArray.variables[variablePosition].array_value[x].variable_type == var_string_type) {
+            argument->array_value[argument->array_count].argumentType = arg_string_type;
+            strcpy(argument->array_value[argument->array_count].string_value, globalVariableArray.variables[variablePosition].array_value[x].string_value);
+        } else {
+            //none type
+            argument->array_value[argument->array_count].argumentType = arg_none_type;
+        }
+
+        argument->array_count += 1;
+    }
+}
+
 void setArrayItem(int variablePosition, int variablePosition2) {
 
     for(int x=0; x < globalVariableArray.variables[variablePosition2].array_count; x++) {
@@ -369,6 +391,9 @@ void p_execute(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * f
         break;
         case arg_float_type:
             printf("%f\n", argumentArray.arguments[0].float_value);
+        break;
+        case arg_array_type:
+            printf("Array(%d)\n", argumentArray.arguments[0].array_count);
         break;
         default:
             printf("Nil\n");
