@@ -463,6 +463,9 @@ void r_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * fu
         case arg_float_type:
             printf("%f", argumentArray.arguments[0].float_value);
         break;
+        case arg_array_type:
+            printf("Array(%d)\n", argumentArray.arguments[0].array_count);
+        break;
         default:
             printf("Nil");
     }
