@@ -519,6 +519,10 @@ void toi_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
         case arg_integer_type:
             funcReturn->integer_value = argumentArray.arguments[0].integer_value;
         break;
+        case arg_array_type:
+            *intReturn = 1;
+            printf("Error: Can't convert Array type to integer\n");
+        break;
         default:
             *intReturn = 1;
             printf("Error: Can't convert Nil type to integer\n");
@@ -541,6 +545,10 @@ void tof_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
         case arg_integer_type:
             funcReturn->float_value = (double)argumentArray.arguments[0].integer_value;
         break;
+        case arg_array_type:
+            *intReturn = 1;
+            printf("Error: Can't convert Array type to float\n");
+        break;
         default:
             *intReturn = 1;
             printf("Error: Can't convert Nil type to float\n");
@@ -552,6 +560,7 @@ void tof_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
 void tos_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
     *intReturn = 0;
     char tempChar[TITIK_CHAR_PER_LINE];
+    char tempChar2[TITIK_CHAR_PER_LINE];
 
     switch(argumentArray.arguments[0].argumentType){
         case arg_string_type:
@@ -563,6 +572,13 @@ void tos_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
         break;
         case arg_integer_type:
             snprintf(tempChar, TITIK_CHAR_PER_LINE, "%ld",argumentArray.arguments[0].integer_value);
+            strcpy(funcReturn->string_value, tempChar);
+        break;
+        case arg_array_type:
+            snprintf(tempChar2, TITIK_CHAR_PER_LINE, "%d", argumentArray.arguments[0].array_count);
+            strcpy(tempChar, "Array(");
+            strcat(tempChar, tempChar2);
+            strcat(tempChar, ")");
             strcpy(funcReturn->string_value, tempChar);
         break;
         default:
