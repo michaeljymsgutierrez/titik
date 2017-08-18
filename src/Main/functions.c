@@ -454,6 +454,8 @@ void defineFunction(char functionName[], ArgumentArray argumentArray, void(*exec
 }
 
 void p_execute(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * funcReturn) {
+    char tempChar[TITIK_CHAR_PER_LINE];
+    char convertedChar[TITIK_CHAR_PER_LINE];
     switch(argumentArray.arguments[0].argumentType) {
         case arg_string_type:
             printf("%s\n", escape_string(argumentArray.arguments[0].string_value));
@@ -465,7 +467,34 @@ void p_execute(ArgumentArray argumentArray,  int * intReturn, FunctionReturn * f
             printf("%f\n", argumentArray.arguments[0].float_value);
         break;
         case arg_array_type:
-            printf("Array(%d)\n", argumentArray.arguments[0].array_count);
+            //printf("Array(%d)\n", argumentArray.arguments[0].array_count);
+            strcpy(tempChar, "[");
+            for(int x=0; x < argumentArray.arguments[0].array_count; x++) {
+                switch(argumentArray.arguments[0].array_value[x].argumentType) {
+                    case arg_integer_type:
+                        snprintf(convertedChar, TITIK_CHAR_PER_LINE, "%ld", argumentArray.arguments[0].array_value[x].integer_value);
+                        strcat(tempChar, convertedChar);
+                    break;
+                    case arg_float_type:
+                        snprintf(convertedChar, TITIK_CHAR_PER_LINE, "%f", argumentArray.arguments[0].array_value[x].float_value);
+                        strcat(tempChar, convertedChar);
+                    break;
+                    case arg_string_type:
+                        strcat(tempChar, "'");
+                        strcat(tempChar, argumentArray.arguments[0].array_value[x].string_value);
+                        strcat(tempChar, "'");
+                    break;
+                    default:
+                        //none
+                        strcat(tempChar, "Nil");
+                }
+
+                if(x+1 < argumentArray.arguments[0].array_count) {
+                    strcat(tempChar, ", ");
+                }
+            }
+            strcat(tempChar, "]");
+            printf("%s\n", tempChar);
         break;
         default:
             printf("Nil\n");
