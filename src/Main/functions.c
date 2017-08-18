@@ -21,8 +21,51 @@
 
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
+extern FunctionReturnArray globalFunctionReturnArray;
 extern int globalArgC;
 extern char **globalArgV;
+
+void setArrayReturnToVariable(int lastVariablePosition) {
+    for(int x=0; x < globalFunctionReturnArray.functionReturnCount; x++) {
+        
+        if(globalFunctionReturnArray.functionReturns[x].returnType == var_float_type) {
+            globalVariableArray.variables[lastVariablePosition].array_value[globalVariableArray.variables[lastVariablePosition].array_count].variable_type = var_float_type;
+            globalVariableArray.variables[lastVariablePosition].array_value[globalVariableArray.variables[lastVariablePosition].array_count].float_value = globalFunctionReturnArray.functionReturns[x].float_value;
+        } else if(globalFunctionReturnArray.functionReturns[x].returnType == var_integer_type) {
+            globalVariableArray.variables[lastVariablePosition].array_value[globalVariableArray.variables[lastVariablePosition].array_count].variable_type = var_integer_type;
+            globalVariableArray.variables[lastVariablePosition].array_value[globalVariableArray.variables[lastVariablePosition].array_count].integer_value = globalFunctionReturnArray.functionReturns[x].integer_value;
+        } else if(globalFunctionReturnArray.functionReturns[x].returnType == var_string_type) {
+            globalVariableArray.variables[lastVariablePosition].array_value[globalVariableArray.variables[lastVariablePosition].array_count].variable_type = var_string_type;
+            strcpy(globalVariableArray.variables[lastVariablePosition].array_value[globalVariableArray.variables[lastVariablePosition].array_count].string_value, globalFunctionReturnArray.functionReturns[x].string_value);
+        } else {
+            //none type
+            globalVariableArray.variables[lastVariablePosition].array_value[globalVariableArray.variables[lastVariablePosition].array_count].variable_type = var_none_type;
+        }
+
+        globalVariableArray.variables[lastVariablePosition].array_count += 1;
+    }
+}
+
+void setArrayReturn(int variablePosition) {
+    for(int x=0; x < globalVariableArray.variables[variablePosition].array_count; x++) {
+        
+        if(globalVariableArray.variables[variablePosition].array_value[x].variable_type == var_float_type) {
+            globalFunctionReturnArray.functionReturns[globalFunctionReturnArray.functionReturnCount].returnType = ret_float_type;
+            globalFunctionReturnArray.functionReturns[globalFunctionReturnArray.functionReturnCount].float_value = globalVariableArray.variables[variablePosition].array_value[x].float_value;
+        } else if(globalVariableArray.variables[variablePosition].array_value[x].variable_type == var_integer_type) {
+            globalFunctionReturnArray.functionReturns[globalFunctionReturnArray.functionReturnCount].returnType = ret_integer_type;
+            globalFunctionReturnArray.functionReturns[globalFunctionReturnArray.functionReturnCount].integer_value = globalVariableArray.variables[variablePosition].array_value[x].integer_value;
+        } else if(globalVariableArray.variables[variablePosition].array_value[x].variable_type == var_string_type) {
+            globalFunctionReturnArray.functionReturns[globalFunctionReturnArray.functionReturnCount].returnType = ret_string_type;
+            strcpy(globalFunctionReturnArray.functionReturns[globalFunctionReturnArray.functionReturnCount].string_value, globalVariableArray.variables[variablePosition].array_value[x].string_value);
+        } else {
+            //none type
+            globalFunctionReturnArray.functionReturns[globalFunctionReturnArray.functionReturnCount].returnType = ret_none_type;
+        }
+
+        globalFunctionReturnArray.functionReturnCount += 1;
+    }  
+}
 
 void setArrayArgument(int variablePosition, Argument * argument) {
 

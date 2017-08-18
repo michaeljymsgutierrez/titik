@@ -14,6 +14,7 @@
 
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
+extern FunctionReturnArray globalFunctionReturnArray;
 
 void checkOperationAndSetParser(int x, ParserState * parserState, TokenArray strippedToken) {
     if((x+1) < strippedToken.tokenCount) {
@@ -414,6 +415,11 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                     case var_string_type:
                                         thisReturn->returnType = ret_string_type;
                                         strcpy(thisReturn->string_value, globalVariableArray.variables[variablePosition].string_value);
+                                    break;
+                                    case var_array_type:
+                                        thisReturn->returnType = ret_array_type;
+                                        globalFunctionReturnArray.functionReturnCount = 0;
+                                        setArrayReturn(variablePosition);
                                     break;
                                     default:
                                         thisReturn->returnType = ret_none_type;
@@ -1006,6 +1012,16 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                         globalVariableArray.variables[lastVariablePosition].variable_type = var_float_type;
                                         globalVariableArray.variables[lastVariablePosition].float_value = globalFunctionArray.functions[functionPosition].functionReturn.float_value;
                                     break;
+                                    case ret_array_type:
+                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_array_type;
+                                        globalVariableArray.variables[lastVariablePosition].array_count = 0;
+                                        if(!globalVariableArray.variables[lastVariablePosition].array_init) {
+                                            //init array
+                                            globalVariableArray.variables[lastVariablePosition].array_init = T;
+                                            globalVariableArray.variables[lastVariablePosition].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Variable));
+                                        }
+                                        setArrayReturnToVariable(lastVariablePosition);
+                                    break;
                                     default:
                                         globalVariableArray.variables[lastVariablePosition].variable_type = var_none_type;
                                 }
@@ -1173,7 +1189,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
 
                             if(globalVariableArray.variables[variablePosition].variable_type == var_string_type) {
                                 argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_string_type;
-                                strcpy(argumentArray.arguments[argumentArray.argumentCount].string_value, globalVariableArray.variables[variablePosition].string_value);                           
+                                strcpy(argumentArray.arguments[argumentArray.argumentCount].string_value, globalVariableArray.variables[variablePosition].string_value);                         
                             } else if(globalVariableArray.variables[variablePosition].variable_type == var_integer_type) {
                                 argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_integer_type;
                                 argumentArray.arguments[argumentArray.argumentCount].integer_value = globalVariableArray.variables[variablePosition].integer_value;                           

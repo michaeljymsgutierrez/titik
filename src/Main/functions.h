@@ -56,16 +56,18 @@ typedef enum {
     ret_none_type
 } FunctionReturnType;
 
-typedef struct _FunctionReturn{
+typedef struct{
     //char returnValue[TITIK_CHAR_PER_LINE];
     char string_value[TITIK_CHAR_PER_LINE];
     long int integer_value;
     double float_value;    
     FunctionReturnType returnType;
-    int array_count;
-    int array_init;
-    struct _FunctionReturn* array_value;
 } FunctionReturn;
+
+typedef struct {
+    FunctionReturn* functionReturns;
+    int functionReturnCount;
+} FunctionReturnArray;
 
 typedef enum {
     arg_string_type,
@@ -111,6 +113,8 @@ typedef struct {
 int setenv(const char * envname, const char * envval, int overwrite);
 #endif
 
+void setArrayReturnToVariable(int lastVariablePosition);
+void setArrayReturn(int variablePosition);
 void setArrayArgument(int variablePosition, Argument * argument);
 void setArrayItem(int variablePosition, int variablePosition2);
 int addArrayItem(Token token, int variablePosition, char scopeName[]);

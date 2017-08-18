@@ -20,6 +20,8 @@
 FunctionArray globalFunctionArray;
 VariableArray globalVariableArray;
 LoadedFileArray globalLoadedFileArray;
+FunctionReturnArray globalFunctionReturnArray;
+
 int globalArgC;
 char **globalArgV;
 #ifdef _WIN32
@@ -44,6 +46,10 @@ int main(int argc, char **argv) {
     //init token array
     tokenArray.tokens = malloc(TITIK_TOKEN_INIT_LENGTH * sizeof(Token));
     tokenArray.tokenCount = 0;
+
+    //init function return array
+    globalFunctionReturnArray.functionReturns = malloc(TITIK_FUNCTION_INIT_LENGTH * sizeof(FunctionReturn));
+    globalFunctionReturnArray.functionReturnCount = 0;
 
     //init function array
     globalFunctionArray.functions = malloc(TITIK_FUNCTION_INIT_LENGTH * sizeof(Function));
@@ -99,6 +105,7 @@ int main(int argc, char **argv) {
         free(fileContent);
         free(tokenArray.tokens);
         free(globalFunctionArray.functions);
+        free(globalFunctionReturnArray.functionReturns);
         free(globalVariableArray.variables);
     }
 
