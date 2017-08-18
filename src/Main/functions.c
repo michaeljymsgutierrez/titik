@@ -186,6 +186,35 @@ void initArgument(ArgumentArray referenceArgument, int functionPosition, char sc
         } else if(referenceArgument.arguments[x].argumentType == arg_string_type) {
             globalVariableArray.variables[variablePosition].variable_type = var_string_type;
             strcpy(globalVariableArray.variables[variablePosition].string_value,referenceArgument.arguments[x].string_value);
+        } else if(referenceArgument.arguments[x].argumentType == arg_array_type) {
+            globalVariableArray.variables[variablePosition].variable_type = var_array_type;
+
+            globalVariableArray.variables[variablePosition].array_count = 0;
+            if(!globalVariableArray.variables[variablePosition].array_init) {
+                //init array
+                globalVariableArray.variables[variablePosition].array_init = T;
+                globalVariableArray.variables[variablePosition].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Variable));
+            }
+
+            for(int x2=0; x2 < referenceArgument.arguments[x].array_count; x2++) {
+
+                if(referenceArgument.arguments[x].array_value[x2].argumentType == arg_float_type) {
+                    globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_float_type;
+                    globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].float_value = referenceArgument.arguments[x].array_value[x2].float_value;
+                } else if(referenceArgument.arguments[x].array_value[x2].argumentType == arg_integer_type) {
+                    globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_integer_type;
+                    globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].integer_value = referenceArgument.arguments[x].array_value[x2].integer_value;
+                } else if(referenceArgument.arguments[x].array_value[x2].argumentType == arg_string_type) {
+                    globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_string_type;
+                    strcpy(globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].string_value, referenceArgument.arguments[x].array_value[x2].string_value);
+                } else {
+                    //none type
+                    globalVariableArray.variables[variablePosition].array_value[globalVariableArray.variables[variablePosition].array_count].variable_type = var_none_type;
+                }
+
+                globalVariableArray.variables[variablePosition].array_count += 1;
+            }
+
         } else {
             //arg_none_type
             globalVariableArray.variables[variablePosition].variable_type = var_none_type;
