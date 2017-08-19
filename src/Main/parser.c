@@ -1417,6 +1417,12 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                 freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                 return intFunctionReturn;
                             }
+
+                            if(currentIndex < 0) {
+                                intFunctionReturn = syntax_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Invalid array index", currentIdentifier.fileName);
+                                freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                                return intFunctionReturn;
+                            }
                             //set array value below
                             if(strippedToken.tokens[x].tokenType == string_token) {
                                 globalVariableArray.variables[variablePosition].array_value[currentIndex].variable_type = var_string_type;
