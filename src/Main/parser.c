@@ -52,6 +52,8 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
     int variablePosition = 0;
     int variablePosition2 = 0;
     int intFunctionReturn = 0;
+    int currentIndex = 0;
+    int isArray = F;
     int isParsing = T;
     int checkVar = T;
     Token currentIdentifier;
@@ -125,6 +127,8 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             //reset values
                             isVariablesExists = F;
                             variablePosition = 0;
+                            currentIndex = 0;
+                            isArray = F;
                             //set current identifier
                             setTemporaryToken(&currentIdentifier, strippedToken, x, identifier_token);
                         break;
@@ -1230,11 +1234,43 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         return intFunctionReturn;
                     }
                 break;
+                case get_array_index:
+                    if(strippedToken.tokens[x].tokenType == integer_token) {
+                        currentIndex = atoi(strippedToken.tokens[x].tokenValue);
+                        parserState = get_array_index_closing;
+                    } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                        return intFunctionReturn;
+                    }
+                break;
+                case get_array_index_closing:
+                    if(strippedToken.tokens[x].tokenType == close_braces_token) {
+                        parserState = get_array_index_assignment;
+                    } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                        return intFunctionReturn;
+                    }
+                break;
+                case get_array_index_assignment:
+                    if(strippedToken.tokens[x].tokenType == equals_token) {
+                        parserState = get_assignment_value;
+                    } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                        return intFunctionReturn;
+                    }
+                break;
                 case get_assignment_or_function:
                     //check if executing function or assigment statement
                     if(strippedToken.tokens[x].tokenType == equals_token) {
                         //assignment 
                         parserState = get_assignment_value;
+                    } else if(strippedToken.tokens[x].tokenType == open_braces_token) {
+                        //array
+                        isArray = T;
+                        parserState = get_array_index;
                     } else if(strippedToken.tokens[x].tokenType == open_parenthesis_token) {
                         //function execution
                         isFunctionsExists = F;
@@ -1302,6 +1338,12 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         isVariablesExists = isVariableExists(&variablePosition, currentIdentifier.tokenValue, currentScope);
                         
                         if(!isVariablesExists) {
+                            //variable should exists if array
+                            if(isArray) {
+                                intFunctionReturn = unexpected_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Undefined variable ", currentIdentifier.tokenValue, currentIdentifier.fileName);
+                                freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                                return intFunctionReturn;
+                            }
                             variablePosition = globalVariableArray.variableCount;
                             globalVariableArray.variableCount += 1;
                         } else {
@@ -1368,57 +1410,107 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             }                          
                         }
 
-                        //set variable info
-                        setVariableInfo(variablePosition, currentIdentifier, currentScope);
-
-                        //set variable type and value
-                        if(strippedToken.tokens[x].tokenType == string_token) {
-                            globalVariableArray.variables[variablePosition].variable_type = var_string_type;
-                            strcpy(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
-                            checkOperationAndSetParser(x, &parserState, strippedToken);
-                        } else if(strippedToken.tokens[x].tokenType == float_token) {
-                            globalVariableArray.variables[variablePosition].variable_type = var_float_type;
-                            globalVariableArray.variables[variablePosition].float_value = atof(strippedToken.tokens[x].tokenValue);
-                            checkOperationAndSetParser(x, &parserState, strippedToken);
-                        } else if(strippedToken.tokens[x].tokenType == integer_token) {
-                            globalVariableArray.variables[variablePosition].integer_value = atoi(strippedToken.tokens[x].tokenValue);
-                            globalVariableArray.variables[variablePosition].variable_type = var_integer_type;
-                            checkOperationAndSetParser(x, &parserState, strippedToken);
-                        } else if(strippedToken.tokens[x].tokenType == identifier_token) {
-                            if(checkVar) {
-                                if(globalVariableArray.variables[variablePosition2].variable_type == var_string_type) {
-                                    globalVariableArray.variables[variablePosition].variable_type = var_string_type;
-                                    strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
-                                    strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
-                                } else if(globalVariableArray.variables[variablePosition2].variable_type == var_integer_type) {
-                                    globalVariableArray.variables[variablePosition].integer_value = globalVariableArray.variables[variablePosition2].integer_value;
-                                    globalVariableArray.variables[variablePosition].variable_type = var_integer_type;     
-                                } else if(globalVariableArray.variables[variablePosition2].variable_type == var_float_type) {
-                                    globalVariableArray.variables[variablePosition].variable_type = var_float_type;
-                                    globalVariableArray.variables[variablePosition].float_value = globalVariableArray.variables[variablePosition2].float_value;                
-                                } else if(globalVariableArray.variables[variablePosition2].variable_type == var_none_type) {
-                                    globalVariableArray.variables[variablePosition].variable_type = var_none_type;                
-                                } else if(globalVariableArray.variables[variablePosition2].variable_type == var_array_type) {
-                                    globalVariableArray.variables[variablePosition].variable_type = var_array_type;
-                                    globalVariableArray.variables[variablePosition].array_count = 0;
-                                    if(!globalVariableArray.variables[variablePosition].array_init) {
-                                        //init array
-                                        globalVariableArray.variables[variablePosition].array_init = T;
-                                        globalVariableArray.variables[variablePosition].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Variable));
-                                    }
-                                    setArrayItem(variablePosition, variablePosition2);
-                                }
+                        if(isArray) {
+                            //validate array
+                            if((currentIndex + 1) > globalVariableArray.variables[variablePosition].array_count) {
+                                intFunctionReturn = syntax_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Invalid array index", currentIdentifier.fileName);
+                                freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                                return intFunctionReturn;
+                            }
+                            //set array value below
+                            if(strippedToken.tokens[x].tokenType == string_token) {
+                                globalVariableArray.variables[variablePosition].array_value[currentIndex].variable_type = var_string_type;
+                                strcpy(globalVariableArray.variables[variablePosition].array_value[currentIndex].string_value, strippedToken.tokens[x].tokenValue);
                                 checkOperationAndSetParser(x, &parserState, strippedToken);
+                            } else if(strippedToken.tokens[x].tokenType == float_token) {
+                                globalVariableArray.variables[variablePosition].array_value[currentIndex].variable_type = var_float_type;
+                                globalVariableArray.variables[variablePosition].array_value[currentIndex].float_value = atof(strippedToken.tokens[x].tokenValue);
+                                checkOperationAndSetParser(x, &parserState, strippedToken);
+                            } else if(strippedToken.tokens[x].tokenType == integer_token) {
+                                globalVariableArray.variables[variablePosition].array_value[currentIndex].integer_value = atoi(strippedToken.tokens[x].tokenValue);
+                                globalVariableArray.variables[variablePosition].array_value[currentIndex].variable_type = var_integer_type;
+                                checkOperationAndSetParser(x, &parserState, strippedToken);
+                            } else if(strippedToken.tokens[x].tokenType == identifier_token) {
+                                if(checkVar) {
+                                    if(globalVariableArray.variables[variablePosition2].variable_type == var_string_type) {
+                                        globalVariableArray.variables[variablePosition].array_value[currentIndex].variable_type = var_string_type;
+                                        strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
+                                        strcpy(globalVariableArray.variables[variablePosition].array_value[currentIndex].string_value, tempChar);
+                                    } else if(globalVariableArray.variables[variablePosition2].variable_type == var_integer_type) {
+                                        globalVariableArray.variables[variablePosition].array_value[currentIndex].integer_value = globalVariableArray.variables[variablePosition2].integer_value;
+                                        globalVariableArray.variables[variablePosition].array_value[currentIndex].variable_type = var_integer_type;     
+                                    } else if(globalVariableArray.variables[variablePosition2].variable_type == var_float_type) {
+                                        globalVariableArray.variables[variablePosition].array_value[currentIndex].variable_type = var_float_type;
+                                        globalVariableArray.variables[variablePosition].array_value[currentIndex].float_value = globalVariableArray.variables[variablePosition2].float_value;                
+                                    } else if(globalVariableArray.variables[variablePosition2].variable_type == var_none_type) {
+                                        globalVariableArray.variables[variablePosition].array_value[currentIndex].variable_type = var_none_type;                
+                                    } else if(globalVariableArray.variables[variablePosition2].variable_type == var_array_type) {
+                                        //invalid (Cannot assign array item to array)
+                                        intFunctionReturn = syntax_error(currentIdentifier.tokenLine, currentIdentifier.tokenColumn, "Cannot assign an array as an item", currentIdentifier.fileName);
+                                        freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                                        return intFunctionReturn;
+                                    }
+                                    checkOperationAndSetParser(x, &parserState, strippedToken);
+                                }
+                            } else if(strippedToken.tokens[x].tokenType == open_braces_token) {
+                                //invalid (Cannot assign array item to array)
+                                intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                                freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                                return intFunctionReturn;
                             }
-                        } else if(strippedToken.tokens[x].tokenType == open_braces_token) {
-                            globalVariableArray.variables[variablePosition].variable_type = var_array_type;
-                            globalVariableArray.variables[variablePosition].array_count = 0;
-                            if(!globalVariableArray.variables[variablePosition].array_init) {
-                                //init array
-                                globalVariableArray.variables[variablePosition].array_init = T;
-                                globalVariableArray.variables[variablePosition].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Variable));
+                        } else {
+                            //set variable info
+                            setVariableInfo(variablePosition, currentIdentifier, currentScope);
+
+                            //set variable type and value
+                            if(strippedToken.tokens[x].tokenType == string_token) {
+                                globalVariableArray.variables[variablePosition].variable_type = var_string_type;
+                                strcpy(globalVariableArray.variables[variablePosition].string_value, strippedToken.tokens[x].tokenValue);
+                                checkOperationAndSetParser(x, &parserState, strippedToken);
+                            } else if(strippedToken.tokens[x].tokenType == float_token) {
+                                globalVariableArray.variables[variablePosition].variable_type = var_float_type;
+                                globalVariableArray.variables[variablePosition].float_value = atof(strippedToken.tokens[x].tokenValue);
+                                checkOperationAndSetParser(x, &parserState, strippedToken);
+                            } else if(strippedToken.tokens[x].tokenType == integer_token) {
+                                globalVariableArray.variables[variablePosition].integer_value = atoi(strippedToken.tokens[x].tokenValue);
+                                globalVariableArray.variables[variablePosition].variable_type = var_integer_type;
+                                checkOperationAndSetParser(x, &parserState, strippedToken);
+                            } else if(strippedToken.tokens[x].tokenType == identifier_token) {
+                                if(checkVar) {
+                                    if(globalVariableArray.variables[variablePosition2].variable_type == var_string_type) {
+                                        globalVariableArray.variables[variablePosition].variable_type = var_string_type;
+                                        strcpy(tempChar, globalVariableArray.variables[variablePosition2].string_value);
+                                        strcpy(globalVariableArray.variables[variablePosition].string_value, tempChar);
+                                    } else if(globalVariableArray.variables[variablePosition2].variable_type == var_integer_type) {
+                                        globalVariableArray.variables[variablePosition].integer_value = globalVariableArray.variables[variablePosition2].integer_value;
+                                        globalVariableArray.variables[variablePosition].variable_type = var_integer_type;     
+                                    } else if(globalVariableArray.variables[variablePosition2].variable_type == var_float_type) {
+                                        globalVariableArray.variables[variablePosition].variable_type = var_float_type;
+                                        globalVariableArray.variables[variablePosition].float_value = globalVariableArray.variables[variablePosition2].float_value;                
+                                    } else if(globalVariableArray.variables[variablePosition2].variable_type == var_none_type) {
+                                        globalVariableArray.variables[variablePosition].variable_type = var_none_type;                
+                                    } else if(globalVariableArray.variables[variablePosition2].variable_type == var_array_type) {
+                                        globalVariableArray.variables[variablePosition].variable_type = var_array_type;
+                                        globalVariableArray.variables[variablePosition].array_count = 0;
+                                        if(!globalVariableArray.variables[variablePosition].array_init) {
+                                            //init array
+                                            globalVariableArray.variables[variablePosition].array_init = T;
+                                            globalVariableArray.variables[variablePosition].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Variable));
+                                        }
+                                        setArrayItem(variablePosition, variablePosition2);
+                                    }
+                                    checkOperationAndSetParser(x, &parserState, strippedToken);
+                                }
+                            } else if(strippedToken.tokens[x].tokenType == open_braces_token) {
+                                globalVariableArray.variables[variablePosition].variable_type = var_array_type;
+                                globalVariableArray.variables[variablePosition].array_count = 0;
+                                if(!globalVariableArray.variables[variablePosition].array_init) {
+                                    //init array
+                                    globalVariableArray.variables[variablePosition].array_init = T;
+                                    globalVariableArray.variables[variablePosition].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Variable));
+                                }
+                                parserState = get_assigment_array;
                             }
-                            parserState = get_assigment_array;
                         }
                         
                     } else {

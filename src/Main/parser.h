@@ -43,6 +43,9 @@ typedef enum {
     get_function_declaration_parameters,
     get_function_body,
     get_return_value,
+    get_array_index,
+    get_array_index_closing,
+    get_array_index_assignment,
     rebuild_tokens
 } ParserState;
 
