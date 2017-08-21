@@ -1003,31 +1003,56 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             
                             if(!isFunctionAssignmentUpdate) {
                                 //set variable
-                                switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
-                                    case ret_string_type:
-                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_string_type;
-                                        strcpy(globalVariableArray.variables[lastVariablePosition].string_value, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
-                                    break;
-                                    case ret_integer_type:
-                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_integer_type;
-                                        globalVariableArray.variables[lastVariablePosition].integer_value = globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
-                                    break;
-                                    case ret_float_type:
-                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_float_type;
-                                        globalVariableArray.variables[lastVariablePosition].float_value = globalFunctionArray.functions[functionPosition].functionReturn.float_value;
-                                    break;
-                                    case ret_array_type:
-                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_array_type;
-                                        globalVariableArray.variables[lastVariablePosition].array_count = 0;
-                                        if(!globalVariableArray.variables[lastVariablePosition].array_init) {
-                                            //init array
-                                            globalVariableArray.variables[lastVariablePosition].array_init = T;
-                                            globalVariableArray.variables[lastVariablePosition].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Variable));
-                                        }
-                                        setArrayReturnToVariable(lastVariablePosition);
-                                    break;
-                                    default:
-                                        globalVariableArray.variables[lastVariablePosition].variable_type = var_none_type;
+                                if(isArray) {
+                                    switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
+                                        case ret_string_type:
+                                            globalVariableArray.variables[lastVariablePosition].array_value[currentIndex].variable_type = var_string_type;
+                                            strcpy(globalVariableArray.variables[lastVariablePosition].array_value[currentIndex].string_value, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
+                                        break;
+                                        case ret_integer_type:
+                                            globalVariableArray.variables[lastVariablePosition].array_value[currentIndex].variable_type = var_integer_type;
+                                            globalVariableArray.variables[lastVariablePosition].array_value[currentIndex].integer_value = globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                        break;
+                                        case ret_float_type:
+                                            globalVariableArray.variables[lastVariablePosition].array_value[currentIndex].variable_type = var_float_type;
+                                            globalVariableArray.variables[lastVariablePosition].array_value[currentIndex].float_value = globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                        break;
+                                        case ret_array_type:
+                                            //invalid
+                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Cannot assign an array as an item", strippedToken.tokens[x].fileName);
+                                            freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                                            return intFunctionReturn;
+                                        break;
+                                        default:
+                                            globalVariableArray.variables[lastVariablePosition].array_value[currentIndex].variable_type = var_none_type;
+                                    }
+                                } else {
+                                    switch(globalFunctionArray.functions[functionPosition].functionReturn.returnType) {
+                                        case ret_string_type:
+                                            globalVariableArray.variables[lastVariablePosition].variable_type = var_string_type;
+                                            strcpy(globalVariableArray.variables[lastVariablePosition].string_value, globalFunctionArray.functions[functionPosition].functionReturn.string_value);
+                                        break;
+                                        case ret_integer_type:
+                                            globalVariableArray.variables[lastVariablePosition].variable_type = var_integer_type;
+                                            globalVariableArray.variables[lastVariablePosition].integer_value = globalFunctionArray.functions[functionPosition].functionReturn.integer_value;
+                                        break;
+                                        case ret_float_type:
+                                            globalVariableArray.variables[lastVariablePosition].variable_type = var_float_type;
+                                            globalVariableArray.variables[lastVariablePosition].float_value = globalFunctionArray.functions[functionPosition].functionReturn.float_value;
+                                        break;
+                                        case ret_array_type:
+                                            globalVariableArray.variables[lastVariablePosition].variable_type = var_array_type;
+                                            globalVariableArray.variables[lastVariablePosition].array_count = 0;
+                                            if(!globalVariableArray.variables[lastVariablePosition].array_init) {
+                                                //init array
+                                                globalVariableArray.variables[lastVariablePosition].array_init = T;
+                                                globalVariableArray.variables[lastVariablePosition].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Variable));
+                                            }
+                                            setArrayReturnToVariable(lastVariablePosition);
+                                        break;
+                                        default:
+                                            globalVariableArray.variables[lastVariablePosition].variable_type = var_none_type;
+                                    }
                                 }
                             } else {
                                 //update variable
