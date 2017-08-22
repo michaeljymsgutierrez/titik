@@ -53,6 +53,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
     int variablePosition2 = 0;
     int intFunctionReturn = 0;
     int currentIndex = 0;
+    int currentIndexFunction = 0;
     int isArray = F;
     int isParsing = T;
     int checkVar = T;
@@ -958,6 +959,62 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         return intFunctionReturn;
                     }
                 break;
+                case get_function_parameters_array:
+                    if(strippedToken.tokens[x].tokenType == open_braces_token) {
+                        parserState = get_function_parameters_array_index;
+                    } else {
+                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting '['", strippedToken.tokens[x].fileName);
+                        freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                        return intFunctionReturn;
+                    }
+                break;
+                case get_function_parameters_array_index:
+                    if(strippedToken.tokens[x].tokenType == integer_token) {
+                        currentIndexFunction = atoi(strippedToken.tokens[x].tokenValue);
+
+                        if((currentIndexFunction + 1) > globalVariableArray.variables[variablePosition].array_count) {
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid array index", strippedToken.tokens[x].fileName);
+                            freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                            return intFunctionReturn;
+                        }
+
+                        if(currentIndexFunction < 0) {
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid array index", strippedToken.tokens[x].fileName);
+                            freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                            return intFunctionReturn;
+                        }
+
+                        parserState = get_function_parameters_array_close;
+                    } else {
+                        intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                        freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                        return intFunctionReturn;
+                    }
+                break;
+                case get_function_parameters_array_close:
+                    if(strippedToken.tokens[x].tokenType == close_braces_token) {
+                        parserState = get_function_parameters;
+                        //set argument below
+                        if(globalVariableArray.variables[variablePosition].array_value[currentIndexFunction].variable_type == var_string_type) {
+                            argumentArray.arguments[argumentArray.argumentCount-1].argumentType = arg_string_type;
+                            strcpy(argumentArray.arguments[argumentArray.argumentCount-1].string_value, globalVariableArray.variables[variablePosition].array_value[currentIndexFunction].string_value);                         
+                        } else if(globalVariableArray.variables[variablePosition].array_value[currentIndexFunction].variable_type == var_integer_type) {
+                            argumentArray.arguments[argumentArray.argumentCount-1].argumentType = arg_integer_type;
+                            argumentArray.arguments[argumentArray.argumentCount-1].integer_value = globalVariableArray.variables[variablePosition].array_value[currentIndexFunction].integer_value;                           
+                        } else if(globalVariableArray.variables[variablePosition].array_value[currentIndexFunction].variable_type == var_float_type) {
+                            argumentArray.arguments[argumentArray.argumentCount-1].argumentType = arg_float_type;
+                            argumentArray.arguments[argumentArray.argumentCount-1].float_value = globalVariableArray.variables[variablePosition].array_value[currentIndexFunction].float_value;                           
+                        } else {
+                            //none type
+                            argumentArray.arguments[argumentArray.argumentCount-1].argumentType = arg_none_type; 
+                        }
+
+                    } else {
+                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Expecting ']'", strippedToken.tokens[x].fileName);
+                        freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                        return intFunctionReturn;
+                    }
+                break;
                 case get_function_parameters:
                     if(strippedToken.tokens[x].tokenType == close_parenthesis_token) {
                         
@@ -1356,24 +1413,33 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                             } else if(globalVariableArray.variables[variablePosition].variable_type == var_none_type) {
                                 argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_none_type;                        
                             } else if(globalVariableArray.variables[variablePosition].variable_type == var_array_type) {
-                                argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_array_type;  
                                 
-                                argumentArray.arguments[argumentArray.argumentCount].array_count = 0;
-                                if(!argumentArray.arguments[argumentArray.argumentCount].array_init) {
-                                    //init argument array
-                                    argumentArray.arguments[argumentArray.argumentCount].array_init = T;
-                                    argumentArray.arguments[argumentArray.argumentCount].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Argument));
+                                checkVar = T;
+                                if((x+1) < strippedToken.tokenCount) {
+                                    if(strippedToken.tokens[x+1].tokenType == open_braces_token) {
+                                        checkVar = F;
+                                        parserState = get_function_parameters_array;
+                                    }
                                 }
 
-                                setArrayArgument(variablePosition, &argumentArray.arguments[argumentArray.argumentCount]);
+                                if(checkVar) {
+                                    argumentArray.arguments[argumentArray.argumentCount].argumentType = arg_array_type;  
+                                    argumentArray.arguments[argumentArray.argumentCount].array_count = 0;
+                                    if(!argumentArray.arguments[argumentArray.argumentCount].array_init) {
+                                        //init argument array
+                                        argumentArray.arguments[argumentArray.argumentCount].array_init = T;
+                                        argumentArray.arguments[argumentArray.argumentCount].array_value = malloc(TITIK_VARIABLE_INIT_LENGTH * sizeof(Argument));
+                                    }
 
+                                    setArrayArgument(variablePosition, &argumentArray.arguments[argumentArray.argumentCount]);
+                                }
                             }
 
                         }
 
                         argumentArray.argumentCount += 1;
                     } else if(strippedToken.tokens[x].tokenType == comma_token) {
-                        if(strippedToken.tokens[x - 1].tokenType == string_token || strippedToken.tokens[x - 1].tokenType == float_token || strippedToken.tokens[x - 1].tokenType == integer_token || strippedToken.tokens[x - 1].tokenType == identifier_token) {
+                        if(strippedToken.tokens[x - 1].tokenType == string_token || strippedToken.tokens[x - 1].tokenType == float_token || strippedToken.tokens[x - 1].tokenType == integer_token || strippedToken.tokens[x - 1].tokenType == identifier_token || strippedToken.tokens[x - 1].tokenType == close_braces_token) {
                             //then ok
                             //nothing to do
                         } else {
