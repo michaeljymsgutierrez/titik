@@ -1491,6 +1491,26 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                     if(strippedToken.tokens[x].tokenType == integer_token) {
                         currentIndex = atoi(strippedToken.tokens[x].tokenValue);
                         parserState = get_array_index_closing;
+                    } else if(strippedToken.tokens[x].tokenType == identifier_token) {
+                        isVariablesExists = F;
+                        variablePositionArray = 0;
+
+                        isVariablesExists = isVariableExists(&variablePositionArray, strippedToken.tokens[x].tokenValue, currentScope);
+                        if(!isVariablesExists) {
+                            intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                            freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                            return intFunctionReturn;
+                        }
+
+                        if(globalVariableArray.variables[variablePositionArray].variable_type == var_integer_type) {
+                            currentIndex = globalVariableArray.variables[variablePositionArray].integer_value;
+                        } else {
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid array index", strippedToken.tokens[x].fileName);
+                            freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                            return intFunctionReturn;
+                        }
+
+                        parserState = get_array_index_closing;
                     } else {
                         intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
