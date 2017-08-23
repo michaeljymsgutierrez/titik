@@ -142,6 +142,7 @@ void sc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
 void rnd_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 void sac_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 void savf_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
+void sav_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 void rndstr_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 void senv_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 void genv_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);

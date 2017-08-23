@@ -934,6 +934,23 @@ void savf_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
     }
 }
 
+void sav_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    funcReturn->returnType = ret_array_type;
+
+    if(globalArgC > 2) {
+        for(int x=0; x < globalArgC; x++) {
+            if(x > 1) {
+                strcpy(globalFunctionReturnArray.functionReturns[globalFunctionReturnArray.functionReturnCount].string_value, globalArgV[x]);
+                globalFunctionReturnArray.functionReturns[globalFunctionReturnArray.functionReturnCount].returnType = ret_string_type;
+                globalFunctionReturnArray.functionReturnCount += 1;
+            }
+        }
+    } else {
+        globalFunctionReturnArray.functionReturnCount = 0;
+    }
+}
+
 void rndstr_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
     *intReturn = 0;
     funcReturn->returnType = ret_string_type;
@@ -1106,6 +1123,13 @@ void initFunctions() {
     savfArgArray.argumentCount = 0;
     defineFunction("savf", savfArgArray, savf_execute, T);
     //end savf function
+
+    //sav function
+    ArgumentArray savArgArray;
+    savArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    savArgArray.argumentCount = 0;
+    defineFunction("sav", savArgArray, sav_execute, T);
+    //end sav function
 
     //rndstr function
     ArgumentArray rndstrArgArray;
