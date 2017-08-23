@@ -51,6 +51,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
     int isVariablesExists = F;
     int variablePosition = 0;
     int variablePosition2 = 0;
+    int variablePositionArray = 0;
     int intFunctionReturn = 0;
     int currentIndex = 0;
     int currentIndexFunction = 0;
@@ -985,6 +986,39 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                         }
 
                         parserState = get_function_parameters_array_close;
+                    } else if(strippedToken.tokens[x].tokenType == identifier_token) {
+                        isVariablesExists = F;
+                        variablePositionArray = 0;
+
+                        isVariablesExists = isVariableExists(&variablePositionArray, strippedToken.tokens[x].tokenValue, currentScope);
+                        if(!isVariablesExists) {
+                            intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Undefined variable ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
+                            freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                            return intFunctionReturn;
+                        }
+
+                        if(globalVariableArray.variables[variablePositionArray].variable_type == var_integer_type) {
+                            currentIndexFunction = globalVariableArray.variables[variablePositionArray].integer_value;
+                        } else {
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid array index", strippedToken.tokens[x].fileName);
+                            freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                            return intFunctionReturn;
+                        }
+
+                        if((currentIndexFunction + 1) > globalVariableArray.variables[variablePosition].array_count) {
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid array index", strippedToken.tokens[x].fileName);
+                            freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                            return intFunctionReturn;
+                        }
+
+                        if(currentIndexFunction < 0) {
+                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Invalid array index", strippedToken.tokens[x].fileName);
+                            freeArrays(&newTempTokens, &argumentArray, &newTokens);
+                            return intFunctionReturn;
+                        }
+
+                        parserState = get_function_parameters_array_close;
+
                     } else {
                         intFunctionReturn = unexpected_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Unexpected token ", strippedToken.tokens[x].tokenValue, strippedToken.tokens[x].fileName);
                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
