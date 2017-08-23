@@ -1002,6 +1002,18 @@ void genv_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
     }
 }
 
+void as_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    funcReturn->returnType = ret_integer_type;
+
+    if(argumentArray.arguments[0].argumentType != arg_array_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be an array\n");
+    }
+
+    funcReturn->integer_value = argumentArray.arguments[0].array_count;
+}
+
 void initFunctions() {
 
     //p function
@@ -1151,6 +1163,13 @@ void initFunctions() {
     genvArgArray.argumentCount = 1;
     defineFunction("genv", genvArgArray, genv_execute, T);
     //end genv function
+
+    //as function
+    ArgumentArray asArgArray;
+    asArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    asArgArray.argumentCount = 1;
+    defineFunction("as", asArgArray, as_execute, T);
+    //end as function
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {
