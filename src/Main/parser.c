@@ -1239,7 +1239,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     }
                                                 break;
                                                 default:
-                                                    intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
+                                                    intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is not allowed", strippedToken.tokens[x].fileName);
                                                     freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                                     return intFunctionReturn;
                                             }
@@ -1260,7 +1260,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                         strcat(globalVariableArray.variables[lastVariablePosition].array_value[currentIndex].string_value, tempChar);
                                                     break;
                                                     default:
-                                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
+                                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is not allowed", strippedToken.tokens[x].fileName);
                                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                                         return intFunctionReturn;
                                                 }
@@ -1273,7 +1273,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                         break;
                                         default:
                                             //none type or array
-                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
+                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is not allowed", strippedToken.tokens[x].fileName);
                                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                             return intFunctionReturn;
                                     }
@@ -1365,7 +1365,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                     }
                                                 break;
                                                 default:
-                                                    intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
+                                                    intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is not allowed", strippedToken.tokens[x].fileName);
                                                     freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                                     return intFunctionReturn;
                                             }
@@ -1386,7 +1386,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                         strcat(globalVariableArray.variables[lastVariablePosition].string_value, tempChar);
                                                     break;
                                                     default:
-                                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
+                                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is not allowed", strippedToken.tokens[x].fileName);
                                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                                         return intFunctionReturn;
                                                 }
@@ -1399,7 +1399,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                         break;
                                         default:
                                             //none type or array
-                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
+                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is not allowed", strippedToken.tokens[x].fileName);
                                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                             return intFunctionReturn;
                                     }
@@ -2091,7 +2091,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                         break;
                                                         default:
                                                             //variable is a none type or array
-                                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
+                                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is not allowed", strippedToken.tokens[x].fileName);
                                                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                                             return intFunctionReturn;
                                                     }
@@ -2211,7 +2211,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                         break;
                                                         default:
                                                             //variable is a none type or array
-                                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
+                                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is not allowed", strippedToken.tokens[x].fileName);
                                                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                                             return intFunctionReturn;
                                                     }
@@ -2231,7 +2231,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                     break;
                                     default:
                                         //none type or array
-                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
+                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is not allowed", strippedToken.tokens[x].fileName);
                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                         return intFunctionReturn;
                                 }
@@ -2360,7 +2360,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                         break;
                                                         default:
                                                             //variable is a none type or array
-                                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
+                                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is not allowed", strippedToken.tokens[x].fileName);
                                                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                                             return intFunctionReturn;
                                                     }
@@ -2479,7 +2479,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                                         break;
                                                         default:
                                                             //variable is a none type or array
-                                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
+                                                            intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is not allowed", strippedToken.tokens[x].fileName);
                                                             freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                                             return intFunctionReturn;
                                                     }
@@ -2500,7 +2500,7 @@ int parseToken(TokenArray tokenArray, int isLoop, int stripIt, int * needBreak, 
                                     break;
                                     default:
                                         //none type or array
-                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is now allowed", strippedToken.tokens[x].fileName);
+                                        intFunctionReturn = syntax_error(strippedToken.tokens[x].tokenLine, strippedToken.tokens[x].tokenColumn, "Performing an operation is not allowed", strippedToken.tokens[x].fileName);
                                         freeArrays(&newTempTokens, &argumentArray, &newTokens);
                                         return intFunctionReturn;
                                 }
