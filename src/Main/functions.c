@@ -1068,11 +1068,49 @@ void myq_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
     }
 
     if(globalMySQLIsConnected) {
-        if(mysql_query(globalMySQLConnection, argumentArray.arguments[0].string_value)) {
+        if(!mysql_query(globalMySQLConnection, argumentArray.arguments[0].string_value)) {
             funcReturn->integer_value = T;
         }
     }
 
+}
+void myqr_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    funcReturn->returnType = ret_array_type;
+    globalFunctionReturnArray.functionReturnCount = 0;
+    MYSQL_RES *result;
+    MYSQL_ROW row;
+    MYSQL_FIELD *fields;
+    int strCompRet = 0;
+    int fieldCtr = 0;
+
+    for(int x=0; x < 2; x++) {
+        if(argumentArray.arguments[x].argumentType != arg_string_type) {
+            *intReturn = 1;
+            printf("Error: Parameter must be a string\n");
+        }
+    }
+
+    if(globalMySQLIsConnected) {
+        if (!mysql_query(globalMySQLConnection, argumentArray.arguments[0].string_value)) {
+            result = mysql_store_result(globalMySQLConnection);
+
+            while((fields = mysql_fetch_field(result))) {
+
+                strCompRet = strcmp(argumentArray.arguments[1].string_value, fields->name);                
+                if(!(strCompRet < 0) && !(strCompRet > 0)) {
+                    while ((row = mysql_fetch_row(result))) {
+                        strcpy(globalFunctionReturnArray.functionReturns[globalFunctionReturnArray.functionReturnCount].string_value, row[fieldCtr]);
+                        globalFunctionReturnArray.functionReturns[globalFunctionReturnArray.functionReturnCount].returnType = ret_string_type;
+                        globalFunctionReturnArray.functionReturnCount += 1;
+                    }
+                }
+                fieldCtr += 1;
+            }
+
+            mysql_free_result(result);
+        }
+    }
 }
 #endif
 
@@ -1254,6 +1292,13 @@ void initFunctions() {
     myqArgArray.argumentCount = 1;
     defineFunction("myq", myqArgArray, myq_execute, T);
     //end myq function
+    
+    //myqr function
+    ArgumentArray myqrArgArray;
+    myqrArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    myqrArgArray.argumentCount = 2;
+    defineFunction("myqr", myqrArgArray, myqr_execute, T);
+    //end myqr function
     #endif
 }
 
