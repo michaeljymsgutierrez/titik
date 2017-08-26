@@ -1056,6 +1056,24 @@ void myc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * 
         mysql_close(globalMySQLConnection);
     }
 }
+
+void myq_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    funcReturn->returnType = ret_integer_type;
+    funcReturn->integer_value = F;
+
+    if(argumentArray.arguments[0].argumentType != arg_string_type) {
+        *intReturn = 1;
+        printf("Error: Parameter must be a string\n");
+    }
+
+    if(globalMySQLIsConnected) {
+        if(mysql_query(globalMySQLConnection, argumentArray.arguments[0].string_value)) {
+            funcReturn->integer_value = T;
+        }
+    }
+
+}
 #endif
 
 void initFunctions() {
@@ -1229,6 +1247,13 @@ void initFunctions() {
     mycArgArray.argumentCount = 0;
     defineFunction("myc", mycArgArray, myc_execute, T);
     //end myc function
+
+    //myq function
+    ArgumentArray myqArgArray;
+    myqArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    myqArgArray.argumentCount = 1;
+    defineFunction("myq", myqArgArray, myq_execute, T);
+    //end myq function
     #endif
 }
 
