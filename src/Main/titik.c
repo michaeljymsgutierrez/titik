@@ -40,7 +40,6 @@ int main(int argc, char **argv) {
     #endif
 
     #ifdef T_W_MYSQL
-    globalMySQLConnection = mysql_init(NULL);
     globalMySQLIsConnected = F;
     #endif
     char **fileContent;

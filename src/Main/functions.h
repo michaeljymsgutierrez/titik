@@ -149,6 +149,7 @@ void genv_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn *
 void as_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 #ifdef T_W_MYSQL
 void mycon_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
+void myc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn);
 #endif
 //the first argument array is the structure of the function
 //the function pointer with argumentarray is the user inputted argument

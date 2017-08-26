@@ -1032,14 +1032,28 @@ void mycon_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn 
             printf("Error: Parameter must be a string\n");
         }
     }
-    
-    if(globalMySQLConnection != NULL) {
-        if(!globalMySQLIsConnected) {
-            if (mysql_real_connect(globalMySQLConnection, argumentArray.arguments[0].string_value, argumentArray.arguments[1].string_value, argumentArray.arguments[2].string_value,argumentArray.arguments[3].string_value, 0, NULL, 0) != NULL) {
-                funcReturn->integer_value = T;
-                globalMySQLIsConnected = T;
+
+    if(!globalMySQLIsConnected) {
+        globalMySQLConnection = mysql_init(NULL);
+        
+        if(globalMySQLConnection != NULL) {
+            if(!globalMySQLIsConnected) {
+                if (mysql_real_connect(globalMySQLConnection, argumentArray.arguments[0].string_value, argumentArray.arguments[1].string_value, argumentArray.arguments[2].string_value,argumentArray.arguments[3].string_value, 0, NULL, 0) != NULL) {
+                    funcReturn->integer_value = T;
+                    globalMySQLIsConnected = T;
+                }
             }
         }
+    }
+}
+
+void myc_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    funcReturn->returnType = ret_none_type;
+    
+    if(globalMySQLIsConnected) {
+        globalMySQLIsConnected = F;
+        mysql_close(globalMySQLConnection);
     }
 }
 #endif
@@ -1208,6 +1222,13 @@ void initFunctions() {
     myconArgArray.argumentCount = 4;
     defineFunction("mycon", myconArgArray, mycon_execute, T);
     //end mycon function
+
+    //myc function
+    ArgumentArray mycArgArray;
+    mycArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    mycArgArray.argumentCount = 0;
+    defineFunction("myc", mycArgArray, myc_execute, T);
+    //end myc function
     #endif
 }
 
