@@ -19,6 +19,12 @@
 #include <unistd.h>
 #endif
 
+#ifdef T_W_MYSQL
+#include <mysql.h>
+extern MYSQL *globalMySQLConnection;
+extern int globalMySQLIsConnected;
+#endif
+
 extern FunctionArray globalFunctionArray;
 extern VariableArray globalVariableArray;
 extern FunctionReturnArray globalFunctionReturnArray;
@@ -1014,6 +1020,30 @@ void as_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * f
     funcReturn->integer_value = argumentArray.arguments[0].array_count;
 }
 
+#ifdef T_W_MYSQL
+void mycon_execute(ArgumentArray argumentArray, int * intReturn, FunctionReturn * funcReturn) {
+    *intReturn = 0;
+    funcReturn->returnType = ret_integer_type;
+    funcReturn->integer_value = F;
+
+    for(int x=0; x < 4; x++) {
+        if(argumentArray.arguments[x].argumentType != arg_string_type) {
+            *intReturn = 1;
+            printf("Error: Parameter must be a string\n");
+        }
+    }
+    
+    if(globalMySQLConnection != NULL) {
+        if(!globalMySQLIsConnected) {
+            if (mysql_real_connect(globalMySQLConnection, argumentArray.arguments[0].string_value, argumentArray.arguments[1].string_value, argumentArray.arguments[2].string_value,argumentArray.arguments[3].string_value, 0, NULL, 0) != NULL) {
+                funcReturn->integer_value = T;
+                globalMySQLIsConnected = T;
+            }
+        }
+    }
+}
+#endif
+
 void initFunctions() {
 
     //p function
@@ -1170,6 +1200,15 @@ void initFunctions() {
     asArgArray.argumentCount = 1;
     defineFunction("as", asArgArray, as_execute, T);
     //end as function
+
+    #ifdef T_W_MYSQL
+    //mycon function
+    ArgumentArray myconArgArray;
+    myconArgArray.arguments = malloc(TITIK_ARGUMENT_INIT_LENGTH * sizeof(Argument));
+    myconArgArray.argumentCount = 4;
+    defineFunction("mycon", myconArgArray, mycon_execute, T);
+    //end mycon function
+    #endif
 }
 
 int isFunctionExists(int * functionPosition, char tokenValue[]) {

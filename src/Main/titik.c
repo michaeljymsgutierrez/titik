@@ -17,6 +17,12 @@
 #include <Windows.h>
 #endif
 
+#ifdef T_W_MYSQL
+#include <mysql.h>
+MYSQL *globalMySQLConnection;
+int globalMySQLIsConnected;
+#endif
+
 FunctionArray globalFunctionArray;
 VariableArray globalVariableArray;
 LoadedFileArray globalLoadedFileArray;
@@ -31,6 +37,11 @@ int main(int argc, char **argv) {
     srand(time(NULL));
     #ifdef _WIN32
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &Info);
+    #endif
+
+    #ifdef T_W_MYSQL
+    globalMySQLConnection = mysql_init(NULL);
+    globalMySQLIsConnected = F;
     #endif
     char **fileContent;
     int functionReturn;

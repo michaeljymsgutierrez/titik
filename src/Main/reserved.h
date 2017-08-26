@@ -5,9 +5,19 @@
 #ifndef RESERVED_H_
 #define RESERVED_H_
 
+#ifdef T_W_MYSQL
+#define RESERVED_WORD_COUNT 38
+#else
 #define RESERVED_WORD_COUNT 34
+#endif
 
 static const char *RESERVED_WORDS[RESERVED_WORD_COUNT] = {
+    #ifdef T_W_MYSQL
+    "mycon", //mysql connect
+    "myc", //mysql close connect
+    "myq", //mysql query (insert etc)
+    "myqr", //mysql query with result
+    #endif
     "zzz", //sleep
     "p", //print
     "fd", //function
